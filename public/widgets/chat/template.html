@@ -1,0 +1,20 @@
+<div class="chat">
+	<div class="room page" ng-show="{{isLogin}}">
+		<div class="chatArea" style="height: {{chatAreaHeight}}px;">
+			<ul class="messages">
+				<message ng-repeat="message in messages"/>
+			</ul>
+			<div id="roomBottom"></div>
+			<div id="roomEnd"></div>
+		</div>
+		<div class="inputArea">
+			<input ng-model="newMessage" ng-keypress="keyMessage($event)" class="inputMessage" placeholder="I want to say ..." style="width: {{inputAreawidth}}px;"/>
+		<div>
+	</div>
+	<div class="login page" ng-show="{{!isLogin}}">
+		<div class="form">
+			<h3 class="title">My name is ...</h3>
+			<input class="usernameInput" type="text" maxlength="14" />
+		</div>
+	</div>
+</div>

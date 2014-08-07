@@ -1,0 +1,233 @@
+.ng-scope.chat {
+  font-weight: 300;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+
+  font-family:
+    "HelveticaNeue-Light",
+    "Helvetica Neue Light",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    "Lucida Grande",
+    sans-serif;
+
+  list-style: none;
+  word-wrap: break-word;
+}
+.ng-scope.chat ul {
+  list-style: none;
+  word-wrap: break-word;
+}
+
+
+
+.ng-scope.chat .page {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+/* Login Page */
+
+.ng-scope.chat .login.page {
+  background-color: #000;
+}
+
+.ng-scope.chat .login.page .form {
+  height: 100px;
+  margin-top: -100px;
+  position: absolute;
+
+  text-align: center;
+  top: 50%;
+  width: 100%;
+}
+
+.ng-scope.chat .login.page .form .usernameInput {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #fff;
+  outline: none;
+  padding-bottom: 15px;
+  text-align: center;
+  width: 400px;
+}
+
+.ng-scope.chat .login.page .title {
+  font-size: 200%;
+}
+
+.ng-scope.chat .login.page .usernameInput {
+  font-size: 200%;
+  letter-spacing: 3px;
+}
+
+.ng-scope.chat .login.page .title, .login.page .usernameInput {
+  color: #fff;
+  font-weight: 100;
+}
+
+/* Chat page */
+
+.ng-scope.chat .room.page {
+  overflow: hidden;
+  min-width: 400px;
+}
+
+/* Font */
+
+.ng-scope.chat .inputMessage {
+  font-size: 100%;
+}
+
+.ng-scope.chat .log {
+  color: gray;
+  font-size: 70%;
+  margin: 5px;
+  text-align: center;
+}
+
+/* Messages */
+
+.ng-scope.chat .chatArea {
+  overflow-y: scroll;
+  background: #ccc;
+}
+
+.ng-scope.chat .messages {
+  margin: 0;
+  padding: 10px 20px 10px 20px;
+  font-size: 1em;
+  color: #666;
+}
+
+.ng-scope.chat .message:not(.log) {
+  margin: 5px 0px;
+  clear: both;
+  overflow: auto;
+}
+.ng-scope.chat .message:not(.log) .user {
+  float: right;
+  display: block;
+  text-align: center;
+  width: 48px;
+  height: 48px;
+  background: #eee;
+  border: solid 3px rgba(255, 255, 255, .6);
+  border-radius: 50%;
+  margin: 5px 0px;
+  position: relative;
+  overflow: visible;
+}
+.ng-scope.chat .message:not(.log) .user > a {
+  position: absolute;
+  top: -5px;
+  right: 70px;
+  color: #fff;
+  font-size: .5em;
+  text-shadow: 1px 1px 0px #bbb;
+  width: 230px;
+  text-align: right;
+}
+.ng-scope.chat .message:not(.log) .messageBody {
+  float: right;
+  background: #def;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 20px 10px;
+  max-width: 240px;
+  position: relative;
+}
+.ng-scope.chat .message:not(.log):not(.me) .messageBody::before {
+  content: '';
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 7px solid #def;
+  border-right: 7px solid transparent;
+  position: absolute;
+  right: -14px;
+}
+.ng-scope.chat .message:not(.log) .timestamp {
+  clear: both;
+  display: block;
+  font-size: .8em;
+  color: #999;
+  float: right;
+  margin-top: -18px;
+  margin-right: 70px;
+}
+
+.ng-scope.chat .message:not(.log).me .user {
+  float: left;
+}
+.ng-scope.chat .message:not(.log).me .user > a {
+  left: 70px;
+  text-align: left;
+}
+.ng-scope.chat .message:not(.log).me .messageBody {
+  float: left;
+  background: #eee;
+}
+.ng-scope.chat .message:not(.log).me .messageBody::before {
+  content: '';
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 7px solid transparent;
+  border-right: 7px solid #eee;
+  position: absolute;
+  left: -14px;
+}
+.ng-scope.chat .message:not(.log).me .timestamp {
+  clear: both;
+  display: block;
+  font-size: .8em;
+  color: #999;
+  float: left;
+  margin-left: 70px;
+}
+
+.ng-scope.chat .message:not(.log).typing .messageBody {
+  color: gray;
+}
+
+/* Log Style */
+.ng-scope.chat .message.log .user {
+  display: none;
+}
+
+
+.ng-scope.chat div#roomBottom {
+  display: block;
+  width: 100%;
+  height: 150px;
+}
+.ng-scope.chat div#roomEnd {
+  display: block;
+  width: 100%;
+  height: 10px;
+}
+
+/* Input */
+
+.ng-scope.chat .inputArea {
+  bottom: 0;
+  height: 60px;
+  left: 0;
+  position: fixed;
+  right: 0;
+  width: 100%;
+}
+.ng-scope.chat .inputArea input.inputMessage {
+  height: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  outline: none;
+  border: none;
+  box-shadow: inset 0px 1px 1px rgba(100, 100, 100, .8);
+}

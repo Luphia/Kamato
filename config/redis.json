@@ -1,0 +1,10 @@
+{
+	"client": null,
+	"host": null,
+	"port": null,
+	"ttl": null,
+	"db": null,
+	"pass": null,
+	"prefix": null,
+	"url": null
+}
