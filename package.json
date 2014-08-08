@@ -2,7 +2,10 @@
   "name": "Kamato",
   "version": "0.0.0",
   "description": "Location-based Communication Service",
-  "main": "index.js",
+  "bin": {
+    "Kamato": "./bin/Kamato.js"
+  },
+  "main": "./bin/Kamato.js",
   "scripts": {
     "test": "test.js"
   },
@@ -18,8 +21,9 @@
   "homepage": "https://github.com/Luphia/Kamato",
   "dependencies": {
     "socket.io": ">=1.0.6",
-    "express": ">=4.7.2",
+    "express": ">=4.7.4",
     "express-session": ">=1.7.2",
+    "compression": ">=1.0.9",
     "body-parser": ">=1.5.2",
     "compression": ">=1.0.9",
     "method-override": ">=2.1.2",
@@ -27,6 +31,11 @@
     "node-tweet-stream": ">=1.2.2",
     "log4js": ">=0.6.16",
     "connect-redis": ">=2.0.0",
-    "googleapis": ">=1.0.4"
+    "googleapis": ">=1.0.4",
+    "mongoose": ">=3.8.14",
+    "node-gcm": ">=0.9.12",
+    "lodash": ">=2.4.1",
+    "apn": ">=1.6.0",
+    "commander": ">=2.3.0"
   }
 }

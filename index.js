@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 // Setup basic express server
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-var routes = require('./routes');
+var routes = require('./services/Controllers');
 var path = require('path');
 var app = express();
 var RedisStore = require('connect-redis')(session);
@@ -12,11 +14,7 @@ var io = require('socket.io')(server);
 var Twitter = require('node-tweet-stream')
 
 // Load config
-var configure = {};
-configure.log4js = require('./config/log4js.json');
-configure.twitter = require('./config/twitter.json');
-configure.redis = require('./config/redis.json');
-configure.google = require('./config/google.json');
+var configure = require('./config');
 
 
 // Setup Logger
@@ -136,6 +134,7 @@ io.on('connection', function (socket) {
 });
 
 // Twitter streaming
+/*
 var ts = new Twitter(configure.twitter);
 ts.on('tweet', function (tweet) {
   io.emit('new message', {
@@ -155,3 +154,4 @@ ts.on('error', function (err) {
 });
 
 ts.track('node');
+*/
