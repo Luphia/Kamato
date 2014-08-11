@@ -3,6 +3,8 @@ var config,
 	io,
 	logger;
 
+var redis = require('socket.io-redis');
+
 var usernames = {},
 	numUsers = 0;
 
@@ -10,7 +12,8 @@ var configure = function (_config, _server, _logger) {
 	config = _config;
 	server = _server;
 	logger = _logger;
-	io = require('socket.io')(server);
+	io = require('socket.io')(server),
+	io.adapter(redis(config.get('redis')));
 };
 
 var start = function () {
@@ -88,7 +91,19 @@ var start = function () {
 				});
 			}
 		});
+
+		// when the user join some channel
+		socket.on('join', function (room) {
+			socket.join(room);
+		});
+
+		// where the user leave some channel
+		socket.on('leave', function (room) {
+			socket.leave(room);
+		});
 	});
+
+	console.log("Socket start");
 }
 
 module.exports = {

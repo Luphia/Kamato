@@ -16,7 +16,8 @@ var express = require('express'),
 	config = require('../services/ConfigLoader.js')(program),
 	web = require('../services/WebServer.js'),
 	socket = require('../services/SocketServer.js'),
-	push = require('../services/PushServer.js');
+	push = require('../services/PushServer.js'),
+	twitter = require('../services/TwitterMonitor.js');
 
 program.version(pack.version)
 	.option("-c --config <configPath>", "Path to config file")
@@ -31,7 +32,9 @@ logger.setLevel('INFO');
 
 web.configure(config, app, server, log4js, logger);
 socket.configure(config, server, logger);
-push.configure(config);
+push.configure(config, logger);
+twitter.configure(config, logger);
 
 socket.start();
+//twitter.start();
 web.start();

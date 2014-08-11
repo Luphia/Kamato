@@ -1,6 +1,7 @@
 {
- "appenders": [
-   { "type": "console" },
-   { "type": "file", "filename": "./logs/Kamato.INFO.log", "category": "Kamato.INFO" }
-  ]
+	"appenders": [
+		{ "type": "console" },
+		{ "type": "file", "filename": "./logs/Kamato.INFO.log", "category": "Kamato.INFO", "maxLogSize": 10240, "backups": 10 }
+	],
+	"replaceConsole": true
 }

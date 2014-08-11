@@ -45,7 +45,7 @@ var start = function () {
 	app.get('/public/:filename', controllers.google.file);
 
 	server.listen(app.get('port'), function () {
-		logger.info('Server listening at port %d', app.get('port'));
+		console.log('Server listening at port %d', app.get('port'));
 	});
 }
 
