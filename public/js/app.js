@@ -4,7 +4,8 @@
 var Kamato = angular.module('Kamato', [
 	'ngRoute',
 	'KamatoControllers',
-	'socket-io'
+	'socket-io',
+	'google-maps'
 ]);
 
 Kamato.config(['$routeProvider', function($routeProvider) {
@@ -32,23 +33,3 @@ Kamato.directive('message', function($compile) {
 		templateUrl: 'widgets/chat/template-message.html'
 	}
 });
-
-/* get location data */
-navigator.geolocation.getCurrentPosition(
-	function (pos) {
-		var crd = pos.coords;
-
-		console.log('Your current position is:');
-		console.log('Latitude : ' + crd.latitude);
-		console.log('Longitude: ' + crd.longitude);
-		console.log('More or less ' + crd.accuracy + ' meters.');
-	},
-	function (err) {
-		console.warn('ERROR(' + err.code + '): ' + err.message);
-	},
-	{
-		enableHighAccuracy: true,
-		timeout: 5000,
-		maximumAge: 0
-	}
-);
