@@ -53,13 +53,17 @@ KamatoControllers.controller('MapCtrl', ['$scope', '$http', function($scope, $ht
 	$scope.size = 30;
 
 	var Point =function() {
+		var types = ["play", "play", "play", "play", ""];
+		var type = types[Math.floor(Math.random()*types.length)];
 		var randX = Math.floor(Math.random() * 20);
 		var randY = Math.floor(Math.random() * 7);
 
 		return {
 			x: randX * $scope.size * 1.1 * 1.5,
 			y: sqrt3 * (randX % 2 + randY * 2) / 2 * $scope.size * 1.1,
-			l: 1
+			l: 1,
+			o: 10,
+			type: type
 		};
 	};
 
@@ -73,6 +77,14 @@ KamatoControllers.controller('MapCtrl', ['$scope', '$http', function($scope, $ht
 
 		if(aIndex > -1) {
 			$scope.positions[aIndex].l ++;
+			var mod6 = $scope.positions[aIndex].l % 6;
+			var mod12 = $scope.positions[aIndex].l % 12;
+			if(mod12 > 5) {
+				$scope.positions[aIndex].o = mod6 * 10;
+			}
+			else {
+				$scope.positions[aIndex].o = (5 - mod6) * 10;
+			}
 		}
 		else {
 			$scope.positions.push(point);

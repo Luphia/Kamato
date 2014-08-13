@@ -3,12 +3,13 @@
 		<google-map center="map.center" zoom="map.zoom"></google-map>
 	</div>
 	<div class="block">
-		<div ng-repeat="position in positions" class="channel" style="left: {{position.x}}px; top: {{position.y}}px; opacity: {{position.l % 6 * 10 / 100}};">
-			<svg  ng-attr-width="{{block.width}}px" ng-attr-height="{{block.height}}px" class="hexagon">
+		<div ng-repeat="position in positions" class="channel {{position.type}}" style="left: {{position.x}}px; top: {{position.y}}px;">
+			<svg  ng-attr-width="{{block.width}}px" ng-attr-height="{{block.height}}px" class="hexagon" style="opacity: {{position.o / 100}};">
 				<g>
 					<path ng-attr-d="m{{points[0].x}},{{points[0].y}}l{{points[1].x}},{{points[1].y}}l{{points[2].x}},{{points[2].y}}l{{points[3].x}},{{points[3].y}}l{{points[4].x}},{{points[4].y}}l{{points[5].x}},{{points[5].y}}z" ng-attr-transform="translate({{size/2}}, 0)"/>
 				</g>
 			</svg>
 		</div>
 	</div>
+	<div class="title">Channel Position in Kamato</div>
 </div>
