@@ -11,8 +11,8 @@ body {
 }
 .ng-scope.map .angular-google-map-container::after {
 	content: '';
-	background: -webkit-radial-gradient(closest-side, transparent, rgba(0, 0, 0, .5), #000);
-	background: -webkit-radial-gradient(closest-side, rgba(23,29,37,0), #000);
+	background: radial-gradient(closest-side, transparent, rgba(0, 0, 0, .5), #000);
+	background: radial-gradient(closest-side, rgba(23,29,37,0), #000);
 	display: block;
 	opacity: .8;
 	pointer-events: none;
@@ -21,7 +21,6 @@ body {
 	left: -10%;
 	height: 120%;
 	width: 120%;
-	-webkit-transform: translateZ(20px);
 }
 
 .ng-scope.map .angular-google-map-container {
@@ -84,7 +83,7 @@ body {
 	stroke-width: 1px;
 }
 .ng-scope.map div.channel.coffee svg.hexagon path {
-	fill: #f80;
+	fill: #fc8;
 }
 .ng-scope.map div.channel.play svg.hexagon path {
 	fill: #0af;
@@ -96,8 +95,37 @@ body {
 .ng-scope.map div.title {
 	color: rgba(255, 255, 255, .7);
 	position: absolute;
-	margin: 350px 10%;
-	font-size: 1.2em;
+	margin: 300px 10%;
+	font-size: .8em;
+}
+.ng-scope.map div.here {
+	position: absolute;
+	width: 1000px;
+	height: 400px;
+	top: 0px;
+	left: 50%;
+	margin-left: -500px;
+	transform: rotateX(60deg);
+	color: #fff;
+}
+.ng-scope.map div.here div.container {
+	position: relative;
+}
+.ng-scope.map div.here div.container div.pointer {
+	position: absolute;
+	margin: -10px 25px;
+
+	animation: wave 5s infinite;
+	animation-timing-function: ease-in-out;
+
+	-webkit-animation: wave 5s infinite;
+	-webkit-animation-timing-function: ease-in-out;
+	animation-delay: 0ms;
+}
+.ng-scope.map div.here a {
+	display: block;
+	font-size: .8em;
+	padding-left: 12px;
 }
 
 .ng-scope.map div.zone {
@@ -115,8 +143,8 @@ body {
 }
 .ng-scope.map div.block::after {
 	content: '';
-	background: -webkit-radial-gradient(closest-side, transparent, rgba(0, 0, 0, .5), #000);
-	background: -webkit-radial-gradient(closest-side, rgba(23,29,37,0), #000);
+	background: radial-gradient(closest-side, transparent, rgba(0, 0, 0, .5), #000);
+	background: radial-gradient(closest-side, rgba(23,29,37,0), #000);
 	display: block;
 	opacity: .8;
 	pointer-events: none;
@@ -125,13 +153,18 @@ body {
 	left: -10%;
 	height: 120%;
 	width: 120%;
-	-webkit-transform: translateZ(20px);
+}
+
+@keyframes wave {
+	0%   { transform: translateY(0px); }
+	50% { transform: translateY(-20px); }
+	100% { transform: translateY(0px); }
 }
 
 @-webkit-keyframes wave {
-	0%   { -webkit-transform: translateY(0px); }
-	50% { -webkit-transform: translateY(-20px); }
-	100% { -webkit-transform: translateY(0px); }
+	0%   { transform: translateY(0px); }
+	50% { transform: translateY(-20px); }
+	100% { transform: translateY(0px); }
 }
 
 .ng-scope.map div.block div.channel {
@@ -139,37 +172,39 @@ body {
 	position: absolute;
 	transition: all 100ms ease-out;
 
+	animation: wave 5s infinite;
+	animation-timing-function: ease-in-out;
+
 	-webkit-animation: wave 5s infinite;
 	-webkit-animation-timing-function: ease-in-out;
 }
 .ng-scope.map div.block div.channel:hover {
-	opacity: 1;
-	transform: translateY(-10px);
+
 }
 .ng-scope.map div.block div.channel:nth-child(10n+1) {
-	-webkit-animation-delay: 500ms;
+	animation-delay: 500ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+2) {
-	-webkit-animation-delay: 1000ms;
+	animation-delay: 1000ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+3) {
-	-webkit-animation-delay: 1500ms;
+	animation-delay: 1500ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+4) {
-	-webkit-animation-delay: 2000ms;
+	animation-delay: 2000ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+5) {
-	-webkit-animation-delay: 2500ms;
+	animation-delay: 2500ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+6) {
-	-webkit-animation-delay: 3000ms;
+	animation-delay: 3000ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+7) {
-	-webkit-animation-delay: 3500ms;
+	animation-delay: 3500ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+8) {
-	-webkit-animation-delay: 4000ms;
+	animation-delay: 4000ms;
 }
 .ng-scope.map div.block div.channel:nth-child(10n+9) {
-	-webkit-animation-delay: 4500ms;
+	animation-delay: 4500ms;
 }

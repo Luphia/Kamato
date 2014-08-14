@@ -69,13 +69,21 @@ KamatoControllers.controller('MapCtrl', ['$scope', '$http', function($scope, $ht
 
 	var exists = [];
 	$scope.positions = [];
+	$scope.you = new Point();
+	$scope.you.o = 100;
+	$scope.you.type = "coffee";
+	$scope.positions.push($scope.you);
+	exists.push($scope.you.x + "," + $scope.you.y);
 
 	var addChannel = function(render) {
 		var point = new Point();
 		var aPoint = point.x + "," + point.y;
 		var aIndex = exists.indexOf(aPoint);
 
-		if(aIndex > -1) {
+		if(aIndex == 0) {
+
+		}
+		else if(aIndex > -1) {
 			$scope.positions[aIndex].l ++;
 			var mod6 = $scope.positions[aIndex].l % 6;
 			var mod12 = $scope.positions[aIndex].l % 12;
