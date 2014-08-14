@@ -82,6 +82,9 @@ body {
 	stroke: transparent;
 	stroke-width: 1px;
 }
+.ng-scope.map div.channel.me svg.hexagon path {
+	fill: #c74;
+}
 .ng-scope.map div.channel.coffee svg.hexagon path {
 	fill: #fc8;
 }
@@ -99,6 +102,7 @@ body {
 	font-size: .8em;
 }
 .ng-scope.map div.here {
+	pointer-events: none;
 	position: absolute;
 	width: 1000px;
 	height: 400px;

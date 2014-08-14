@@ -71,7 +71,7 @@ KamatoControllers.controller('MapCtrl', ['$scope', '$http', function($scope, $ht
 	$scope.positions = [];
 	$scope.you = new Point();
 	$scope.you.o = 100;
-	$scope.you.type = "coffee";
+	$scope.you.type = "me";
 	$scope.positions.push($scope.you);
 	exists.push($scope.you.x + "," + $scope.you.y);
 
