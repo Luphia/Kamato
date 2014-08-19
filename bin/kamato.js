@@ -17,6 +17,7 @@ var express = require('express'),
 	web = require('../services/WebServer.js'),
 	socket = require('../services/SocketServer.js'),
 	push = require('../services/PushServer.js'),
+	oauth = require('../services/OAuthServer.js'),
 	twitter = require('../services/TwitterMonitor.js');
 
 program.version(pack.version)
@@ -30,7 +31,7 @@ log4js.configure(config.get('log4js'));
 var logger = log4js.getLogger('Kamato.INFO');
 logger.setLevel('INFO');
 
-web.configure(config, app, server, log4js, logger);
+web.configure(config, app, server, oauth, log4js, logger);
 socket.configure(config, server, logger);
 push.configure(config, logger);
 twitter.configure(config, logger);

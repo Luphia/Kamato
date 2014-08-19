@@ -1,0 +1,8 @@
+{
+	"db": { "native_parser": true },
+	"server": { "poolSize": 5 },
+	"replset": { "rs_name": "myReplicaSetName" },
+	"user": null,
+	"pass": null,
+	"uri": null
+}
