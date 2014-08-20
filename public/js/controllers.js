@@ -52,11 +52,16 @@ KamatoControllers.controller('MapCtrl', ['$scope', '$http', function($scope, $ht
 	var sqrt3 = Math.sqrt(3);
 	$scope.size = 30;
 
-	var Point =function() {
+	var Point =function(center) {
 		var types = ["play", "play", "play", "play", ""];
 		var type = types[Math.floor(Math.random()*types.length)];
 		var randX = Math.floor(Math.random() * 20);
 		var randY = Math.floor(Math.random() * 7);
+
+		if(center) {
+			randX = 10;
+			randY = 3;
+		}
 
 		return {
 			x: randX * $scope.size * 1.1 * 1.5,
@@ -69,7 +74,7 @@ KamatoControllers.controller('MapCtrl', ['$scope', '$http', function($scope, $ht
 
 	var exists = [];
 	$scope.positions = [];
-	$scope.you = new Point();
+	$scope.you = new Point(true);
 	$scope.you.o = 100;
 	$scope.you.type = "me";
 	$scope.positions.push($scope.you);
