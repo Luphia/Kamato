@@ -24,8 +24,9 @@ program.version(pack.version)
 	.option("-c --config <configPath>", "Path to config file")
 	.parse(process.argv);
 
-var configPath = program.config || './config';
+var configPath = program.config || './config.private';
 config.initialize(configPath);
+config.path = configPath + '/';
 
 log4js.configure(config.get('log4js'));
 var logger = log4js.getLogger('Kamato.INFO');

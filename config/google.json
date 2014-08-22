@@ -1,8 +1,8 @@
 {
-    "consumer_key": "",
-    "consumer_secret": "",
-    "token": "",
-    "token_secret": "",
-    "api_key": "",
-    "public_path": ""
+	"consumer_key": "",
+	"consumer_secret": "",
+	"token": "",
+	"token_secret": "",
+	"api_key": "",
+	"public_path": ""
 }

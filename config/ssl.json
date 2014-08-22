@@ -1,0 +1,8 @@
+{
+	"key": false,
+	"cert": false,
+	"ca": false,
+	"requestCert": false,
+	"rejectUnauthorized": false,
+	"passphrase": false
+}
