@@ -1,5 +1,4 @@
 var express = require('express'),
-	https = require('https'),
 	fs = require('fs'),
 	path = require('path'),
 	session = require('express-session'),
@@ -18,35 +17,16 @@ var config,
 	controllers,
 	ssl;
 
-var configure = function (_config, _app, _server, _oauth, _log4js, _logger) {
+var configure = function (_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
 	config = _config;
 	app = _app;
 	server = _server;
+	secureServer = _secureServer;
 	oauth = _oauth;
 	log4js = _log4js;
 	logger = _logger;
 	controllers = require('./Controllers')(config);
-
-	var sslconfig = config.get('ssl');
-	sslconfig.path = config.path;
-	SSLConfigire(sslconfig);
 };
-
-var SSLConfigire = function(_config) {
-	// check Key file & Certificate file
-	if(fs.existsSync(_config.path + _config.key) && fs.existsSync(_config.path + _config.cert)) {
-		ssl = {};
-		_config.key && (ssl.key = fs.readFileSync(_config.path + _config.key));
-		_config.cert && (ssl.cert = fs.readFileSync(_config.path + _config.cert));
-		_config.ca && (ssl.ca = fs.readFileSync(_config.path + _config.ca));
-		_config.requestCert && (ssl.requestCert = _config.requestCert);
-		_config.rejectUnauthorized && (ssl.rejectUnauthorized = _config.rejectUnauthorized);
-		_config.passphrase && (ssl.passphrase = _config.passphrase);
-	}
-	else {
-		ssl = false;
-	}
-}
 
 var start = function () {
 	app.use(session({
@@ -84,14 +64,17 @@ var start = function () {
 		res.send('Secret area');
 	});
 
+	app.get('/auth/google', controllers.google.auth);
+	app.get('/auth/google/return', controllers.google.authReturn);
+
 	// http
 	server.listen(app.get('port'), function () {
 		console.log('Server listening at port %d', app.get('port'));
 	});
 
 	//https
-	if(ssl) {
-		secureServer = https.createServer(ssl, app).listen(app.get('https'), function () {
+	if(secureServer) {
+		secureServer.listen(app.get('https'), function () {
 			console.log('Secure server listening at port %d', app.get('https'));
 		});
 	}

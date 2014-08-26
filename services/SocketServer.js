@@ -1,5 +1,6 @@
 var config,
 	server,
+	secureServer,
 	io,
 	logger;
 
@@ -8,11 +9,13 @@ var redis = require('socket.io-redis');
 var usernames = {},
 	numUsers = 0;
 
-var configure = function (_config, _server, _logger) {
+var configure = function (_config, _server, _secureServer, _logger) {
 	config = _config;
 	server = _server;
+	secureServer = _secureServer;
 	logger = _logger;
-	io = require('socket.io')(server),
+	io = require('socket.io')(server);
+	io.listen(secureServer);
 	io.adapter(redis(config.get('redis')));
 };
 
