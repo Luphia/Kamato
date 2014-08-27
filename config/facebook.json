@@ -1,5 +1,5 @@
 {
 	"clientID": "",
 	"clientSecret": "",
-	"callbackURL": "http://localhost/auth/facebook/callback"
+	"callbackURL": "http://localhost/auth/facebook/return"
 }

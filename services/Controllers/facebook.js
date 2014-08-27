@@ -1,0 +1,27 @@
+var config;
+var passport = require('passport'),
+	FacebookStrategy = require('passport-facebook').Strategy;
+
+module.exports = {
+	init: function(_config) {
+		config = _config;
+		passport.use(new FacebookStrategy(config,
+			function(accessToken, refreshToken, profile, done) {
+				process.nextTick(function () {
+
+					// find or create user profile
+					console.log(profile);
+
+					profile.identifier = identifier;
+					return done(null, profile);
+				});
+			}
+		));
+	},
+	auth: passport.authenticate('facebook'),
+	authReturn: function(req, res) {
+		res.write(JSON.stringify(req.params));
+		res.write(JSON.stringify(req.query));
+		res.end();
+	}
+};

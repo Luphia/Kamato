@@ -64,8 +64,16 @@ var start = function () {
 		res.send('Secret area');
 	});
 
+	// user data
+	app.get('/me', controllers.user.data);
+
+	// google auth
 	app.get('/auth/google', controllers.google.auth);
 	app.get('/auth/google/return', controllers.google.authReturn);
+
+	// facebook auth
+	app.get('/auth/facebook', controllers.facebook.auth);
+	app.get('/auth/facebook/return', controllers.facebook.authReturn);
 
 	// http
 	server.listen(app.get('port'), function () {
