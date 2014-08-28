@@ -15,8 +15,8 @@ module.exports = {
 			done(null, obj);
 		});
 		passport.use(new GoogleStrategy({
-				returnURL: 'http://localhost/auth/google/return',
-				realm: 'http://localhost/'
+				returnURL: config.url + 'auth/google/return',
+				realm: config.url
 			},
 			function(identifier, profile, done) {
 				process.nextTick(function () {

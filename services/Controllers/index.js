@@ -8,8 +8,12 @@ var google = require('./google.js'),
 	user = require('./user.js');
 
 module.exports = function(_config) {
-	google.init(_config.get('google'));
-	facebook.init(_config.get('facebook'));
+	var serverConfig = _config.get('server');
+	var googleConfig = _config.get('google');
+	var facebookConfig = _config.get('facebook');
+
+	googleConfig.url = serverConfig.url;
+	facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
 
 	return {
 		index: index,

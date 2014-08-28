@@ -1,5 +1,6 @@
 {
 	"port": 80,
 	"https": 443,
-	"secret": "secret of session"
+	"secret": "secret of session",
+	"url": "https://kamato.cc-wei.com/"
 }
