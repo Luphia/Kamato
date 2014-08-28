@@ -59,7 +59,7 @@ var start = function () {
 	//Routes
 	app.all('/oauth/token', app.oauth.grant());
 	app.all('/oauth2/*', controllers.oauth2.callback);
-	app.get('/public/:filename', controllers.google.file);
+	app.get('/public/*', controllers.google.file);
 	app.get('/secret/*', app.oauth.authorise(), function (req, res) {
 		res.send('Secret area');
 	});

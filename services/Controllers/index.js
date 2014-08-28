@@ -15,6 +15,9 @@ module.exports = function(_config) {
 	googleConfig.url = serverConfig.url;
 	facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
 
+	google.init(googleConfig);
+	facebook.init(facebookConfig);
+
 	return {
 		index: index,
 		google: google,

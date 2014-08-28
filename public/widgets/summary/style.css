@@ -1,0 +1,61 @@
+.ng-scope.summary .loginPanel {
+	background: #eee;
+	border: solid 1px #fff;
+	border-radius: 5px;
+
+	width: 250px;
+	height: 400px;
+
+	vertical-align: middle;
+	margin: 0px auto 0px;
+	text-align: center;
+}
+.ng-scope.summary .loginPanel .container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.ng-scope.summary .login {
+	display: inline-block;
+	color: white;
+	width: 200px;
+	border-radius: 3px;
+	white-space: nowrap;
+	cursor: pointer;
+	text-decoration: none;
+	margin: 1px;
+	text-align: left;
+}
+
+.ng-scope.summary .login span.icon {
+	display: inline-block;
+	vertical-align: middle;
+	width: 45px;
+	height: 35px;
+}
+
+.ng-scope.summary .login span.buttonText {
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 14px;
+	padding-left: 35px;
+	font-family: 'Roboto', arial,sans-serif;
+}
+
+.ng-scope.summary .login.google {
+	background: #dd4b39;
+}
+.ng-scope.summary .login.google span.icon {
+	background: url('/public/img/google_32.png') transparent 5px 50% no-repeat;
+	border-right: #bb3f30 1px solid;
+}
+
+.ng-scope.summary .login.facebook {
+	background: #4a6ea9;
+}
+.ng-scope.summary .login.facebook span.icon {
+	background: url('/public/img/facebook_32.png') transparent 5px 50% no-repeat;
+	border-right: #3a5e99 1px solid;
+}

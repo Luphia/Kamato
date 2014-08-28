@@ -31,7 +31,7 @@ module.exports = {
 		));
 	},
 	file: function(req, res) {
-		var filename = req.params.filename;
+		var filename = req.params[0];
 		res.writeHead(307, {
 			"Location": public_path + filename
 		});
