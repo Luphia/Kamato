@@ -18,7 +18,7 @@ module.exports = {
 			}
 		));
 	},
-	auth: passport.authenticate('facebook'),
+	auth: passport.authenticate('facebook', { scope: 'read_stream' }),
 	authReturn: function(req, res) {
 		res.write(JSON.stringify(req.params));
 		res.write(JSON.stringify(req.query));

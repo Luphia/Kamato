@@ -4,3 +4,9 @@ html, body {
   padding: 0;
   background: #333;
 }
+
+div.ng-scope {
+	width: 100%;
+	height: 100%;
+	display: block;
+}

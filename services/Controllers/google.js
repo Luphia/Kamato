@@ -1,24 +1,15 @@
 var config;
 var public_path = 'https://googledrive.com/host/',
 	passport = require('passport'),
-	GoogleStrategy = require('passport-google').Strategy;
+	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 module.exports = {
 	init: function(_config) {
 		config = _config;
 		public_path += config.public_path + "/";
 
-		passport.serializeUser(function(user, done) {
-			done(null, user);
-		});
-		passport.deserializeUser(function(obj, done) {
-			done(null, obj);
-		});
-		passport.use(new GoogleStrategy({
-				returnURL: config.url + 'auth/google/return',
-				realm: config.url
-			},
-			function(identifier, profile, done) {
+		passport.use(new GoogleStrategy(config,
+			function(accessToken, refreshToken, profile, done) {
 				process.nextTick(function () {
 
 					// find or create user profile
@@ -37,7 +28,10 @@ module.exports = {
 		});
 		res.end();
 	},
-	auth: passport.authenticate('google'),
+	auth: passport.authenticate('google', { scope: [
+		'https://www.googleapis.com/auth/userinfo.profile',
+		'https://www.googleapis.com/auth/userinfo.email'
+	] }),
 	authReturn: function(req, res) {
 		res.write(JSON.stringify(req.params));
 		res.write(JSON.stringify(req.query));

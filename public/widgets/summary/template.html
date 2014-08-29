@@ -1,24 +1,28 @@
 <div class="summary">
 
 <div class="loginPanel"><div class="container">
-	<a class="google login" target="_blank" href="/auth/google">
-		<span class="icon"></span>
-		<span class="buttonText">Google</span>
-	</a>
-	<a class="facebook login" target="_blank" href="/auth/facebook">
-		<span class="icon"></span>
-		<span class="buttonText">Facebook</span>
-	</a>
-<span id="signinButton">
-  <span
-    class="g-signin"
-    data-callback="signinCallback"
-    data-clientid="964145913352-d8i2c39q3bfkhrhe494i9imk0tnf9jsi.apps.googleusercontent.com"
-    data-cookiepolicy="single_host_origin"
-    data-requestvisibleactions="http://schemas.google.com/AddActivity"
-    data-scope="https://www.googleapis.com/auth/plus.login">
-  </span>
-</span>
+	<div class="kamatoLogin">
+		<span class="column">
+			<input ng-model="account" />
+			<label>ACCOUNT(EMAIL)</label>
+		</span>
+		<span class="column">
+			<input ng-model="password" type="password" />
+			<label>PASSWORD</label>
+		</span>
+
+		<div class="login">Login</div>
+	</div>
+	<div class="socialLogin">
+		<a class="google login" target="_blank" href="/auth/google">
+			<span class="icon"></span>
+			<span class="buttonText">Google</span>
+		</a>
+		<a class="facebook login" target="_blank" href="/auth/facebook">
+			<span class="icon"></span>
+			<span class="buttonText">Facebook</span>
+		</a>
+	<div>
 </div></div>
 
 </div>
