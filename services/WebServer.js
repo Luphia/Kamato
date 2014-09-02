@@ -1,4 +1,5 @@
 var express = require('express'),
+	favicon = require('serve-favicon'),
 	fs = require('fs'),
 	path = require('path'),
 	session = require('express-session'),
@@ -53,6 +54,7 @@ var start = function () {
 
 	app.use(methodOverride('X-HTTP-Method-Override'));
 	app.use(express.static(path.join(__dirname, '../public')));
+	app.use(favicon(path.join('public/res/favicon.ico')));
 
 	app.use(app.oauth.errorHandler());
 
