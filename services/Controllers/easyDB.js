@@ -1,13 +1,10 @@
 /*
 	MongoDB Data Types
-		- ObjectId
 		- String
 		- Number
 		- Date
 		- Buffer
 		- Boolean
-		- Mixed
-		- Array
  */
 
 var MongoClient = require('mongodb').MongoClient,
@@ -20,13 +17,20 @@ module.exports = {
 	init: function(_config) {
 		config = _config;
 		MongoClient.connect(config.uri + 'easyDB', function(err, _db) {
-			console.log(err);
+			if(err) {
+				console.log(err);
+			}
+
 			db = _db;
 		});
 	},
 	data: function(req, res) {
 		res.send('DB Connect');
+		var collection = db.collection('test').find().limit(10).toArray(function(err, docs) {
+			console.dir(docs);
+		});
+	},
+	destroy: function() {
+		db.close();
 	}
 };
-
-

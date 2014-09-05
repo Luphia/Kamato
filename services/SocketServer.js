@@ -15,7 +15,7 @@ var configure = function (_config, _server, _secureServer, _logger) {
 	secureServer = _secureServer;
 	logger = _logger;
 	io = require('socket.io')(server);
-	io.listen(secureServer);
+	secureServer && (io.listen(secureServer));
 	io.adapter(redis(config.get('redis')));
 };
 
