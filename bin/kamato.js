@@ -54,7 +54,7 @@ log4js.configure(config.get('log4js'));
 var logger = log4js.getLogger('Kamato.INFO');
 logger.setLevel('INFO');
 
-ssl && (secureServer = secureServer = https.createServer(ssl, app));
+ssl && (secureServer = https.createServer(ssl, app));
 
 web.configure(config, app, server, secureServer, oauth, log4js, logger);
 socket.configure(config, server, secureServer, logger);
