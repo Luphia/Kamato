@@ -2,7 +2,8 @@ var index = function(req, res){
 	res.render('index');
 };
 
-var google = require('./google.js'),
+var filters = require('./filters.js'),
+	google = require('./google.js'),
 	facebook = require('./facebook.js'),
 	oauth2 = require('./oauth2.js'),
 	user = require('./user.js');
@@ -22,6 +23,7 @@ module.exports = function(_config) {
 
 	return {
 		index: index,
+		filters: filters,
 		google: google,
 		facebook: facebook,
 		oauth2: oauth2,

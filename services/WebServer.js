@@ -39,8 +39,8 @@ var start = function () {
 
 	app.oauth = oauthserver({
 		model: oauth,
-		grants: ['password'],
-		debug: true
+		grants: ['password', 'refresh_token'],
+		debug: false
 	});
 
 	app.set('port', config.get('server').port);
@@ -56,10 +56,12 @@ var start = function () {
 	app.use(express.static(path.join(__dirname, '../public')));
 	app.use(favicon(path.join('public/res/favicon.ico')));
 
+	app.use(controllers.filters.oauth2);
 	app.use(app.oauth.errorHandler());
 
 	//Routes
 	app.all('/oauth/token', app.oauth.grant());
+
 	app.all('/oauth2/*', controllers.oauth2.callback);
 	app.get('/public/*', controllers.google.file);
 	app.get('/secret/*', app.oauth.authorise(), function (req, res) {

@@ -19,7 +19,7 @@ var express = require('express'),
 	web = require('../services/WebServer.js'),
 	socket = require('../services/SocketServer.js'),
 	push = require('../services/PushServer.js'),
-	oauth = require('../services/OAuthServer.js'),
+	oauth = require('../services/OAuth2Server.js'),
 	twitter = require('../services/TwitterMonitor.js'),
 	ssl;
 
@@ -59,6 +59,7 @@ ssl && (secureServer = https.createServer(ssl, app));
 web.configure(config, app, server, secureServer, oauth, log4js, logger);
 socket.configure(config, server, secureServer, logger);
 push.configure(config, logger);
+oauth.configure(config, logger);
 twitter.configure(config, logger);
 
 socket.start();
