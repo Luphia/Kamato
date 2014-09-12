@@ -6,7 +6,9 @@ var express = require('express'),
 	RedisStore = require('connect-redis')(session),
 	bodyParser = require('body-parser'),
 	oauthserver = require('oauth2-server'),
-	methodOverride = require('method-override');
+	methodOverride = require('method-override'),
+	Result = require('./Objects/Result.js'),
+	Token = require('./Objects/Token.js');
 
 var config,
 	app,
@@ -57,27 +59,112 @@ var start = function () {
 	app.use(favicon(path.join('public/res/favicon.ico')));
 
 	app.use(controllers.filters.oauth2);
-	app.use(app.oauth.errorHandler());
+
+	var router = express.Router();
+	app.use(router);
+	//app.use(app.oauth.errorHandler());
+	app.use(controllers.filters.errResponse);
+	app.use(controllers.filters.response);
 
 	//Routes
-	app.all('/oauth/token', app.oauth.grant());
+	router.post('/oauth/token', function(_req, _res, _next) {
+		_res.result = new Result();
+		var operator = app.oauth.grant();
+		var myResponse = {
+			jsonp: function(_data) {
+				var myToken;
+				var getToken = function(_err, _accessToken, _refreshToken) {
+					if(_err) {
+						_res.result.setMessage('authentication failed');
+					}
+					else {
+						_res.result.setResult(1);
+						_res.result.setMessage('authentication succeeded');
+						myToken = new Token(_accessToken, _refreshToken);
 
-	app.all('/oauth2/*', controllers.oauth2.callback);
-	app.get('/public/*', controllers.google.file);
-	app.get('/secret/*', app.oauth.authorise(), function (req, res) {
+						_res.result.setData(myToken.toJSON(1));
+					}
+					
+					_next();
+				};
+				oauth.getTokenData(_data["access_token"], _data["refresh_token"], getToken);
+
+			}
+		};
+
+		operator(_req, myResponse, _next);
+	});
+	router.get('/oauth/token/:token', function(_req, _res, _next) {
+		_res.result = new Result();
+		oauth.getAccessToken(_req.params.token, function(_err, _data) {
+			if(_err) {
+				_res.result.setMessage('authentication failed');
+			}
+			else {
+				var myToken = new Token(_data);
+				if(_data) {
+					if(new Date() < new Date(myToken.data['accessExpire'])) {
+						_res.result.setResult(1);
+						_res.result.setMessage('valid token');
+						_res.result.setData(myToken.toJSON());
+					}
+					else {
+						_res.result.setResult(-2);
+						_res.result.setMessage('expired token');
+						_res.result.setData(myToken);
+					}
+				}
+				else {
+					_res.result.setResult(-1);
+					_res.result.setMessage('invalid token');
+				}				
+			}
+
+			_next();
+		});
+	});
+	router.delete('/oauth/token/:token', function(_req, _res, _next) {
+		_res.result = new Result();
+		oauth.getAccessToken(_req.params.token, function(_err, _data) {
+
+			_res.result.setData(_data);
+			_next();
+		});
+	});
+	router.get('/oauth/renew/:token', function(_req, _res, _next) {
+		_res.result = new Result();
+		var operator = app.oauth.grant();
+		var myResponse = {
+			jsonp: function(_data) {
+				_res.result.setData(_data);
+				_next();
+			}
+		};
+
+		operator(_req, myResponse, _next);
+	});
+
+
+	router.all('/oauth2/*', controllers.oauth2.callback);
+	router.get('/public/*', controllers.google.file);
+	router.get('/secret/*', app.oauth.authorise(), function (req, res) {
 		res.send('Secret area');
 	});
 
+	// easyDB
+	router.get('/db/', app.oauth.authorise(), function() {});
+
 	// user data
-	app.get('/me', controllers.user.data);
+	router.get('/me', controllers.user.data);
 
 	// google auth
-	app.get('/auth/google', controllers.google.auth);
-	app.get('/auth/google/return', controllers.google.authReturn);
+	router.get('/auth/google', controllers.google.auth);
+	router.get('/auth/google/return', controllers.google.authReturn);
 
 	// facebook auth
-	app.get('/auth/facebook', controllers.facebook.auth);
-	app.get('/auth/facebook/return', controllers.facebook.authReturn);
+	router.get('/auth/facebook', controllers.facebook.auth);
+	router.get('/auth/facebook/return', controllers.facebook.authReturn);
+
 
 	// http
 	server.listen(app.get('port'), function () {
