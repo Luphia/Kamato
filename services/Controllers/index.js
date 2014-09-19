@@ -6,12 +6,14 @@ var filters = require('./filters.js'),
 	google = require('./google.js'),
 	facebook = require('./facebook.js'),
 	oauth2 = require('./oauth2.js'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	easyDB = require('./easyDB.js');
 
 module.exports = function(_config) {
 	var serverConfig = _config.get('server');
 	var googleConfig = _config.get('google');
 	var facebookConfig = _config.get('facebook');
+	var easyDBConfig = _config.get('mongo');
 
 	googleConfig.callbackURL = serverConfig.url + "auth/google/return";
 	googleConfig.clientID = googleConfig.client_id;
@@ -20,6 +22,7 @@ module.exports = function(_config) {
 
 	google.init(googleConfig);
 	facebook.init(facebookConfig);
+	easyDB.init(easyDBConfig);
 
 	return {
 		index: index,
@@ -27,6 +30,7 @@ module.exports = function(_config) {
 		google: google,
 		facebook: facebook,
 		oauth2: oauth2,
-		user: user
+		user: user,
+		easyDB: easyDB
 	}
 };

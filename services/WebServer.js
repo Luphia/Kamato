@@ -152,7 +152,7 @@ var start = function () {
 	});
 
 	// easyDB
-	router.get('/db/', app.oauth.authorise(), function() {});
+	router.get('/db/', controllers.easyDB.listTable);
 
 	// user data
 	router.get('/me', controllers.user.data);

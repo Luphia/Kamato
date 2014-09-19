@@ -46,7 +46,7 @@ var OAuthAccessTokensModel = mongoose.model('OAuthAccessTokens'),
 model.configure = function(_config, _logger) {
 	config = _config;
 	logger = _logger;
-	uristring = _config.get('mongo').uri + 'easyDB';
+	uristring = _config.get('mongo').uri + 'OAuth2';
 	db = mongoose.connect(uristring, function (err, res) {
 		if (err) {
 			console.log ('ERROR connecting to: ' + uristring + '. ' + err);
