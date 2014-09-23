@@ -152,11 +152,9 @@ var start = function () {
 	});
 
 	// easyDB
-	router.get('/db/', controllers.easyDB.listTable);
-	router.get('/db/:table', controllers.easyDB.getTable);
-	router.post('/db/:table', controllers.easyDB.postTable);
-	router.put('/db/:table', controllers.easyDB.putTable);
-	router.delete('/db/:table', controllers.easyDB.delTable);
+	router.all('/db/', controllers.easyDB.route);
+	router.all('/db/:table', controllers.easyDB.route);
+	router.all('/db/:table/:id', controllers.easyDB.route);
 
 	// user data
 	router.get('/me', controllers.user.data);

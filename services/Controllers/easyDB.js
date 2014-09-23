@@ -9,13 +9,45 @@
 
 var MongoClient = require('mongodb').MongoClient,
 	DB = require('mongodb').Db,
+	url = require('url'),
 	Server = require('mongodb').Server,
 	format = require('util').format,
-	Result = require('../Objects/Result.js');
+	Result = require('../Objects/Result.js'),
+	Collection = require('../Objects/Collection.js');
 
 var config,
+	dbURL,
 	db;
 
+var dbconn = function(option) {
+	var rs;
+
+	!option && (option = {});
+	option.protocol = 'mongodb:';
+	option.pathname = '/easyDB';
+	option.slashes = true;
+	!option.host && (option.host = dbURL.host);
+	!option.port && (option.port = dbURL.port);
+
+	MongoClient.connect(url.format(option), function(err, _db) {
+		if(err) {
+			console.log(err);
+			rs = false;
+		}
+
+		rs = _db;
+	});
+
+	while(rs === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return rs;
+}
+var checkTable = function(table) {
+	!table && (table = '');
+	while(table.substr(0, 1) == '_') { table = table.substr(1); }
+	return table;
+}
 var dataType = function(type) {
 	// default type: String;
 	var rtType = "String";
@@ -60,11 +92,31 @@ var tableExist = function(table) {
 	db.collection('_tables').find({'name': table}).toArray(checkExist);
 
 	while(rs === undefined) {
-		console.log('wait');
 		require('deasync').runLoopOnce();
 	}
 	return rs;
 };
+var getSchema = function(table) {
+	var rs;
+
+	db.collection('_tables').find({'name': table}).toArray(function(_err, _data) {
+		if(_err) {
+			return rs = false;
+		}
+
+		if(_data.length > 0) {
+			// return table exists
+			rs = _data[0];
+		}
+		else {
+			rs = false;
+		}
+	});
+	while(rs === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return rs;
+}
 var setSchema = function(table, schema) {
 	var rs;
 
@@ -90,22 +142,90 @@ var setSchema = function(table, schema) {
 	db.collection('_tables').insert(tableSchema, checkResult);
 
 	while(rs === undefined) {
-		console.log('wait');
 		require('deasync').runLoopOnce();
 	}
 	return rs;
 };
+var getID = function(table) {
+	var rs;
+
+	if(!tableExist(table)) {
+		setSchema(table);
+		return getID(table);
+	}
+	else {
+		db.collection('_tables').findAndModify(
+			{'name': 'hello'}, 
+			['max_serial_num'],
+			{$inc: {"max_serial_num": 1}},
+			{},
+			function(_err, _data) {
+				if(_err || !_data) {
+					rs = 1;
+				}
+				else {
+					rs = (_data.max_serial_num + 1);
+				}
+			}
+		);
+
+	}
+
+	while(rs === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return rs;
+};
+var getCond = function(start, end, pick) {
+
+}
 
 module.exports = {
 	init: function(_config) {
 		config = _config;
-		MongoClient.connect(config.uri + 'easyDB', function(err, _db) {
-			if(err) {
-				console.log(err);
-			}
+		dbURL = url.parse(config.uri);
+		db = dbconn();
+	},
+	route: function(req, res, next) {
+		res.result = new Result();
 
-			db = _db;
-		});
+		var pass = (req.method == 'GET' && (req.originalUrl.lastIndexOf('/') == req.originalUrl.length - 1)? 'LIST': req.method) + req.originalUrl.split('/').length.toString();
+		switch(pass) {
+			case 'LIST3':
+				module.exports.listTable(req, res, next);
+				break;
+			case 'GET3':
+				module.exports.getTable(req, res, next);
+				break;
+			case 'POST3':
+				module.exports.postTable(req, res, next);
+				break;
+			case 'PUT3':
+				module.exports.putTable(req, res, next);
+				break;
+			case 'DELETE3':
+				module.exports.delTable(req, res, next);
+				break;
+			case 'LIST4':
+				module.exports.listData(req, res, next);
+				break;
+			case 'GET4':
+				module.exports.getData(req, res, next);
+				break;
+			case 'POST4':
+				module.exports.postData(req, res, next);
+				break;
+			case 'PUT4':
+				module.exports.putData(req, res, next);
+				break;
+			case 'DELETE4':
+				module.exports.delData(req, res, next);
+				break;
+
+			default:
+				setResult(res.result, next, 1, pass, {url: req.originalUrl, method: req.method});
+				break;
+		}
 	},
 	listTable: function(req, res, next) {
 		/*
@@ -128,14 +248,14 @@ module.exports = {
 					
 				}
 				else {
-					list.push(_data[k].name.replace(/^([^.]*)./,""));
+					list.push(_data[k].name);
 				}
 			}
 
 			setResult(res.result, next, 1, 'list table names', {"list": list});
 		};
 
-		db.collectionNames(parseTables);
+		db.collection('_tables').find().toArray(parseTables);
 
 	},
 	getTable: function(req, res, next) {
@@ -146,7 +266,7 @@ module.exports = {
 		 */
 
 		res.result = new Result();
-		var table = req.params.table;
+		var table = checkTable(req.params.table);
 
 		var checkExist = function(_err, _data) {
 			if(_err) {
@@ -181,15 +301,8 @@ module.exports = {
 				setResult(res.result, next, 0, 'table not found');
 			}
 		};
-		MongoClient.connect('mongodb://10.10.23.31:27010/easyDB', function(err, _db) {
-			if(err) {
-				console.log(err);
-			}
 
-			db = _db;
-			db.collection('_tables').find({'name': table}).toArray(checkExist);
-		});
-
+		db.collection('_tables').find({'name': table}).toArray(checkExist);
 	},
 	postTable: function(req, res, next) {
 		/*
@@ -199,31 +312,23 @@ module.exports = {
 		 */
 
 		res.result = new Result();
-		var table = req.params.table;
+		var table = checkTable(req.params.table);
 
-		MongoClient.connect('mongodb://10.10.23.31:27010/easyDB', function(err, _db) {
-			if(err) {
-				console.log(err);
-			}
-
-			db = _db;
-			if(tableExist(table)) {
-				setResult(res.result, next, 0, 'table already exist: ' + table);
+		if(tableExist(table)) {
+			setResult(res.result, next, 0, 'table already exist: ' + table);
+		}
+		else {
+			if(setSchema(table, req.body)) {
+				setResult(res.result, next, 1, 'create table: ' + table);
 			}
 			else {
-				if(setSchema(table, req.body)) {
-					setResult(res.result, next, 1, 'create table: ' + table);
-				}
-				else {
-					setResult(res.result, next, 0, 'create table failed: ' + table);
-				}
+				setResult(res.result, next, 0, 'create table failed: ' + table);
 			}
-		});
-
+		}
 	},
 	putTable: function(req, res, next) {
 		res.result = new Result();
-		var table = req.params.table;
+		var table = checkTable(req.params.table);
 
 		if(setSchema(table, req.body)) {
 			setResult(res.result, next, 1, 'update table: ' + table);
@@ -234,7 +339,7 @@ module.exports = {
 	},
 	delTable: function(req, res, next) {
 		res.result = new Result();
-		var table = req.params.table;
+		var table = checkTable(req.params.table);
 
 		var todo = 2;
 		var done = function(_err, _data) {
@@ -261,24 +366,69 @@ module.exports = {
 		db.collection(table).remove(done);
 	},
 
+	listData: function(req, res, next) {
+		res.result = new Result();
+		var table = checkTable(req.params.table),
+			start = req.params.s,
+			end = req.params.e,
+			pick = req.params.p;
+
+/*
+{
+	{"fieldname": {$lte:10, $gte:100}}
+}
+ */
+ 		var schema = getSchema(table);
+		if(!schema) {
+			setResult(res.result, next, 0, 'table not found');
+		}
+
+		db.collection(table).find({},{}).sort({'_id': -1}).limit(pick).toArray(function(_err, _data){
+			var collection = new Collection();
+
+			if(_err) {
+				setResult(res.result, next, 1, 'list '+ table +' rows', collection.toJSON());
+			}
+			else {
+				for(var key in _data) {
+					collection.add(_data[key]);
+				}
+				setResult(res.result, next, 1, 'list '+ table +' rows', collection.toJSON());
+			}
+		});
+	},
 	postData: function(req, res, next) {
 		res.result = new Result();
-		var table = req.params.table;
+		var table = checkTable(req.params.table),
+			data = req.body;
 
-		db.collection('_tables').findAndModify(
-			{name: table},
-			[],
-			{$inc: {"max_serial_num": 1}},
-			{},
-			function(_err, _data) { console.log(_data.max_serial_num + 1); }
-		);
-	},
-
-	data: function(req, res) {
-		res.send('DB Connect');
-		var collection = db.collection('test').find().limit(10).toArray(function(err, docs) {
-			console.dir(docs);
+		data['_id'] = getID(table);
+		db.collection(table).insert(data, function(_err, _data) {
+			if(_err) {
+				setResult(res.result, next, 0, 'create new row failed');
+			}
+			else {
+				setResult(res.result, next, 1, 'create new row in ' + table, {"_id": data['_id']});
+			}
 		});
+	},
+	getData: function(req, res, next) {
+		res.result = new Result();
+		var table = checkTable(req.params.table);
+		var id = req.params.id;
+		next();
+	},
+	putData: function(req, res, next) {
+		res.result = new Result();
+		var table = checkTable(req.params.table);
+		var id = req.params.id;
+		next();
+	},
+	delData: function(req, res, next) {
+		res.result = new Result();
+		var table = checkTable(req.params.table);
+		var id = req.params.id;
+		next();
 	},
 	destroy: function() {
 		db.close();
