@@ -24,6 +24,17 @@
 	height: 100%;
 }
 
+.ng-scope.summary .loginPanel .container .kamatoLogin .info {
+	position: relative;
+	padding-top: 1em;
+
+	margin: 10px auto;
+	color: #975;
+	font-size: .8em;
+	line-height: 1.5em;
+	display: block;
+}
+
 .ng-scope.summary .loginPanel .container .kamatoLogin .column {
 	position: relative;
 	padding-top: 1em;
