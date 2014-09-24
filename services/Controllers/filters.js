@@ -19,6 +19,10 @@ module.exports = {
 			_req.body['client_id'] = 'NCKU';
 			_req.body['client_secret'] = "Cwn8zXw5";
 
+			if(!_req.body.username) {
+				_req.body.username = _req.body.account;
+			}
+
 			for(var key in _req.params) {
 				!_req.body[key] && (_req.body[key] = _req.params[key]);
 			}

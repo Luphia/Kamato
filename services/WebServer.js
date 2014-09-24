@@ -18,7 +18,8 @@ var config,
 	log4js,
 	logger,
 	controllers,
-	ssl;
+	ssl,
+	operator;
 
 var configure = function (_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
 	config = _config;
@@ -44,6 +45,7 @@ var start = function () {
 		grants: ['password', 'refresh_token'],
 		debug: false
 	});
+	operator = app.oauth.grant();
 
 	app.set('port', config.get('server').port);
 	app.set('https', config.get('server').https);
@@ -69,7 +71,7 @@ var start = function () {
 	//Routes
 	router.post('/oauth/token', function(_req, _res, _next) {
 		_res.result = new Result();
-		var operator = app.oauth.grant();
+
 		var myResponse = {
 			jsonp: function(_data) {
 				var myToken;
@@ -133,7 +135,7 @@ var start = function () {
 	});
 	router.get('/oauth/renew/:token', function(_req, _res, _next) {
 		_res.result = new Result();
-		var operator = app.oauth.grant();
+
 		var myResponse = {
 			jsonp: function(_data) {
 				_res.result.setData(_data);
