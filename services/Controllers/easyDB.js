@@ -155,7 +155,7 @@ var getID = function(table) {
 	}
 	else {
 		db.collection('_tables').findAndModify(
-			{'name': 'hello'}, 
+			{'name': table}, 
 			['max_serial_num'],
 			{$inc: {"max_serial_num": 1}},
 			{},
@@ -176,8 +176,68 @@ var getID = function(table) {
 	}
 	return rs;
 };
-var getCond = function(start, end, pick) {
+var checkID = function(table, id) {
+	var rs;
+	id = parseInt(id);
 
+	if(!id) {
+		return false;
+	}
+
+	if(!tableExist(table)) {
+		setSchema(table);
+		return checkID(table, id);
+	}
+	else {
+		db.collection('_tables').find({'name': table}).toArray(function(_err, _data) {
+			if(_err || !(_data.length > 0) || _data[0].max_serial_num < id) {
+				db.collection('_tables').findAndModify(
+					{'name': table},
+					['max_serial_num'],
+					{$set: {"max_serial_num": id}},
+					{},
+					function(_err, _data) { rs = true; }
+				);
+			}
+			else {
+				rs = true;
+			}
+		});
+
+	}
+
+	while(rs === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return rs;
+};
+var getIDRange = function(start, end) {
+	// {"fieldname": {$lte:10, $gte:100}}
+	var rs;
+
+	var status = (!!start? '1': '0') + (!!end? '1': '0');
+	switch(status) {
+		case '11':
+			if(start > end) {
+				rs = {"_id": {$lte: start, $gte: end}};
+			}
+			else {
+				rs = {"_id": {$lte: end, $gte: start}};
+			}
+			break;
+		case '10':
+			rs = {"_id": {$lte: start}};
+			break;
+		case '01':
+			rs = {"_id": {$gte: end}};
+			break;
+		case '00':
+		default:
+			rs = {};
+			break;
+	}
+
+	return rs;
 }
 
 module.exports = {
@@ -188,8 +248,9 @@ module.exports = {
 	},
 	route: function(req, res, next) {
 		res.result = new Result();
+		var routeURL = url.parse(req.originalUrl).pathname;
 
-		var pass = (req.method == 'GET' && (req.originalUrl.lastIndexOf('/') == req.originalUrl.length - 1)? 'LIST': req.method) + req.originalUrl.split('/').length.toString();
+		var pass = (req.method == 'GET' && (routeURL.lastIndexOf('/') == routeURL.length - 1)? 'LIST': req.method) + routeURL.split('/').length.toString();
 		switch(pass) {
 			case 'LIST3':
 				module.exports.listTable(req, res, next);
@@ -369,21 +430,23 @@ module.exports = {
 	listData: function(req, res, next) {
 		res.result = new Result();
 		var table = checkTable(req.params.table),
-			start = req.params.s,
-			end = req.params.e,
-			pick = req.params.p;
+			start = parseInt(req.param('s')),
+			end = parseInt(req.param('e')),
+			pick = parseInt(req.param('p'));
 
-/*
-{
-	{"fieldname": {$lte:10, $gte:100}}
-}
- */
+		// default pick 50 records
+		if(!(pick >= 0)) {
+			pick = 50;
+		}
+
+		console.log(getIDRange(start, end));
+
  		var schema = getSchema(table);
 		if(!schema) {
 			setResult(res.result, next, 0, 'table not found');
 		}
 
-		db.collection(table).find({},{}).sort({'_id': -1}).limit(pick).toArray(function(_err, _data){
+		db.collection(table).find(getIDRange(start, end)).sort({'_id': -1}).limit(pick).toArray(function(_err, _data){
 			var collection = new Collection();
 
 			if(_err) {
@@ -415,20 +478,65 @@ module.exports = {
 	getData: function(req, res, next) {
 		res.result = new Result();
 		var table = checkTable(req.params.table);
-		var id = req.params.id;
-		next();
+		var id = parseInt(req.params.id);
+
+		if(!tableExist(table)) {
+			return setResult(res.result, next, 0, 'table not found');
+		}
+		if(!id) {
+			return setResult(res.result, next, 0, 'invalid row ID');
+		}
+
+		db.collection(table).find({"_id": id}).toArray(function(_err, _data) {
+
+			if(_err || _data.length == 0) {
+				setResult(res.result, next, 0, 'row not found');
+			}
+			else {
+				setResult(res.result, next, 1, 'get table row: ' + id, _data[0]);
+			}
+		});
 	},
 	putData: function(req, res, next) {
 		res.result = new Result();
 		var table = checkTable(req.params.table);
-		var id = req.params.id;
-		next();
+		var id = parseInt(req.params.id);
+		var rowData = req.body;
+
+		if(!checkID(table, id)) {
+			return setResult(res.result, next, 0, 'invalid row ID');
+		}
+
+		rowData['_id'] = id;
+
+		db.collection(table).update({_id: id}, rowData, {w:1, upsert: true}, function(_err) {
+			if (_err) setResult(res.result, next, 0, err.message);
+			else setResult(res.result, next, 1, 'update table: ' + table + ', row: ' + id);
+		});
 	},
 	delData: function(req, res, next) {
 		res.result = new Result();
 		var table = checkTable(req.params.table);
-		var id = req.params.id;
-		next();
+		var id = parseInt(req.params.id);
+
+		if(!tableExist(table)) {
+			return setResult(res.result, next, 0, 'table not found');
+		}
+		db.collection(table).findAndModify(
+			{"_id": id},
+			[],
+			{},
+			{remove: true},
+			function(_err, _data) {
+				!_data && (_data = []);
+				if(_err || _data.length == 0) {
+					setResult(res.result, next, 0, 'row not found');
+				}
+				else {
+					setResult(res.result, next, 1, 'delete table row: ' + id);
+				}
+			}
+		);
 	},
 	destroy: function() {
 		db.close();
