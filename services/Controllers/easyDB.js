@@ -243,6 +243,9 @@ var getIDRange = function(start, end) {
 module.exports = {
 	init: function(_config) {
 		config = _config;
+		if(!config.uri) {
+			config.uri = "mongodb://localhost:27017/";
+		}
 		dbURL = url.parse(config.uri);
 		db = dbconn();
 	},
