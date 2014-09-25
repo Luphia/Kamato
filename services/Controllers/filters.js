@@ -39,7 +39,30 @@ module.exports = {
 	},
 	errResponse: function(_err, _req, _res, _next) {
 		if(!_res.result) { _res.result = new Result(); }
+
+		/*
+			400: no token
+			401: invalid token
+				The access token provided has expired.
+				The access token provided is invalid.
+		 */
+
+		switch(_err.code) {
+			case 400:
+				_res.result.setResult(-1);
+				break;
+			case 401:
+				if(_err.error_description == "The access token provided has expired.") {
+					_res.result.setResult(-2);
+				}
+				else {
+					_res.result.setResult(-1);
+				}
+				break;
+		}
+
 		_res.result.setMessage(_err.message);
+		// _res.result.setData(_err);
 		_res.jsonp(_res.result.toJSON());
 	},
 	response: function(_req, _res, _next) {

@@ -154,9 +154,9 @@ var start = function () {
 	});
 
 	// easyDB
-	router.all('/db/', controllers.easyDB.route);
-	router.all('/db/:table', controllers.easyDB.route);
-	router.all('/db/:table/:id', controllers.easyDB.route);
+	router.all('/db/', app.oauth.authorise(), controllers.easyDB.route);
+	router.all('/db/:table', app.oauth.authorise(), controllers.easyDB.route);
+	router.all('/db/:table/:id', app.oauth.authorise(), controllers.easyDB.route);
 
 	// user data
 	router.get('/me', controllers.user.data);
