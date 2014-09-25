@@ -32,7 +32,6 @@ module.exports = {
 			_req.body['grant_type'] = 'refresh_token';
 			_req.body['client_id'] = 'NCKU';
 			_req.body['client_secret'] = "Cwn8zXw5";
-			_req.body['refresh_token'] = _req.params.token;
 		}
 
 		_next();

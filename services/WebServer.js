@@ -143,7 +143,11 @@ var start = function () {
 			}
 		};
 
-		operator(_req, myResponse, _next);
+		_req.body['refresh_token'] = _req.params.token;
+		_req.method = 'POST';
+		_req.is = function() { return true; }
+
+		operator(_req, _res, _next);
 	});
 
 
