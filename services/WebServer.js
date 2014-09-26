@@ -6,9 +6,7 @@ var express = require('express'),
 	RedisStore = require('connect-redis')(session),
 	bodyParser = require('body-parser'),
 	oauthserver = require('oauth2-server'),
-	methodOverride = require('method-override'),
-	Result = require('./Objects/Result.js'),
-	Token = require('./Objects/Token.js');
+	methodOverride = require('method-override');
 
 var config,
 	app,
@@ -46,6 +44,7 @@ var start = function () {
 		debug: false
 	});
 	operator = app.oauth.grant();
+	controllers.oauth2.init(config, oauth, operator);
 
 	app.set('port', config.get('server').port);
 	app.set('https', config.get('server').https);
@@ -69,87 +68,10 @@ var start = function () {
 	app.use(controllers.filters.response);
 
 	//Routes
-	router.post('/oauth/token', function(_req, _res, _next) {
-		_res.result = new Result();
-
-		var myResponse = {
-			jsonp: function(_data) {
-				var myToken;
-				var getToken = function(_err, _accessToken, _refreshToken) {
-					if(_err) {
-						_res.result.setMessage('authentication failed');
-					}
-					else {
-						_res.result.setResult(1);
-						_res.result.setMessage('authentication succeeded');
-						myToken = new Token(_accessToken, _refreshToken);
-
-						_res.result.setData(myToken.toJSON(1));
-					}
-					
-					_next();
-				};
-				oauth.getTokenData(_data["access_token"], _data["refresh_token"], getToken);
-
-			}
-		};
-
-		operator(_req, myResponse, _next);
-	});
-	router.get('/oauth/token/:token', function(_req, _res, _next) {
-		_res.result = new Result();
-		oauth.getAccessToken(_req.params.token, function(_err, _data) {
-			if(_err) {
-				_res.result.setMessage('authentication failed');
-			}
-			else {
-				var myToken = new Token(_data);
-				if(_data) {
-					if(new Date() < new Date(myToken.data['accessExpire'])) {
-						_res.result.setResult(1);
-						_res.result.setMessage('valid token');
-						_res.result.setData(myToken.toJSON());
-					}
-					else {
-						_res.result.setResult(-2);
-						_res.result.setMessage('expired token');
-						_res.result.setData(myToken);
-					}
-				}
-				else {
-					_res.result.setResult(-1);
-					_res.result.setMessage('invalid token');
-				}				
-			}
-
-			_next();
-		});
-	});
-	router.delete('/oauth/token/:token', function(_req, _res, _next) {
-		_res.result = new Result();
-		oauth.getAccessToken(_req.params.token, function(_err, _data) {
-
-			_res.result.setData(_data);
-			_next();
-		});
-	});
-	router.get('/oauth/renew/:token', function(_req, _res, _next) {
-		_res.result = new Result();
-
-		var myResponse = {
-			jsonp: function(_data) {
-				_res.result.setData(_data);
-				_next();
-			}
-		};
-
-		_req.body['refresh_token'] = _req.params.token;
-		_req.method = 'POST';
-		_req.is = function() { return true; }
-
-		operator(_req, _res, _next);
-	});
-
+	router.post('/oauth/token', controllers.oauth2.createToken);
+	router.get('/oauth/token/:token', controllers.oauth2.checkToken);
+	router.delete('/oauth/token/:token', controllers.oauth2.deleteToken);
+	router.get('/oauth/renew/:token', controllers.oauth2.renewToken);
 
 	router.all('/oauth2/*', controllers.oauth2.callback);
 	router.get('/public/*', controllers.google.file);

@@ -9,13 +9,20 @@ var OAuthAccessTokensSchema = new Schema({
 	userId: { type: String },
 	expires: { type: Date }
 });
+OAuthAccessTokensSchema.statics.findAndModify = function (query, sort, doc, options, callback) {
+	return this.collection.findAndModify(query, sort, doc, options, callback);
+};
 
 var OAuthRefreshTokensSchema = new Schema({
 	refreshToken: { type: String },
+	accessToken: { type: String },
 	clientId: { type: String },
 	userId: { type: String },
 	expires: { type: Date }
 });
+OAuthRefreshTokensSchema.statics.findAndModify = function (query, sort, doc, options, callback) {
+	return this.collection.findAndModify(query, sort, doc, options, callback);
+};
 
 var OAuthClientsSchema = new Schema({
 	clientId: { type: String },
@@ -124,6 +131,16 @@ model.getAccessToken = function (bearerToken, callback) {
 	OAuthAccessTokensModel.findOne({ accessToken: bearerToken }, callback);
 };
 
+model.destroyToken = function (bearerToken, callback) {
+	OAuthAccessTokensModel.findAndModify(
+		{ accessToken: bearerToken },
+		[],
+		{$set: {"expires": new Date()}},
+		{},
+		callback
+	);
+};
+
 model.getClient = function (clientId, clientSecret, callback) {
 	//console.log('in getClient (clientId: ' + clientId + ', clientSecret: ' + clientSecret + ')');
 	if (clientSecret === null) {
@@ -194,5 +211,11 @@ model.saveRefreshToken = function (token, clientId, expires, userId, callback) {
 model.getRefreshToken = function (refreshToken, callback) {
 	//console.log('in getRefreshToken (refreshToken: ' + refreshToken + ')');
 
-	OAuthRefreshTokensModel.findOne({ refreshToken: refreshToken }, callback);
+	OAuthRefreshTokensModel.findAndModify(
+		{ refreshToken: refreshToken },
+		[],
+		{$set: {"expires": new Date()}},
+		{},
+		callback
+	);
 };
