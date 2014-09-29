@@ -13,7 +13,8 @@ var MongoClient = require('mongodb').MongoClient,
 	Server = require('mongodb').Server,
 	format = require('util').format,
 	Result = require('../Objects/Result.js'),
-	Collection = require('../Objects/Collection.js');
+	Collection = require('../Objects/Collection.js'),
+	Parser = require('../Objects/Parser.js');
 
 var config,
 	dbURL,
@@ -211,9 +212,12 @@ var checkID = function(table, id) {
 	}
 	return rs;
 };
-var getIDRange = function(start, end) {
+var search = function(start, end, query) {
 	// {"fieldname": {$lte:10, $gte:100}}
 	var rs;
+	if(query) {
+		return query;
+	}
 
 	var status = (!!start? '1': '0') + (!!end? '1': '0');
 	switch(status) {
@@ -238,7 +242,86 @@ var getIDRange = function(start, end) {
 	}
 
 	return rs;
-}
+};
+var parseValue = function(value) {
+	var rs;
+	if(value.indexOf("'") == 0 || value.indexOf('"') == 0) {
+		rs = value.substr(1, value.length - 2);
+	}
+	else {
+		if(value == 'true') {
+			rs = true;
+		}
+		else if(value == 'false') {
+			rs = false;
+		}
+		else {
+			rs = parseFloat(value);
+		}
+	}
+
+	return rs;
+};
+var parseCondiction = function(ast) {
+	var rs = {};
+	!ast && (ast = {});
+	if(ast.operator) {
+		rs = {};
+		switch(ast.operator) {
+			case "=":
+				rs[ast.left] = parseValue(ast.right);
+				break;
+			case "!=":
+				rs[ast.left] = {"$ne": parseValue(ast.right)};
+				break;
+			case ">":
+				rs[ast.left] = {"$gt": parseFloat(ast.right)};
+				break;
+			case ">=":
+				rs[ast.left] = {"$gte": parseFloat(ast.right)};
+				break;
+			case "<":
+				rs[ast.left] = {"$lt": parseFloat(ast.right)};
+				break;
+			case "<=":
+				rs[ast.left] = {"$lte": parseFloat(ast.right)};
+				break;
+		}
+	}
+	else if(ast.logic) {
+		var cond = [];
+		for(var key in ast.terms) {
+			cond.push(parseCondiction(ast.terms[key]));
+		}
+
+		switch(ast.logic) {
+			case "and":
+				rs = {"$and": cond};
+				break;
+			case "or":
+				rs = {"$or": cond};
+				break;
+		}
+	}
+
+	return rs;
+};
+var checkQuery = function(query) {
+	var rs;
+	var tmp = query.toLowerCase();
+	if(	tmp.indexOf("select") != 0 &&
+		tmp.indexOf("update") != 0 &&
+		tmp.indexOf("insert") != 0 &&
+		tmp.indexOf("delete") != 0 &&
+		tmp.indexOf("where") != 0) {
+
+		rs = "WHERE " + query;
+	}
+	else {
+		rs = query;
+	}
+	return rs;
+};
 
 module.exports = {
 	init: function(_config) {
@@ -433,23 +516,24 @@ module.exports = {
 	listData: function(req, res, next) {
 		res.result = new Result();
 		var table = checkTable(req.params.table),
-			start = parseInt(req.param('s')),
-			end = parseInt(req.param('e')),
-			pick = parseInt(req.param('p'));
+			start = parseInt(req.query.s),
+			end = parseInt(req.query.e),
+			pick = parseInt(req.query.p);
+			query = parseCondiction(Parser.sql2ast(checkQuery(req.query.q)).WHERE);
 
 		// default pick 50 records
 		if(!(pick >= 0)) {
 			pick = 50;
 		}
 
-		console.log(getIDRange(start, end));
+		//console.log(search(start, end));
 
  		var schema = getSchema(table);
 		if(!schema) {
 			setResult(res.result, next, 0, 'table not found');
 		}
 
-		db.collection(table).find(getIDRange(start, end)).sort({'_id': -1}).limit(pick).toArray(function(_err, _data){
+		db.collection(table).find(search(start, end, query)).sort({'_id': -1}).limit(pick).toArray(function(_err, _data){
 			var collection = new Collection();
 
 			if(_err) {
