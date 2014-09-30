@@ -245,6 +245,8 @@ var search = function(start, end, query) {
 };
 var parseValue = function(value) {
 	var rs;
+
+	value = value.trim();
 	if(value.indexOf("'") == 0 || value.indexOf('"') == 0) {
 		rs = value.substr(1, value.length - 2);
 	}
@@ -322,6 +324,22 @@ var checkQuery = function(query) {
 	}
 	return rs;
 };
+var parseSet = function(set) {
+	var rs = {};
+	for(var key in set) {
+		var tmp = set[key].expression,
+			pos = tmp.indexOf("=");
+
+		if(pos == -1) { continue; }
+
+		var column = tmp.slice(0, pos),
+			value = parseValue(tmp.slice(pos + 1));
+
+		rs[column] = value;
+	}
+
+	return rs;
+};
 
 module.exports = {
 	init: function(_config) {
@@ -339,7 +357,12 @@ module.exports = {
 		var pass = (req.method == 'GET' && (routeURL.lastIndexOf('/') == routeURL.length - 1)? 'LIST': req.method) + routeURL.split('/').length.toString();
 		switch(pass) {
 			case 'LIST3':
-				module.exports.listTable(req, res, next);
+				if(req.query.q) {
+					module.exports.execQuery(req, res, next);
+				}
+				else {
+					module.exports.listTable(req, res, next);
+				}
 				break;
 			case 'GET3':
 				module.exports.getTable(req, res, next);
@@ -363,14 +386,58 @@ module.exports = {
 				module.exports.postData(req, res, next);
 				break;
 			case 'PUT4':
-				module.exports.putData(req, res, next);
+				if(req.query.q) {
+					module.exports.queryForUpdate(req, res, next);
+				}
+				else {
+					module.exports.putData(req, res, next);
+				}
 				break;
 			case 'DELETE4':
-				module.exports.delData(req, res, next);
+				if(req.query.q) {
+					module.exports.queryForDelete(req, res, next);
+				}
+				else {
+					module.exports.delData(req, res, next);
+				}
 				break;
 
 			default:
 				setResult(res.result, next, 1, pass, {url: req.originalUrl, method: req.method});
+				break;
+		}
+	},
+	execQuery: function(req, res, next) {
+		var query = Parser.sql2ast(req.query.q),
+			operate;
+
+		query.hasOwnProperty("SELECT") && (operate = "SELECT" + query.SELECT.length);
+		query.hasOwnProperty("UPDATE") && (operate = "UPDATE" + query.UPDATE.length);
+		query.hasOwnProperty("INSERT INTO") && (operate = "INSERT" + query['INSERT INTO'].length);
+		query.hasOwnProperty("DELETE FROM") && (operate = "DELETE" + query['DELETE FROM'].length);
+
+		switch(operate) {
+			case "SELECT1":
+				break;
+			case "UPDATE1":
+				var table = query.UPDATE[0].table,
+					cond = parseCondiction(query.WHERE),
+					rowData = parseSet(query.SET);
+				db.collection(table).update(cond, {$set: rowData}, {multi: true, upsert: true}, function(_err, _data) {
+					if(_err) { return setResult(res.result, next, 0, 'update failed'); }
+					setResult(res.result, next, 1, 'number of affected rows: ' + _data);
+				});
+				break;
+			case "INSERT1":
+				break;
+			case "DELETE1":
+				var table = query['DELETE FROM'][0].table,
+					cond = parseCondiction(query.WHERE),
+					limit = query.LIMIT;
+				db.collection(table).remove(cond, {justOne: limit && (limit.nb == 1)}, function(_err, _data) {
+					if(_err) { return setResult(res.result, next, 0, 'delete failed', _err); }
+					setResult(res.result, next, 1, 'number of affected rows: ' + _data);
+				});
 				break;
 		}
 	},
@@ -379,7 +446,6 @@ module.exports = {
 			connect to DB
 			return table names witch is not start with  'system.' or '_' 
 		 */
-		res.result = new Result();
 
 		var parseTables = function(_err, _data) {
 			if(_err) {
@@ -412,7 +478,6 @@ module.exports = {
 			column name must not start with '_'
 		 */
 
-		res.result = new Result();
 		var table = checkTable(req.params.table);
 
 		var checkExist = function(_err, _data) {
@@ -458,7 +523,6 @@ module.exports = {
 			column name must not start with '_'
 		 */
 
-		res.result = new Result();
 		var table = checkTable(req.params.table);
 
 		if(tableExist(table)) {
@@ -474,7 +538,6 @@ module.exports = {
 		}
 	},
 	putTable: function(req, res, next) {
-		res.result = new Result();
 		var table = checkTable(req.params.table);
 
 		if(setSchema(table, req.body)) {
@@ -485,7 +548,6 @@ module.exports = {
 		}
 	},
 	delTable: function(req, res, next) {
-		res.result = new Result();
 		var table = checkTable(req.params.table);
 
 		var todo = 2;
@@ -514,12 +576,12 @@ module.exports = {
 	},
 
 	listData: function(req, res, next) {
-		res.result = new Result();
 		var table = checkTable(req.params.table),
 			start = parseInt(req.query.s),
 			end = parseInt(req.query.e),
-			pick = parseInt(req.query.p);
-			query = parseCondiction(Parser.sql2ast(checkQuery(req.query.q)).WHERE);
+			pick = parseInt(req.query.p),
+			query;
+		req.query.q && (query = parseCondiction(Parser.sql2ast(checkQuery(req.query.q)).WHERE));
 
 		// default pick 50 records
 		if(!(pick >= 0)) {
@@ -548,7 +610,6 @@ module.exports = {
 		});
 	},
 	postData: function(req, res, next) {
-		res.result = new Result();
 		var table = checkTable(req.params.table),
 			data = req.body;
 
@@ -563,7 +624,6 @@ module.exports = {
 		});
 	},
 	getData: function(req, res, next) {
-		res.result = new Result();
 		var table = checkTable(req.params.table);
 		var id = parseInt(req.params.id);
 
@@ -584,11 +644,33 @@ module.exports = {
 			}
 		});
 	},
+	queryForUpdate: function(req, res, next) {
+		var table = checkTable(req.params.table),
+			query = Parser.sql2ast(checkQuery(req.query.q)),
+			cond = parseCondiction(query.WHERE),
+			limit = query.LIMIT,
+			rowData = req.body;
+
+		db.collection(table).update(cond, {$set: rowData}, {multi: !(limit && limit.nb == 1), upsert: false}, function(_err, _data) {
+			if (_err) setResult(res.result, next, 0, _err.message);
+			else setResult(res.result, next, 1, 'number of affected rows: ' + _data);
+		});
+	},
+	queryForDelete: function(req, res, next) {
+		var table = checkTable(req.params.table),
+			query = Parser.sql2ast(checkQuery(req.query.q)),
+			cond = parseCondiction(query.WHERE),
+			limit = query.LIMIT;
+
+		db.collection(table).remove(cond, {justOne: (limit && (limit.nb == 1))}, function(_err, _data) {
+			if(_err) { return setResult(res.result, next, 0, 'delete failed', _err); }
+			setResult(res.result, next, 1, 'number of affected rows: ' + _data);
+		});
+	},
 	putData: function(req, res, next) {
-		res.result = new Result();
-		var table = checkTable(req.params.table);
-		var id = parseInt(req.params.id);
-		var rowData = req.body;
+		var table = checkTable(req.params.table),
+			id = parseInt(req.params.id),
+			rowData = req.body;
 
 		if(!checkID(table, id)) {
 			return setResult(res.result, next, 0, 'invalid row ID');
@@ -597,12 +679,11 @@ module.exports = {
 		rowData['_id'] = id;
 
 		db.collection(table).update({_id: id}, rowData, {w:1, upsert: true}, function(_err) {
-			if (_err) setResult(res.result, next, 0, err.message);
+			if (_err) setResult(res.result, next, 0, _err.message);
 			else setResult(res.result, next, 1, 'update table: ' + table + ', row: ' + id);
 		});
 	},
 	delData: function(req, res, next) {
-		res.result = new Result();
 		var table = checkTable(req.params.table);
 		var id = parseInt(req.params.id);
 

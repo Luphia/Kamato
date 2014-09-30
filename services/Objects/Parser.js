@@ -168,7 +168,7 @@
 				if (item === '') result.splice(key);
 			});
 			result = result.map(function(item) {
-				var table = item.split(' AS ');
+				var table = item.split(/ AS /i);
 				var alias = table[1] || '';
 				if (alias.indexOf('"') === 0 && alias.lastIndexOf('"') == alias.length - 1) alias = alias.substring(1, alias.length - 1);
 				return {table: table[0], as: alias};
@@ -177,8 +177,8 @@
 		};
 
 		analysis['LEFT JOIN'] = analysis['JOIN'] = analysis['INNER JOIN'] = analysis['RIGHT JOIN'] = function (str) {
-			str = str.split(' ON ');
-			var table = str[0].split(' AS ');
+			str = str.split(/ ON /i);
+			var table = str[0].split(/ AS /i);
 			var result = {};
 			result['table'] = trim(table[0]);
 			result['as'] = trim(table[1]) || '';
@@ -390,6 +390,7 @@
 			while (/./.test(this.currentChar)) {
 				// Check if we are in a string
 				if (!string && /['"`]/.test(this.currentChar)) string = this.currentChar;
+				else if ((/^(IN|IS|NOT|LIKE)$/i.test(tokenValue)) && this.currentChar == '(') { break; }	// 
 				else if (string && this.currentChar == string) string = false;
 				else {
 					// Allow spaces inside functions (only if we are not in a string)
