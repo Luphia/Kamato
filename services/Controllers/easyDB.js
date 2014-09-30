@@ -357,7 +357,7 @@ module.exports = {
 		var pass = (req.method == 'GET' && (routeURL.lastIndexOf('/') == routeURL.length - 1)? 'LIST': req.method) + routeURL.split('/').length.toString();
 		switch(pass) {
 			case 'LIST3':
-				if(req.query.q) {
+				if(req.query.sql) {
 					module.exports.execQuery(req, res, next);
 				}
 				else {
@@ -408,7 +408,7 @@ module.exports = {
 		}
 	},
 	execQuery: function(req, res, next) {
-		var query = Parser.sql2ast(req.query.q),
+		var query = Parser.sql2ast(req.query.sql),
 			operate;
 
 		query.hasOwnProperty("SELECT") && (operate = "SELECT" + query.SELECT.length);
