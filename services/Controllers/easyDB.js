@@ -66,6 +66,13 @@ var dataType = function(type) {
 
 	return rtType;
 };
+var valueType = function(value) {
+	var rs;
+	if( !isNaN(Date.parse(value)) ) { rs = dataType("Date"); }
+	else if( /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(value) ) { rs = dataType("Number"); }
+	else { rs = dataType(typeof value); }
+	return rs;
+};
 
 var setResult = function(result, next, _rs, _msg, _data) {
 	_rs && result.setResult(_rs);
@@ -108,6 +115,8 @@ var getSchema = function(table) {
 		if(_data.length > 0) {
 			// return table exists
 			rs = _data[0];
+			delete rs._id;
+			if(typeof rs.strick == 'undefined') { rs.strick = true; }
 		}
 		else {
 			rs = false;
@@ -141,6 +150,28 @@ var setSchema = function(table, schema) {
 	};
 
 	db.collection('_tables').insert(tableSchema, checkResult);
+
+	while(rs === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return rs;
+};
+var setSchemaByValue = function(table, value) {
+	var rs;
+
+	var tableSchema = {
+		"name": table,
+		"max_serial_num": 0,
+		"columns": {}
+	};
+	for(var key in value) {
+		if(key.indexOf('_', 0) == 0) { continue; }
+		tableSchema.columns[key] = valueType(value[key]);
+	}
+
+	db.collection('_tables').insert(tableSchema, checkResult, function(_err) {
+		rs = !_err;
+	});
 
 	while(rs === undefined) {
 		require('deasync').runLoopOnce();
@@ -243,6 +274,15 @@ var search = function(start, end, query) {
 
 	return rs;
 };
+var checkValue = function(value) {
+	var rs;
+
+	if( /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(value) ) { rs = parseFloat(value); }
+	else if( !isNaN(Date.parse(value)) ) { rs = new Date(value); }
+	else { rs = value; }
+
+	return rs;
+};
 var parseValue = function(value) {
 	var rs;
 
@@ -340,6 +380,81 @@ var parseSet = function(set) {
 
 	return rs;
 };
+var dataTransfer = function(value, type) {
+	if(typeof type != "string") { return checkValue(value); }
+	var rs = value;
+	if(value === null) { return null; }
+
+	switch(type) {
+		case "String":
+			if(!value) {
+				rs = "";
+			}
+			else {
+				rs = value.toString();
+			}
+			break;
+
+		case "Number":
+			rs = isNaN(parseFloat(value))? null: parseFloat(value);
+			break;
+
+		case "Date":
+			rs = isNaN(new Date(value))? null: new Date(value);
+			break;
+
+		case "Boolean":
+			if(typeof value == 'string') { value = value.toLowerCase(); }
+			switch(value) {
+				case true:
+				case "true":
+				case "t":
+				case 1:
+				case "1":
+					rs = true;
+					break;
+
+				case false:
+				case "false":
+				case "f":
+				case 0:
+				case "0":
+					rs = false;
+					break;
+
+				default:
+					rs = null;
+					break;
+			}
+
+			break;
+
+		case "JSON":
+			rs = typeof value == 'object'? value: {};
+			break;
+
+		case "Buffer":
+			break;
+	}
+
+	return rs;
+};
+var compareSchema = function(data, schema) {
+
+	var rs = {};
+	if(typeof schema != 'object' || !schema.strick) {
+		for(var key in data) {
+			rs[key] = dataTransfer(data[key]);
+		}
+	}
+	else {
+		for(var key in data) {
+			rs[key] = dataTransfer(data[key], schema.columns[key]);
+		}
+	}
+
+	return rs;
+};
 
 module.exports = {
 	init: function(_config) {
@@ -421,8 +536,9 @@ module.exports = {
 				break;
 			case "UPDATE1":
 				var table = query.UPDATE[0].table,
+					schema = getSchema(table),
 					cond = parseCondiction(query.WHERE),
-					rowData = parseSet(query.SET);
+					rowData = compareSchema( parseSet(query.SET), schema );
 				db.collection(table).update(cond, {$set: rowData}, {multi: true, upsert: true}, function(_err, _data) {
 					if(_err) { return setResult(res.result, next, 0, 'update failed'); }
 					setResult(res.result, next, 1, 'number of affected rows: ' + _data);
@@ -478,43 +594,19 @@ module.exports = {
 			column name must not start with '_'
 		 */
 
-		var table = checkTable(req.params.table);
+		var table = checkTable(req.params.table),
+			schema = getSchema(table);
 
-		var checkExist = function(_err, _data) {
-			if(_err) {
-				console.log(_err);
-			}
-
-			var tableSchema = {};
-
-			var countDocs = function(_err, _count) {
-				if(_err) {
-					tableSchema['table_length'] = 0;
-				}
-				else {
-					tableSchema['table_length'] = _count;
-				}
-
-				setResult(res.result, next, 1, 'get user table schema', tableSchema);
-			};
-
-			if(_data.length > 0) {
-				// return table exists
-				tableSchema = _data[0];
-				for(var key in tableSchema) {
-					if(key.indexOf('_', 0) == 0) {
-						delete tableSchema[key];
-					}
-				}
-
-				db.collection(table).count(countDocs);
-			}
-			else {
-				setResult(res.result, next, 0, 'table not found');
-			}
-		};
-
-		db.collection('_tables').find({'name': table}).toArray(checkExist);
+		if(!schema) {
+			setResult(res.result, next, 0, 'table not found');
+		}
+		else {
+			db.collection(table).count(function(_err, _count) {
+				if(_err) { schema['table_length'] = 0; }
+				else { schema['table_length'] = _count; }
+				setResult(res.result, next, 1, 'get table schema: ' + table, schema);
+			});
+		}
 	},
 	postTable: function(req, res, next) {
 		/*
@@ -603,7 +695,7 @@ module.exports = {
 			}
 			else {
 				for(var key in _data) {
-					collection.add(_data[key]);
+					collection.add( compareSchema(_data[key], schema) );
 				}
 				setResult(res.result, next, 1, 'list '+ table +' rows', collection.toJSON());
 			}
@@ -611,9 +703,12 @@ module.exports = {
 	},
 	postData: function(req, res, next) {
 		var table = checkTable(req.params.table),
-			data = req.body;
+			data = req.body,
+			schema = getSchema(table);
 
 		data['_id'] = getID(table);
+		data = compareSchema(data, schema);
+
 		db.collection(table).insert(data, function(_err, _data) {
 			if(_err) {
 				setResult(res.result, next, 0, 'create new row failed');
@@ -626,8 +721,9 @@ module.exports = {
 	getData: function(req, res, next) {
 		var table = checkTable(req.params.table);
 		var id = parseInt(req.params.id);
+		var schema = getSchema(table);
 
-		if(!tableExist(table)) {
+		if(!schema) {
 			return setResult(res.result, next, 0, 'table not found');
 		}
 		if(!id) {
@@ -640,16 +736,19 @@ module.exports = {
 				setResult(res.result, next, 0, 'row not found');
 			}
 			else {
-				setResult(res.result, next, 1, 'get table row: ' + id, _data[0]);
+				setResult(res.result, next, 1, 'get table row: ' + id, compareSchema(_data[0], schema) );
 			}
 		});
 	},
 	queryForUpdate: function(req, res, next) {
 		var table = checkTable(req.params.table),
+			schema = getSchema(table),
 			query = Parser.sql2ast(checkQuery(req.query.q)),
 			cond = parseCondiction(query.WHERE),
 			limit = query.LIMIT,
 			rowData = req.body;
+
+		rowData = compareSchema(rowData, schema);
 
 		db.collection(table).update(cond, {$set: rowData}, {multi: !(limit && limit.nb == 1), upsert: false}, function(_err, _data) {
 			if (_err) setResult(res.result, next, 0, _err.message);
@@ -670,6 +769,7 @@ module.exports = {
 	putData: function(req, res, next) {
 		var table = checkTable(req.params.table),
 			id = parseInt(req.params.id),
+			schema = getSchema(table),
 			rowData = req.body;
 
 		if(!checkID(table, id)) {
@@ -677,6 +777,7 @@ module.exports = {
 		}
 
 		rowData['_id'] = id;
+		rowData = compareSchema(rowData, schema);
 
 		db.collection(table).update({_id: id}, rowData, {w:1, upsert: true}, function(_err) {
 			if (_err) setResult(res.result, next, 0, _err.message);
