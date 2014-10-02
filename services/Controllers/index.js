@@ -7,13 +7,15 @@ var filters = require('./filters.js'),
 	facebook = require('./facebook.js'),
 	oauth2 = require('./oauth2.js'),
 	user = require('./user.js'),
-	easyDB = require('./easyDB.js');
+	easyDB = require('./easyDB.js'),
+	push = require('./push.js');
 
 module.exports = function(_config) {
-	var serverConfig = _config.get('server');
-	var googleConfig = _config.get('google');
-	var facebookConfig = _config.get('facebook');
-	var easyDBConfig = _config.get('mongo');
+	var serverConfig = _config.get('server'),
+		googleConfig = _config.get('google'),
+		facebookConfig = _config.get('facebook'),
+		easyDBConfig = _config.get('mongo'),
+		pushConfig = _config.get('push');
 
 	googleConfig.callbackURL = serverConfig.url + "auth/google/return";
 	googleConfig.clientID = googleConfig.client_id;
@@ -23,6 +25,7 @@ module.exports = function(_config) {
 	google.init(googleConfig);
 	facebook.init(facebookConfig);
 	easyDB.init(easyDBConfig);
+	push.init(pushConfig);
 
 	return {
 		index: index,
@@ -31,6 +34,7 @@ module.exports = function(_config) {
 		facebook: facebook,
 		oauth2: oauth2,
 		user: user,
-		easyDB: easyDB
+		easyDB: easyDB,
+		push: push
 	}
 };

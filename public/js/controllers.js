@@ -126,7 +126,7 @@ KamatoControllers.controller('MapCtrl', ['$scope', '$http', function($scope, $ht
 	];
 }]);
 
-KamatoControllers.controller('ChatCtrl', ['$scope', '$window', '$routeParams', '$http', '$location', '$anchorScroll', 'socket', function($scope, $window, $routeParams, $http, $location, $anchorScroll, $socket) {
+KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$routeParams', '$http', 'socket', function($scope, $compile, $window, $routeParams, $http, $socket) {
 	/* message type: log text link emotion image sound video */
 	var COLORS = [
 		'#e2aa99', '#ccbbaa', '#f8cc88', '#f7aa55',
@@ -138,6 +138,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$window', '$routeParams', '
 		$scope.windowHeight = $window.innerHeight;
 		$scope.chatAreaHeight = $window.innerHeight - 60;
 		$scope.inputAreawidth = $window.innerWidth - 20;
+		$scope.boardWidth = ($window.innerWidth > 1300)? $window.innerWidth - 420 : 900;
 		return $scope.windowWidth = $window.innerWidth;
 	};
 	$scope.initializeWindowSize();
@@ -203,6 +204,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$window', '$routeParams', '
 	};
 	var sendMessage = function() {
 		var text = $scope.newMessage;
+		if (text.length == 0) { return false; }
 
 		var message = {
 			"user": {
@@ -224,9 +226,9 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$window', '$routeParams', '
 	var removeChatTyping = function(data) {
 		console.log(data);
 	};
+
 	var gotoBottom = function() {
-		$location.hash('roomEnd');
-		$anchorScroll();
+
 	};
 	var stopTyping = function() {
 		$socket.emit('stop typing');
@@ -259,7 +261,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$window', '$routeParams', '
 	processMessages($scope.messages);
 
 	//var $socket = io();
-	$socket.emit('add user', 'Luphia');	// --
+	$socket.emit('add user', 'Somebody');	// --
 	$socket.on('login', function (data) {
 		$scope.isLogin = true;
 		// Display the welcome message

@@ -20,6 +20,7 @@ var configure = function (_config, _server, _secureServer, _logger) {
 };
 
 var start = function () {
+	var self = this;
 	io.on('connection', function (socket) {
 		var addedUser = false;
 
@@ -33,6 +34,8 @@ var start = function () {
 				message: data,
 				timestamp: new Date()
 			});
+
+			self.send();
 		});
 
 		// when the client emits 'add user', this listens and executes
@@ -107,9 +110,21 @@ var start = function () {
 	});
 
 	console.log("Socket start");
-}
+	this.active = true;
+};
+var send = function(data, channel) {
+	if(!this.active) { return true; }
+	io.of(channel).emit('new message', {
+		user: {
+			name: "Kamato"
+		},
+		message: "Hello",
+		timestamp: new Date()
+	});
+};
 
 module.exports = {
     configure: configure,
-    start: start
+    start: start,
+    send: send
 }
