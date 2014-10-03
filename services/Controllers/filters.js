@@ -1,4 +1,5 @@
-var Result = require('../Objects/Result.js');
+var Result = require('../Objects/Result.js'),
+	querystring = require('querystring');
 if(!String.prototype.startsWith) {
 	Object.defineProperty(String.prototype, 'startsWith', {
 		enumerable: false,
@@ -65,7 +66,11 @@ module.exports = {
 		_res.jsonp(_res.result.toJSON());
 	},
 	response: function(_req, _res, _next) {
-		if(!_res.result) { _res.result = new Result(); }
+		console.log();
+		if(!_res.result) {
+			_res.status(404);
+			return _res.render('error404', querystring.parse('path=' + _req.originalUrl.substr(1)));
+		}
 		_res.jsonp(_res.result.toJSON());
 	}
 };

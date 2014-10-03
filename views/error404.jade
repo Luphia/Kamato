@@ -1,0 +1,21 @@
+doctype
+html(ng-app='Error')
+  head
+    title Kamato
+    link(rel='stylesheet', href='/css/error404.css')
+    script(src='/lib/angular/angular.min.js')
+    script(src='/lib/angular/angular-route.min.js')
+    script(src='/js/error404.js')
+
+  body
+    div(class='main', ng-controller='404')
+      div(class='header')
+        h1 404 ERROR
+        h3 I don't know what you mean about:
+        h3(class='path') #{path}
+      div(class='body')
+        img(src='/res/error404.png')
+      div(class='footer')
+        h3 maybe you can ask google
+        input(ng-model='content')
+        button(type='search', ng-click='search()')
