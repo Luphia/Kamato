@@ -13,18 +13,20 @@ var config,
 	server,
 	secureServer,
 	oauth,
+	socket,
 	log4js,
 	logger,
 	controllers,
 	ssl,
 	operator;
 
-var configure = function (_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
+var configure = function (_config, _app, _server, _secureServer, _oauth, _socket, _log4js, _logger) {
 	config = _config;
 	app = _app;
 	server = _server;
 	secureServer = _secureServer;
 	oauth = _oauth;
+	socket = _socket;
 	log4js = _log4js;
 	logger = _logger;
 	controllers = require('./Controllers')(config);
@@ -45,6 +47,7 @@ var start = function () {
 	});
 	operator = app.oauth.grant();
 	controllers.oauth2.init(config, oauth, operator);
+	controllers.push.setSocket(socket);
 
 	app.set('port', config.get('server').port);
 	app.set('https', config.get('server').https);
@@ -63,7 +66,6 @@ var start = function () {
 
 	var router = express.Router();
 	app.use(router);
-	//app.use(app.oauth.errorHandler());
 	app.use(controllers.filters.errResponse);
 	app.use(controllers.filters.response);
 
@@ -83,6 +85,10 @@ var start = function () {
 	router.all('/db/', app.oauth.authorise(), controllers.easyDB.route);
 	router.all('/db/:table', app.oauth.authorise(), controllers.easyDB.route);
 	router.all('/db/:table/:id', app.oauth.authorise(), controllers.easyDB.route);
+
+	//push service
+	router.all('/push/', controllers.push.pushMessage);
+	router.all('/push/:channel', controllers.push.pushMessage);
 
 	// user data
 	router.get('/me', controllers.user.data);

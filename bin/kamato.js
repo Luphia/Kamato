@@ -56,7 +56,7 @@ logger.setLevel('INFO');
 
 ssl && (secureServer = https.createServer(ssl, app));
 
-web.configure(config, app, server, secureServer, oauth, log4js, logger);
+web.configure(config, app, server, secureServer, oauth, socket, log4js, logger);
 socket.configure(config, server, secureServer, logger);
 push.configure(config, logger);
 oauth.configure(config, logger);

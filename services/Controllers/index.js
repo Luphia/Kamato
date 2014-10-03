@@ -25,7 +25,7 @@ module.exports = function(_config) {
 	google.init(googleConfig);
 	facebook.init(facebookConfig);
 	easyDB.init(easyDBConfig);
-	push.init(pushConfig);
+	push.init(pushConfig, easyDBConfig);
 
 	return {
 		index: index,

@@ -12,6 +12,14 @@ module.exports = function() {
 		this.data = {};
 		return this;
 	}
+
+	, response = function(next, _rs, _msg, _data) {
+		_rs && this.setResult(_rs);
+		_msg && this.setMessage(_msg);
+		_data && this.setData(_data);
+		next();
+	}
+
 	, setResult = function(_result) {
 		this.result = _result;
 		return true;
@@ -43,6 +51,7 @@ module.exports = function() {
 
 	, that = {
 		_init: _init,
+		response: response,
 		setCommand: setCommand,
 		setResult: setResult,
 		setMessage: setMessage,

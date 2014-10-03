@@ -72,9 +72,17 @@ Kamato.config(['$routeProvider', function($routeProvider) {
 }]);
 
 Kamato.directive('message', function($compile) {
-    return {
+	return {
 		restrict: 'E',
 		replace: true,
 		templateUrl: 'widgets/chat/template-message.html'
+	}
+});
+
+Kamato.directive('pin', function($compile) {
+	return {
+		restrict: 'E',
+		replace: true,
+		templateUrl: 'widgets/chat/template-pin.html'
 	}
 });

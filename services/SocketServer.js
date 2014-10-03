@@ -100,6 +100,7 @@ var start = function () {
 
 		// when the user join some channel
 		socket.on('join', function (room) {
+			console.log(room);
 			socket.join(room);
 		});
 
@@ -113,14 +114,17 @@ var start = function () {
 	this.active = true;
 };
 var send = function(data, channel) {
+	if(!data) { return false; }
 	if(!this.active) { return true; }
-	io.of(channel).emit('new message', {
-		user: {
-			name: "Kamato"
-		},
-		message: "Hello",
-		timestamp: new Date()
-	});
+
+	var sender = channel? io.to(channel): io,
+		eventType = data.eventType;
+
+	data.timestamp = new Date();
+
+	sender.emit(eventType, data);
+
+	return true;
 };
 
 module.exports = {
