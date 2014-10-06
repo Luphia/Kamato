@@ -59,42 +59,35 @@ model.configure = function(_config, _logger) {
 			console.log ('ERROR connecting to: ' + uristring + '. ' + err);
 		} else {
 			console.log ('Succeeded connected to: ' + uristring);
-			var myUser = new OAuthUsersModel({
-				username: 'Tommy',
-				password: 'pTommy',
-				firstname: 'Tommy',
-				lastname: 'Febre',
-				email: 'tommy@iii.org.tw'
-			});
-			myUser.save(function (err) {
-				if (err) console.log(err);
-			});
-			var myClient = new OAuthClientsModel({
-				clientId: 'Babu',
-				clientSecret: 'pBabu',
-				redirectUri: ''
-			});
-			myClient.save(function (err) {
-				if (err) console.log(err);
+			var myUser = {
+					username: 'ncku',
+					password: 'o3jvGKUK',
+					firstname: 'Tommy',
+					lastname: 'Febre',
+					email: 'tommy@iii.org.tw'
+				},
+				myClient = {
+					clientId: 'NCKU',
+					clientSecret: 'Cwn8zXw5',
+					redirectUri: ''
+				};
+
+			OAuthUsersModel.count(myUser, function(_err, _count) {
+				if(_err || _count == 0) {
+					var nckuUser = new OAuthUsersModel(myUser);
+					nckuUser.save(console.log);
+
+					console.log("Add User");
+				}
 			});
 
-			var nckuUser = new OAuthUsersModel({
-				username: 'ncku',
-				password: 'o3jvGKUK',
-				firstname: 'Tommy',
-				lastname: 'Febre',
-				email: 'tommy@iii.org.tw'
-			});
-			var nckuClient = new OAuthClientsModel({
-				clientId: 'NCKU',
-				clientSecret: 'Cwn8zXw5',
-				redirectUri: ''
-			});
-			nckuUser.save(function (err) {
-				if (err) console.log(err);
-			});
-			nckuClient.save(function (err) {
-				if (err) console.log(err);
+			OAuthUsersModel.count(myUser, function(_err, _count) {
+				if(_err || _count == 0) {
+					var nckuClient = new OAuthClientsModel(myClient);
+					nckuClient.save(console.log);
+
+					console.log("Add Client");
+				}
 			});
 		}
 	});
