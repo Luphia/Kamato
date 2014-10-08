@@ -52,9 +52,10 @@ var start = function () {
 	app.set('port', config.get('server').port);
 	app.set('https', config.get('server').https);
 	app.set('view engine', 'jade');
-	//app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
-	app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
 
+	app.use(controllers.filters.preprocessor);
+	app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
+	//app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(bodyParser.json());
 	app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
@@ -62,8 +63,6 @@ var start = function () {
 	app.use(methodOverride('X-HTTP-Method-Override'));
 	app.use(express.static(path.join(__dirname, '../public')));
 	app.use(favicon(path.join('public/res/favicon.ico')));
-
-	app.use(controllers.filters.oauth2);
 
 	var router = express.Router();
 	app.use(router);

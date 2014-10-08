@@ -100,7 +100,6 @@ var start = function () {
 
 		// when the user join some channel
 		socket.on('join', function (room) {
-			console.log(room);
 			socket.join(room);
 		});
 

@@ -30,6 +30,7 @@ program.version(pack.version)
 var configPath = program.config || './config.private';
 config.initialize(configPath);
 config.path = configPath + '/';
+config.version = pack.name + " ver." + pack.version;
 
 (function(fullconfig) {
 	var _config = fullconfig.get('ssl');

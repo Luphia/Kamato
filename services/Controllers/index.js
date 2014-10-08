@@ -22,6 +22,7 @@ module.exports = function(_config) {
 	googleConfig.clientSecret = googleConfig.client_secret;
 	facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
 
+	filters.init(_config);
 	google.init(googleConfig);
 	facebook.init(facebookConfig);
 	easyDB.init(easyDBConfig);
