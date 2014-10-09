@@ -53,12 +53,12 @@ var start = function () {
 	app.set('https', config.get('server').https);
 	app.set('view engine', 'jade');
 
-	app.use(controllers.filters.preprocessor);
 	app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
 	//app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(bodyParser.json());
 	app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+	app.use(controllers.filters.preprocessor);
 
 	app.use(methodOverride('X-HTTP-Method-Override'));
 	app.use(express.static(path.join(__dirname, '../public')));
