@@ -12,3 +12,8 @@ div.ng-scope {
 	display: block;
 	*/
 }
+
+div[ng-view] {
+	width: 100%;
+	height: 100%;
+}

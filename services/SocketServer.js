@@ -1,41 +1,108 @@
+/*
+	{
+		"user": {
+			"name": "BOT"
+		},
+		"message": "Hello World!",
+		"eventType":"new message"
+	}
+ */
+
 var config,
 	server,
 	secureServer,
 	io,
-	logger;
+	logger,
+	route,
+	db,
+	active,
+	limit = 20;
 
-var redis = require('socket.io-redis');
+var redis = require('socket.io-redis'),
+	MongoClient = require('mongodb').MongoClient,
+	url = require('url'),
+	Result = require('./Objects/Result.js');
 
 var usernames = {},
 	numUsers = 0;
 
-var configure = function (_config, _server, _secureServer, _logger) {
+var configure = function(_config, _server, _secureServer, _logger, _route) {
 	config = _config;
 	server = _server;
 	secureServer = _secureServer;
 	logger = _logger;
-	io = require('socket.io')(server);
+	route = _route;
+	io = require('socket.io').listen(server);
 	secureServer && (io.listen(secureServer));
-	io.adapter(redis(config.get('redis')));
+
+	db = dbconn(config.get('mongo'));
 };
 
-var start = function () {
+var dbconn = function(option) {
+	var rs,
+		dbURL = url.parse(option.uri);;
+
+	!option && (option = {});
+	option.protocol = 'mongodb:';
+	option.pathname = '/pushServer';
+	option.slashes = true;
+	!option.host && (option.host = dbURL.host);
+	!option.port && (option.port = dbURL.port);
+
+	MongoClient.connect(url.format(option), function(err, _db) {
+		if(err) {
+			console.log(err);
+			rs = false;
+		}
+
+		rs = _db;
+	});
+
+	while(rs === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return rs;
+};
+
+var start = function() {
 	var self = this;
 	io.on('connection', function (socket) {
 		var addedUser = false;
-
+		socket.channel = [];
 		// when the client emits 'new message', this listens and executes
 		socket.on('new message', function (data) {
-			// we tell the client to execute 'new message'
-			socket.broadcast.emit('new message', {
+			var msg = {
 				user: {
 					name: socket.username
 				},
-				message: data,
+				channel: data.channel,
+				message: data.message,
 				timestamp: new Date()
-			});
+			};
 
-			self.send();
+			// we tell the client to execute 'new message'
+			socket.broadcast.emit('new message', msg);
+
+			log(data);
+			//self.send();
+		});
+
+		// get channel history
+		socket.on('old message', function(data) {
+			var channel = data.channel;
+			var timestamp = new Date(data.timestamp);
+
+			db.collection('message').find().sort('-timestamp').limit(limit).toArray(function(_err, _data) {
+				socket.emit('old message', {
+					channel: channel,
+					messages: _data
+				});
+			});
+		});
+
+		// get channel list
+		socket.on('get channel', function(data) {
+
 		});
 
 		// when the client emits 'add user', this listens and executes
@@ -101,33 +168,56 @@ var start = function () {
 		// when the user join some channel
 		socket.on('join', function (room) {
 			socket.join(room);
+			socket.channel.indexOf(room) == -1 && socket.channel.push(room);
 		});
 
 		// where the user leave some channel
 		socket.on('leave', function (room) {
 			socket.leave(room);
+			socket.channel.splice(socket.channel.indexOf(room), 1);
 		});
 	});
 
+	//push service
+	route('all', '/push/', module.exports.pushMessage);
+	route('all', '/push/:channel', module.exports.pushMessage);
+
 	console.log("Socket start");
-	this.active = true;
+	active = true;
+};
+var log = function(message) {
+	db.collection('message').insert(message, function(_err, _data) { console.log(_err); console.log(_data); });
+	return true;
 };
 var send = function(data, channel) {
-	if(!data) { return false; }
-	if(!this.active) { return true; }
+	if(!data) { return false;}
+	if(active) { return true;}
 
 	var sender = channel? io.to(channel): io,
 		eventType = data.eventType;
 
 	data.timestamp = new Date();
+	data.channel = channel;
 
 	sender.emit(eventType, data);
+	log(data);
 
 	return true;
+};
+var pushMessage = function(req, res, next) {
+	res.result = new Result();
+
+	var channel = req.params.channel,
+		dist = channel || 'default',
+		data = req.body;
+
+	send(data, channel);
+	res.result.response(next, 1, 'send message to channel: ' + dist);
 };
 
 module.exports = {
     configure: configure,
     start: start,
-    send: send
+    send: send,
+    pushMessage: pushMessage
 }

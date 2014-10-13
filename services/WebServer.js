@@ -13,26 +13,55 @@ var config,
 	server,
 	secureServer,
 	oauth,
-	socket,
 	log4js,
 	logger,
 	controllers,
 	ssl,
-	operator;
+	operator,
+	router;
 
-var configure = function (_config, _app, _server, _secureServer, _oauth, _socket, _log4js, _logger) {
+var configure = function(_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
 	config = _config;
 	app = _app;
 	server = _server;
 	secureServer = _secureServer;
 	oauth = _oauth;
-	socket = _socket;
 	log4js = _log4js;
 	logger = _logger;
+	router = express.Router();
 	controllers = require('./Controllers')(config);
 };
 
-var start = function () {
+var route = function(type, path, controller, auth) {
+	var method;
+	if(typeof path != 'string') { return false; }
+
+	switch(type) {
+		case 'all':
+		case 'get':
+		case 'post':
+		case 'put':
+		case 'delete':
+			method = type;
+			break;
+		case 'del':
+			method = 'delete';
+		default:
+			method = 'get';
+			break;
+	}
+
+	if(auth) {
+		router[method](path, app.oauth.authorise(), controller);
+	}
+	else {
+		router[method](path, controller);
+	}
+
+	return true;
+}
+
+var start = function() {
 	app.use(session({
 		store: new RedisStore(configure.redis),
 		secret: config.get('server').secret,
@@ -47,7 +76,6 @@ var start = function () {
 	});
 	operator = app.oauth.grant();
 	controllers.oauth2.init(config, oauth, operator);
-	controllers.push.setSocket(socket);
 
 	app.set('port', config.get('server').port);
 	app.set('https', config.get('server').https);
@@ -64,7 +92,6 @@ var start = function () {
 	app.use(express.static(path.join(__dirname, '../public')));
 	app.use(favicon(path.join('public/res/favicon.ico')));
 
-	var router = express.Router();
 	app.use(router);
 	app.use(controllers.filters.errResponse);
 	app.use(controllers.filters.response);
@@ -85,10 +112,6 @@ var start = function () {
 	router.all('/db/', app.oauth.authorise(), controllers.easyDB.route);
 	router.all('/db/:table', app.oauth.authorise(), controllers.easyDB.route);
 	router.all('/db/:table/:id', app.oauth.authorise(), controllers.easyDB.route);
-
-	//push service
-	router.all('/push/', controllers.push.pushMessage);
-	router.all('/push/:channel', controllers.push.pushMessage);
 
 	// user data
 	router.get('/me', controllers.user.data);
@@ -117,5 +140,6 @@ var start = function () {
 
 module.exports = {
     configure: configure,
-    start: start
+    start: start,
+    route: route
 }
