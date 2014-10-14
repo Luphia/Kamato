@@ -4,6 +4,7 @@
 	</div>
 	<div class="room page" ng-show="{{isLogin}}">
 		<div scroll-glue class="chatArea" style="height: {{chatAreaHeight}}px;">
+			<div class="more" ng-class="{'hide': end}" ng-click="loadMessage()">...</div>
 			<ul class="messages">
 				<message ng-repeat="message in messages"/>
 			</ul>

@@ -134,6 +134,8 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 		'#6699cc', '#aa88dd', '#ccbbff', '#d3aae7'
 	];
 
+	$scope.end = false;
+
 	$scope.pins = [
 		{'image': 'http://www.cloudopenlab.org.tw/images/button-iaas.png', 'content': 'iServDC 是基於 OpenStack 為基礎，提供類 AWS 之雲端 IaaS 服務環境解決方案，以系統架構來說主要是由前端營運系統架構與後端核心系統架構所構成，以使用功能來說是由系統管理、用戶入口以及營運管理三個子系統來構成之完整服務系統，讓系統管理者(Administrator)、系統維運者(Operator)以及用戶(Client)這三種身份類型人員均能快速與安全的使用其專屬之功能介面。', 'channel': 'iServDC'},
 		{'image': '/res/iServStore.png', 'content': 'TiApp (Triple I appliance) 是像智慧型手機的小機房，機房內的伺服器配置只需彈指之間即可完成，讓您佈署伺服器就像是下載 APP，單手就能處理機房裡的疑難雜症，還可以將您的服務發佈於各種雲端環境的 Server 市集。', 'channel': 'iServStore'},
@@ -225,7 +227,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 		if(message.length == 0) {
 		}
 		else if(message.length > 0) {
-			for(var k = message.length - 1; k >= 0; k--) {
+			for(var k in message) {
 				addMessage(message[k], true);
 			}
 		}
@@ -280,6 +282,11 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 		stopTypingEvent = setTimeout(stopTyping, time);
 	}
 
+	var listen = {"channel": "default", "timestamp": new Date() * 1};
+	$scope.loadMessage = function() {
+		if($scope.end) { return false; }
+		$socket.emit('load message', listen);
+	};
 
 	$scope.keyMessage = function(e) {
 		if(e.keyCode == 13) {
@@ -299,7 +306,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 
 	//var $socket = io();
 	$socket.emit('add user', 'Somebody');	// --
-	$socket.emit('load message', 'default');
+	$scope.loadMessage();
 	$socket.on('login', function (data) {
 		$scope.isLogin = true;
 		// Display the welcome message
@@ -310,6 +317,10 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 
 	// Whenever the server emits 'new message', update the chat body
 	$socket.on('load message', function (data) {
+		var n = data.messages.length
+		$scope.end = !(n > 0);
+		if(!$scope.end) { listen.timestamp = new Date(data.messages[n-1].timestamp) * 1; }
+
 		prependMessage(data.messages);
 		gotoTop();
 	}).bindTo($scope);

@@ -267,6 +267,16 @@
   margin-left: 70px;
 }
 
+.ng-scope.chat .more {
+  height: 20px;
+  line-height: 15px;
+  border-radius: 10px;
+  background: #8c9;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+}
+
 .ng-scope.chat .message:not(.log).typing .messageBody {
   color: gray;
 }
