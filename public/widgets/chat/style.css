@@ -300,10 +300,27 @@
 }
 .ng-scope.chat .inputArea input.inputMessage {
   height: 100%;
-  width: 380px;
+  width: 320px;
   padding-left: 10px;
-  padding-right: 10px;
+  padding-right: 70px;
   outline: none;
   border: none;
   box-shadow: inset 0px 1px 1px rgba(100, 100, 100, .8);
+}
+.ng-scope.chat .inputArea button {
+  width: 50px;
+  height: 40px;
+  background: #8c9;
+  text-align: center;
+  line-height: 40px;
+  color: #fff;
+  margin-left: -60px;
+  display: inline-block;
+  border-radius: 3px;
+  border: 0px;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+
+  transition: all 0.2s ease-out;
 }

@@ -92,10 +92,12 @@ var start = function() {
 		// get channel history
 		socket.on('load message', function(data) {
 
-			var channel = data.channel || 'default';
 			var timestamp = new Date(data.timestamp);
+			var cond = {};
+			if(data.channel) { cond.channel = data.channel; }
+			if(data.timestamp) { cond.timestamp = { $lt: new Date(data.timestamp); } }
 
-			db.collection('messages').find().sort('-timestamp').limit(limit).toArray(function(_err, _data) {
+			db.collection('messages').find(cond).sort('-timestamp').limit(limit).toArray(function(_err, _data) {
 				socket.emit('load message', {
 					channel: channel,
 					messages: _data

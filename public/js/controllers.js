@@ -251,6 +251,8 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 		$scope.newMessage = '';
 		gotoBottom();
 	};
+	$scope.sendMessage = sendMessage;
+
 	var addChatTyping = function(data) {
 		console.log(data);
 	};
