@@ -95,7 +95,7 @@ var start = function() {
 			var timestamp = new Date(data.timestamp);
 			var cond = {};
 			if(data.channel) { cond.channel = data.channel; }
-			if(data.timestamp) { cond.timestamp = { $lt: new Date(data.timestamp); } }
+			if(data.timestamp) { cond.timestamp = { $lt: new Date(data.timestamp) } }
 
 			db.collection('messages').find(cond).sort('-timestamp').limit(limit).toArray(function(_err, _data) {
 				socket.emit('load message', {
