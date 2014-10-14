@@ -73,27 +73,30 @@ var start = function() {
 		socket.on('new message', function (data) {
 			var msg = {
 				user: {
+					uid: socket.id,
+					ip: socket.handshake.address.address,
 					name: socket.username
 				},
 				channel: data.channel,
-				message: data.message,
+				message: data,
 				timestamp: new Date()
 			};
 
 			// we tell the client to execute 'new message'
 			socket.broadcast.emit('new message', msg);
 
-			log(data);
+			log(msg);
 			//self.send();
 		});
 
 		// get channel history
-		socket.on('old message', function(data) {
-			var channel = data.channel;
+		socket.on('load message', function(data) {
+
+			var channel = data.channel || 'default';
 			var timestamp = new Date(data.timestamp);
 
-			db.collection('message').find().sort('-timestamp').limit(limit).toArray(function(_err, _data) {
-				socket.emit('old message', {
+			db.collection('messages').find().sort('-timestamp').limit(limit).toArray(function(_err, _data) {
+				socket.emit('load message', {
 					channel: channel,
 					messages: _data
 				});
@@ -186,12 +189,13 @@ var start = function() {
 	active = true;
 };
 var log = function(message) {
-	db.collection('message').insert(message, function(_err, _data) { console.log(_err); console.log(_data); });
+	!message.channel && (message.channel = 'default');
+	db.collection('messages').insert(message, function(_err, _data) { console.log(_err); console.log(_data); });
 	return true;
 };
 var send = function(data, channel) {
 	if(!data) { return false;}
-	if(active) { return true;}
+	if(!active) { return true;}
 
 	var sender = channel? io.to(channel): io,
 		eventType = data.eventType;

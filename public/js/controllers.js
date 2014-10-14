@@ -209,18 +209,29 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 		message.textDate = formatDate(new Date(message.timestamp));
 		return message;
 	};
-	var addMessage = function(message) {
-		$scope.messages.push(processMessage(message));
+	var addMessage = function(message, pre) {
+		if(pre) {
+			$scope.messages.unshift(processMessage(message));
+		}
+		else {
+			$scope.messages.push(processMessage(message));
+		}
 	};
 	var addLog = function(message) {
 		message.type = 'log';
 		$scope.messages.push(processMessage(message));
 	};
 	var prependMessage = function(message) {
-		for(var k = $scope.messages.length; k > 0; k--) {
-			$scope.messages[k] = $scope.messages[k - 1];
+		if(message.length == 0) {
 		}
-		$scope.messages[0] = processMessage(message);
+		else if(message.length > 0) {
+			for(var k = message.length - 1; k >= 0; k--) {
+				addMessage(message[k], true);
+			}
+		}
+		else {
+			addMessage(message, true);
+		}
 	};
 	var sendMessage = function() {
 		var text = $scope.newMessage;
@@ -250,6 +261,10 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 	var gotoBottom = function() {
 
 	};
+	var gotoTop = function() {
+
+	};
+
 	var stopTyping = function() {
 		$socket.emit('stop typing');
 	};
@@ -282,6 +297,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 
 	//var $socket = io();
 	$socket.emit('add user', 'Somebody');	// --
+	$socket.emit('load message', 'default');
 	$socket.on('login', function (data) {
 		$scope.isLogin = true;
 		// Display the welcome message
@@ -291,6 +307,10 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 	}).bindTo($scope);
 
 	// Whenever the server emits 'new message', update the chat body
+	$socket.on('load message', function (data) {
+		prependMessage(data.messages);
+		gotoTop();
+	}).bindTo($scope);
 	$socket.on('new message', function (data) {
 		data.type = "text";
 		addMessage(data);
