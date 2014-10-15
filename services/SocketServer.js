@@ -33,6 +33,7 @@ var configure = function(_config, _server, _secureServer, _logger, _route) {
 	logger = _logger;
 	route = _route;
 	io = require('socket.io').listen(server);
+	io.adapter(redis(config.get('redis')));
 	secureServer && (io.listen(secureServer));
 
 	db = dbconn(config.get('mongo'));
@@ -95,6 +96,7 @@ var start = function() {
 			var timestamp = new Date(data.timestamp);
 			var cond = {};
 
+			if(data.limit) { limit = data.limit; }
 			if(data.channel) { cond.channel = data.channel; }
 			if(data.timestamp) { cond.timestamp = { $lt: new Date(data.timestamp) }; }
 
