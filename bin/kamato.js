@@ -52,8 +52,19 @@ config.version = pack.name + " ver." + pack.version;
 })(config);
 
 log4js.configure(config.get('log4js'));
-var logger = log4js.getLogger('Kamato.INFO');
-logger.setLevel('INFO');
+var logger = {
+	info: log4js.getLogger('Kamato.INFO'),
+	exception: log4js.getLogger('Kamato.EXCEPTION'),
+	hack: log4js.getLogger('Kamato.HACK')
+};
+logger.info.setLevel('INFO');
+logger.exception.setLevel('ERROR');
+logger.hack.setLevel('WARN');
+
+// log for crash event
+process.on('uncaughtException', function(err) {
+	logger.exception.error(err);
+});
 
 ssl && (secureServer = https.createServer(ssl, app));
 

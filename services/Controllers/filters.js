@@ -1,6 +1,7 @@
 var Result = require('../Objects/Result.js'),
 	querystring = require('querystring'),
-	config;
+	config,
+	logger;
 
 if(!String.prototype.startsWith) {
 	Object.defineProperty(String.prototype, 'startsWith', {
@@ -14,12 +15,26 @@ if(!String.prototype.startsWith) {
 	});
 }
 
+var hackLog = function(_req) {
+	logger.hack.warn({
+		ip: _req.connection.remoteAddress,
+		forward: _req.headers['x-forwarded-for'],
+		url: _req.originalUrl,
+		headers: _req.headers,
+		params: _req.params,
+		query: _req.query,
+		body: _req.body
+	});
+};
+
 module.exports = {
-	init: function(_config) {
+	init: function(_config, _logger) {
 		config = _config;
+		logger = _logger;
 	},
 	preprocessor: function(_req, _res, _next) {
 		_res.header('X-Powered-By', config.version);
+
 		if(_req.originalUrl == '/oauth/token') {
 			module.exports.oauth2(_req, _res, _next, 'token');
 		}
@@ -86,8 +101,8 @@ module.exports = {
 		_res.jsonp(_res.result.toJSON());
 	},
 	response: function(_req, _res, _next) {
-		console.log();
 		if(!_res.result) {
+			hackLog(_req);
 			_res.status(404);
 			return _res.render('error404', querystring.parse('path=' + _req.originalUrl.substr(1)));
 		}

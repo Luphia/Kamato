@@ -52,7 +52,7 @@ var dbconn = function(option) {
 
 	MongoClient.connect(url.format(option), function(err, _db) {
 		if(err) {
-			console.log(err);
+			logger.exception.error(err);
 			rs = false;
 		}
 
@@ -190,12 +190,12 @@ var start = function() {
 	route('all', '/push/', module.exports.pushMessage);
 	route('all', '/push/:channel', module.exports.pushMessage);
 
-	console.log("Socket start");
+	logger.info.info("Socket start");
 	active = true;
 };
 var log = function(message) {
 	!message.channel && (message.channel = 'default');
-	db.collection('messages').insert(message, function(_err, _data) { console.log(_err); console.log(_data); });
+	db.collection('messages').insert(message, function(_err, _data) { logger.exception.error(_err); });
 	return true;
 };
 var send = function(data, channel) {

@@ -56,9 +56,9 @@ model.configure = function(_config, _logger) {
 	uristring = _config.get('mongo').uri + 'OAuth2';
 	db = mongoose.connect(uristring, function (err, res) {
 		if (err) {
-			console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+			logger.exception.error('ERROR connecting to: ' + uristring + '. ' + err);
 		} else {
-			console.log ('Succeeded connected to: ' + uristring);
+			logger.info.info('Succeeded connected to: ' + uristring);
 			var myUser = {
 					username: 'ncku',
 					password: 'o3jvGKUK',
@@ -75,18 +75,18 @@ model.configure = function(_config, _logger) {
 			OAuthUsersModel.count(myUser, function(_err, _count) {
 				if(_err || _count == 0) {
 					var nckuUser = new OAuthUsersModel(myUser);
-					nckuUser.save(console.log);
+					nckuUser.save(function(err) { logger.exception.error(err); });
 
-					console.log("Add User");
+					logger.info.info("Add Default User");
 				}
 			});
 
 			OAuthUsersModel.count(myUser, function(_err, _count) {
 				if(_err || _count == 0) {
 					var nckuClient = new OAuthClientsModel(myClient);
-					nckuClient.save(console.log);
+					nckuClient.save(function(err) { logger.exception.error(err); });
 
-					console.log("Add Client");
+					logger.info.info("Add Default Client");
 				}
 			});
 		}

@@ -17,6 +17,7 @@ var MongoClient = require('mongodb').MongoClient,
 	Parser = require('../Objects/Parser.js');
 
 var config,
+	logger,
 	dbURL,
 	db;
 
@@ -32,7 +33,7 @@ var dbconn = function(option) {
 
 	MongoClient.connect(url.format(option), function(err, _db) {
 		if(err) {
-			console.log(err);
+			logger.exception.error(err);
 			rs = false;
 		}
 
@@ -85,6 +86,7 @@ var tableExist = function(table) {
 
 	var checkExist = function(_err, _data) {
 		if(_err) {
+			logger.exception.error(_err);
 			return rs = false;
 		}
 
@@ -109,6 +111,7 @@ var getSchema = function(table) {
 
 	db.collection('_tables').find({'name': table}).toArray(function(_err, _data) {
 		if(_err) {
+			logger.exception.error(_err);
 			return rs = false;
 		}
 
@@ -142,6 +145,7 @@ var setSchema = function(table, schema) {
 
 	var checkResult = function(_err, _data) {
 		if(_err) {
+			logger.exception.error(_err);
 			rs = false;
 		}
 		else {
@@ -170,6 +174,7 @@ var setSchemaByValue = function(table, value) {
 	}
 
 	db.collection('_tables').insert(tableSchema, checkResult, function(_err) {
+		logger.exception.error(_err);
 		rs = !_err;
 	});
 
@@ -192,7 +197,12 @@ var getID = function(table) {
 			{$inc: {"max_serial_num": 1}},
 			{},
 			function(_err, _data) {
-				if(_err || !_data) {
+				if(_err) {
+					logger.exception.error(_err);
+					rs = 1;
+				}
+
+				if(!_data) {
 					rs = 1;
 				}
 				else {
@@ -222,13 +232,17 @@ var checkID = function(table, id) {
 	}
 	else {
 		db.collection('_tables').find({'name': table}).toArray(function(_err, _data) {
+			if(_err) { logger.exception.error(_err); }
 			if(_err || !(_data.length > 0) || _data[0].max_serial_num < id) {
 				db.collection('_tables').findAndModify(
 					{'name': table},
 					['max_serial_num'],
 					{$set: {"max_serial_num": id}},
 					{},
-					function(_err, _data) { rs = true; }
+					function(_err, _data) {
+						if(_err) { logger.exception.error(_err); }
+						rs = true;
+					}
 				);
 			}
 			else {
@@ -457,8 +471,9 @@ var compareSchema = function(data, schema) {
 };
 
 module.exports = {
-	init: function(_config) {
+	init: function(_config, _logger) {
 		config = _config;
+		logger = _logger;
 		if(!config.uri) {
 			config.uri = "mongodb://localhost:27017/";
 		}
@@ -540,7 +555,10 @@ module.exports = {
 					cond = parseCondiction(query.WHERE),
 					rowData = compareSchema( parseSet(query.SET), schema );
 				db.collection(table).update(cond, {$set: rowData}, {multi: true, upsert: true}, function(_err, _data) {
-					if(_err) { return setResult(res.result, next, 0, 'update failed'); }
+					if(_err) {
+						logger.exception.error(_err);
+						return setResult(res.result, next, 0, 'update failed');
+					}
 					setResult(res.result, next, 1, 'number of affected rows: ' + _data);
 				});
 				break;
@@ -551,7 +569,10 @@ module.exports = {
 					cond = parseCondiction(query.WHERE),
 					limit = query.LIMIT;
 				db.collection(table).remove(cond, {justOne: limit && (limit.nb == 1)}, function(_err, _data) {
-					if(_err) { return setResult(res.result, next, 0, 'delete failed', _err); }
+					if(_err) {
+						logger.exception.error(_err);
+						return setResult(res.result, next, 0, 'delete failed');
+					}
 					setResult(res.result, next, 1, 'number of affected rows: ' + _data);
 				});
 				break;
@@ -565,6 +586,7 @@ module.exports = {
 
 		var parseTables = function(_err, _data) {
 			if(_err) {
+				logger.exception.error(_err);
 				setResult(res.result, next, 0, 'failed to connect to DB');
 			}
 
@@ -602,7 +624,10 @@ module.exports = {
 		}
 		else {
 			db.collection(table).count(function(_err, _count) {
-				if(_err) { schema['table_length'] = 0; }
+				if(_err) {
+					logger.exception.error(_err);
+					schema['table_length'] = 0;
+				}
 				else { schema['table_length'] = _count; }
 				setResult(res.result, next, 1, 'get table schema: ' + table, schema);
 			});
@@ -649,6 +674,7 @@ module.exports = {
 			todo--;
 			if(_err) {
 				todo = 0;
+				logger.exception.error(_err);
 				return setResult(res.result, next, 0, 'delete table failed: ' + table);
 			}
 
@@ -691,6 +717,7 @@ module.exports = {
 			var collection = new Collection();
 
 			if(_err) {
+				logger.exception.error(_err);
 				setResult(res.result, next, 1, 'list '+ table +' rows', collection.toJSON());
 			}
 			else {
@@ -711,6 +738,7 @@ module.exports = {
 
 		db.collection(table).insert(data, function(_err, _data) {
 			if(_err) {
+				logger.exception.error(_err);
 				setResult(res.result, next, 0, 'create new row failed');
 			}
 			else {
@@ -732,7 +760,11 @@ module.exports = {
 
 		db.collection(table).find({"_id": id}).toArray(function(_err, _data) {
 
-			if(_err || _data.length == 0) {
+			if(_err) {
+				logger.exception.error(_err);
+				setResult(res.result, next, 0, 'row not found');
+			}
+			else if(_data.length == 0) {
 				setResult(res.result, next, 0, 'row not found');
 			}
 			else {
@@ -751,8 +783,11 @@ module.exports = {
 		rowData = compareSchema(rowData, schema);
 
 		db.collection(table).update(cond, {$set: rowData}, {multi: !(limit && limit.nb == 1), upsert: false}, function(_err, _data) {
-			if (_err) setResult(res.result, next, 0, _err.message);
-			else setResult(res.result, next, 1, 'number of affected rows: ' + _data);
+			if (_err) {
+				logger.exception.error(_err);
+				setResult(res.result, next, 0, _err.message);
+			}
+			else { setResult(res.result, next, 1, 'number of affected rows: ' + _data); }
 		});
 	},
 	queryForDelete: function(req, res, next) {
@@ -762,7 +797,10 @@ module.exports = {
 			limit = query.LIMIT;
 
 		db.collection(table).remove(cond, {justOne: (limit && (limit.nb == 1))}, function(_err, _data) {
-			if(_err) { return setResult(res.result, next, 0, 'delete failed', _err); }
+			if(_err) {
+				logger.exception.error(_err);
+				return setResult(res.result, next, 0, 'delete failed');
+			}
 			setResult(res.result, next, 1, 'number of affected rows: ' + _data);
 		});
 	},
@@ -780,8 +818,11 @@ module.exports = {
 		rowData = compareSchema(rowData, schema);
 
 		db.collection(table).update({_id: id}, rowData, {w:1, upsert: true}, function(_err) {
-			if (_err) setResult(res.result, next, 0, _err.message);
-			else setResult(res.result, next, 1, 'update table: ' + table + ', row: ' + id);
+			if (_err) {
+				logger.exception.error(_err);
+				setResult(res.result, next, 0, _err.message);
+			}
+			else { setResult(res.result, next, 1, 'update table: ' + table + ', row: ' + id); }
 		});
 	},
 	delData: function(req, res, next) {
@@ -798,7 +839,11 @@ module.exports = {
 			{remove: true},
 			function(_err, _data) {
 				!_data && (_data = []);
-				if(_err || _data.length == 0) {
+				if(_err) {
+					logger.exception.error(_err);
+					setResult(res.result, next, 0, 'row not found');
+				}
+				else if(_data.length == 0) {
 					setResult(res.result, next, 0, 'row not found');
 				}
 				else {

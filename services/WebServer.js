@@ -29,7 +29,7 @@ var configure = function(_config, _app, _server, _secureServer, _oauth, _log4js,
 	log4js = _log4js;
 	logger = _logger;
 	router = express.Router();
-	controllers = require('./Controllers')(config);
+	controllers = require('./Controllers')(config, _log4js);
 };
 
 var route = function(type, path, controller, auth) {
@@ -81,7 +81,7 @@ var start = function() {
 	app.set('https', config.get('server').https);
 	app.set('view engine', 'jade');
 
-	app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
+	app.use(log4js.connectLogger(logger.info, { level: log4js.levels.INFO }));
 	//app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(bodyParser.json());
@@ -127,13 +127,13 @@ var start = function() {
 
 	// http
 	server.listen(app.get('port'), function () {
-		console.log('Server listening at port %d', app.get('port'));
+		logger.info.info('Server listening at port %d', app.get('port'));
 	});
 
 	//https
 	if(secureServer) {
 		secureServer.listen(app.get('https'), function () {
-			console.log('Secure server listening at port %d', app.get('https'));
+			logger.info.info('Secure server listening at port %d', app.get('https'));
 		});
 	}
 }
