@@ -354,3 +354,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 		removeChatTyping(data);
 	}).bindTo($scope);
 }]);
+
+KamatoControllers.controller('MediaCtrl', function($scope, $http) {
+	
+});

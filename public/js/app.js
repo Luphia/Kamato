@@ -66,6 +66,10 @@ Kamato.config(['$routeProvider', function($routeProvider) {
 		templateUrl: 'widgets/chat/template.html',
 		controller: 'ChatCtrl'
 	}).
+	when('/media', {
+		templateUrl: 'widgets/media/template.html',
+		controller: 'MediaCtrl'
+	}).
 	otherwise({
 		redirectTo: '/'
 	});
