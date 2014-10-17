@@ -195,7 +195,7 @@ var start = function() {
 };
 var log = function(message) {
 	!message.channel && (message.channel = 'default');
-	db.collection('messages').insert(message, function(_err, _data) { logger.exception.error(_err); });
+	db.collection('messages').insert(message, function(_err, _data) { if(_err) logger.exception.error(_err); });
 	return true;
 };
 var send = function(data, channel) {
