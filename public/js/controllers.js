@@ -356,5 +356,10 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 }]);
 
 KamatoControllers.controller('MediaCtrl', function($scope, $http) {
-	
+	$scope.medias = [
+		{"title": "Legal High 001", "src": "/public/LHEP001.mp4", "poster": "/public/LHEP001.jpg"},
+		{"title": "Legal High 002", "src": "/public/LHEP002.mp4", "poster": "/public/LHEP002.jpg"},
+		{"title": "Legal High 003", "src": "/public/LHEP003.mp4", "poster": "/public/LHEP003.jpg"},
+		{"title": "Legal High 004", "src": "/public/LHEP004.mp4", "poster": "/public/LHEP004.jpg"},
+	];	
 });

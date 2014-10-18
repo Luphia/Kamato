@@ -1,8 +1,8 @@
 <div class="media">
-	<div class="studio">
-		<video src="media/demo.mp4" controls preload="auto" poster="media/demo.jpg" >
+	<div class="studio" ng-repeat="media in medias">
+		<video ng-src="{{media.src}}" controls preload="auto" poster="{{media.poster}}" >
 			HTML5 Video is required for this example
 		</video>
-		<h3>Suzuki Konatsu</h3>
-	</div> 
+		<h3>{{media.title}}</h3>
+	</div>
 </div>
