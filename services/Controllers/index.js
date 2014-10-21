@@ -12,10 +12,10 @@ var filters = require('./filters.js'),
 var log4js;
 
 module.exports = function(_config, _log4js) {
-	var serverConfig = _config.get('server'),
-		googleConfig = _config.get('google'),
-		facebookConfig = _config.get('facebook'),
-		easyDBConfig = _config.get('mongo');
+	var serverConfig = _config.get('server') || {},
+		googleConfig = _config.get('google') || {},
+		facebookConfig = _config.get('facebook') || {},
+		easyDBConfig = _config.get('mongo') || {};
 
 	log4js = _log4js;
 

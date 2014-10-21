@@ -1,4 +1,4 @@
-var config;
+var active, config;
 var public_path = 'https://googledrive.com/host/',
 	passport = require('passport'),
 	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -8,18 +8,22 @@ module.exports = {
 		config = _config;
 		public_path += config.public_path + "/";
 
-		passport.use(new GoogleStrategy(config,
-			function(accessToken, refreshToken, profile, done) {
-				process.nextTick(function () {
+		if(config.clientID) {
+			passport.use(new GoogleStrategy(config,
+				function(accessToken, refreshToken, profile, done) {
+					process.nextTick(function () {
 
-					// find or create user profile
-					console.log(profile);
+						// find or create user profile
+						console.log(profile);
 
-					profile.identifier = identifier;
-					return done(null, profile);
-				});
-			}
-		));
+						profile.identifier = identifier;
+						return done(null, profile);
+					});
+				}
+			));
+
+			active = true;
+		}
 	},
 	file: function(req, res) {
 		var filename = req.params[0];
