@@ -4,6 +4,14 @@
 		secret:
 		path:
 	}
+
+	<form method="POST" action="https://jawbone.com/auth/oauth2/auth">
+		<input name="response_type" />
+		<input name="client_id" />
+		<input name="scope" />
+		<input name="redirect_uri" />
+		<input type="submit" />
+	</form>
  */
 
 
