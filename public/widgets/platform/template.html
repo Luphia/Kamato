@@ -1,0 +1,6 @@
+<div class="platform">
+	<div class="resource" ng-repeat="resource in resources" ng-class="{'on': resource.isActive}" ng-click="resource.isActive = !resource.isActive">
+		<div class="logo"></div>
+		<div class="name">{{resource.name}}</div>
+	</div>
+</div>

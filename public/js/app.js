@@ -70,6 +70,10 @@ Kamato.config(['$routeProvider', function($routeProvider) {
 		templateUrl: 'widgets/media/template.html',
 		controller: 'MediaCtrl'
 	}).
+	when('/platform', {
+		templateUrl: 'widgets/platform/template.html',
+		controller: 'PlatformCtrl'
+	}).
 	otherwise({
 		redirectTo: '/'
 	});

@@ -8,6 +8,16 @@ KamatoControllers.controller('SummaryCtrl', ['$scope', '$http', function($scope,
 		$scope.cases = data;
 	});
 	*/
+
+	$scope.login = function() {
+		var data = {account: $scope.account, password: $scope.password}
+		$http.post('/login', data).success(function(_data, _status, _headers, _config) {
+			console.log(_data);
+		}).
+		error(function(_data, _status, _headers, _config) {
+			console.log(_data);
+		});
+	};
 }]);
 
 
@@ -361,5 +371,14 @@ KamatoControllers.controller('MediaCtrl', function($scope, $http) {
 		{"title": "Legal High 002", "src": "/public/LHEP002.mp4", "poster": "/public/LHEP002.jpg"},
 		{"title": "Legal High 003", "src": "/public/LHEP003.mp4", "poster": "/public/LHEP003.jpg"},
 		{"title": "Legal High 004", "src": "/public/LHEP004.mp4", "poster": "/public/LHEP004.jpg"},
+	];	
+});
+
+KamatoControllers.controller('PlatformCtrl', function($scope, $http) {
+	$scope.resources = [
+		{"name": "Nike+"},
+		{"name": "RunKeeper"},
+		{"name": "Fitbit"},
+		{"name": "Jawbone"}
 	];	
 });

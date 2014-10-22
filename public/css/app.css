@@ -2,6 +2,7 @@
 @import url("../widgets/map/style.css");
 @import url("../widgets/chat/style.css");
 @import url("../widgets/media/style.css");
+@import url("../widgets/platform/style.css");
 
 html, body {
   height: 100%;
