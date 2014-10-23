@@ -115,6 +115,7 @@ var start = function() {
 
 	// user data
 	router.get('/me', controllers.user.data);
+	router.post('/login', controllers.user.login);
 
 	// google auth
 	router.get('/auth/google', controllers.google.auth);

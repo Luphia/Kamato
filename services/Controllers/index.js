@@ -9,7 +9,7 @@ var filters = require('./filters.js'),
 	user = require('./user.js'),
 	easyDB = require('./easyDB.js');
 
-var log4js;
+var log4js, db;
 
 module.exports = function(_config, _log4js) {
 	var serverConfig = _config.get('server') || {},
@@ -34,6 +34,7 @@ module.exports = function(_config, _log4js) {
 	google.init(googleConfig, logger);
 	facebook.init(facebookConfig, logger);
 	easyDB.init(easyDBConfig, logger);
+	user.init({userTable: "userprofile"}, easyDB, logger);
 
 	return {
 		index: index,

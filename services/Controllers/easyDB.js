@@ -108,7 +108,7 @@ var tableExist = function(table) {
 };
 var getSchema = function(table) {
 	var rs;
-
+console.log(table);
 	db.collection('_tables').find({'name': table}).toArray(function(_err, _data) {
 		if(_err) {
 			logger.exception.error(_err);
@@ -479,6 +479,7 @@ module.exports = {
 		}
 		dbURL = url.parse(config.uri);
 		db = dbconn();
+		return this;
 	},
 	route: function(req, res, next) {
 		res.result = new Result();
@@ -854,5 +855,32 @@ module.exports = {
 	},
 	destroy: function() {
 		db.close();
+	},
+
+	dbListData: function(table, cond) {
+		var rs;
+ 		var schema = getSchema(table);
+console.log(table);
+console.log(schema);
+		if(!schema) { return []; }
+console.log(cond);
+		db.collection(table).find(cond).toArray(function(_err, _data) {
+			if(_err) {
+				logger.exception.error(_err);
+				rs = [];
+			}
+			else {
+				var collection = new Collection();
+				for(var key in _data) {
+					collection.add( compareSchema(_data[key], schema) );
+				}
+				rs = collection.toJSON();
+			}
+		});
+
+		while(rs === undefined) {
+			require('deasync').runLoopOnce();
+		}
+		return rs;
 	}
 };
