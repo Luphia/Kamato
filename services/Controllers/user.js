@@ -45,6 +45,9 @@ module.exports = {
 			var msg = "login fail";
 			res.result.response(next, 0, msg);
 		}
-		
+	},
+	outerLogin: function(req, res, next) {
+		res.result = new Result();
+		platform = req.params.platform;
 	}
 };

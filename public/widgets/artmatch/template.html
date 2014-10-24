@@ -1,0 +1,50 @@
+<div class="artmatch">
+	<div class="header">
+		<div class="logo"></div>
+		<ul class="menu">
+			<li>表演</li><li>教學</li><li>合作</li><li>表演者</li>
+		</ul>
+		<div class="user">
+			<div class="search"><input placeholder="搜尋" /></div>
+			<div class="name">{{user.name}}</div>
+			<img class="pic" ng-src="{{user.image}}" />
+		</div>
+	</div>
+	<div class="body">
+		<div class="search">
+			<div class="title"></div>
+			<div class="block">
+				<div class="area"><input ng-model="search.query" placeholder="搜尋" /></div>
+			</div>
+			<div class="block">
+				<div class="label">表演類型</div>
+				<div class="area"><select ng-model="search.type" ng-options="t.name for t in types"></select></div>
+			</div>
+			<div class="block">
+				<div class="label"></div>
+				<div class="area"></div>
+			</div>
+			<div class="block">
+				<div class="label"></div>
+				<div class="area"></div>
+			</div>
+			<div class="block">
+				<div class="label"></div>
+				<div class="area"></div>
+			</div>
+			<div class="block">
+				<div class="label"></div>
+				<div class="area"></div>
+			</div>
+			<div class="block">
+				<div class="label"></div>
+				<div class="area"></div>
+			</div>
+		</div>
+		<div class="list">
+			<div ng-repeat="case in cases | filter:query | orderBy:orderProp" class="case">
+				
+			</div>
+		</div>
+	</div>
+</div>

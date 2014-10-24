@@ -3,6 +3,7 @@
 @import url("../widgets/chat/style.css");
 @import url("../widgets/media/style.css");
 @import url("../widgets/platform/style.css");
+@import url("../widgets/artmatch/style.css");
 
 html, body {
   height: 100%;

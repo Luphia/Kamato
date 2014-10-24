@@ -74,6 +74,10 @@ Kamato.config(['$routeProvider', function($routeProvider) {
 		templateUrl: 'widgets/platform/template.html',
 		controller: 'PlatformCtrl'
 	}).
+	when('/artmatch', {
+		templateUrl: 'widgets/artmatch/template.html',
+		controller: 'ArtmatchCtrl'
+	}).
 	otherwise({
 		redirectTo: '/'
 	});
