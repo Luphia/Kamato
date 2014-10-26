@@ -9,6 +9,27 @@
 	-webkit-column-count: 1;
 	-moz-column-count: 1;
 	column-count: 1;
+	position: relative;
+	padding-left: 200px;
+}
+
+.ng-scope.media .menu {
+	position: absolute;
+	left: 0px;
+	margin-top: 30px;
+}
+.ng-scope.media .menu > div {
+	width: 200px;
+	text-align: center;
+	line-height: 3em;
+	background: #eee;
+	margin: 1px;
+	cursor: pointer;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+.ng-scope.media .menu > div.selected {
+	background: #dfd;
 }
 
 .ng-scope.media .studio {
