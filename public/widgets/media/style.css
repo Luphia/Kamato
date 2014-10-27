@@ -34,7 +34,7 @@
 	background: #cfc;
 	color: #9c9;
 }
-.ng-scope.media .menu > div::hover {
+.ng-scope.media .menu > div:hover {
 	background: #dfd;
 }
 
