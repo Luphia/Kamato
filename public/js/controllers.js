@@ -365,7 +365,7 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 	}).bindTo($scope);
 }]);
 
-KamatoControllers.controller('MediaCtrl', function($scope, $http) {
+KamatoControllers.controller('MediaCtrl', function($scope, $http, $window) {
 	$scope.initializeWindowSize = function() {
 		return $scope.height = $window.innerHeight - 60;
 	};
