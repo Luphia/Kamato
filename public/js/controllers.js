@@ -377,7 +377,18 @@ KamatoControllers.controller('MediaCtrl', function($scope, $http) {
 		{"title": "Legal High 008", "src": "/public/LHEP008.mp4", "poster": "/public/LHEP008.png"},
 		{"title": "Legal High 009", "src": "/public/LHEP009.mp4", "poster": "/public/LHEP009.png"},
 		{"title": "Legal High 010", "src": "/public/LHEP010.mp4", "poster": "/public/LHEP010.png"},
-		{"title": "Legal High 011", "src": "/public/LHEP011.mp4", "poster": "/public/LHEP011.png"}
+		{"title": "Legal High 011", "src": "/public/LHEP011.mp4", "poster": "/public/LHEP011.png"},
+		{"title": "Legal High 001", "src": "/public/LH2EP001.mp4", "poster": "/public/LH2EP001.jpg"},
+		{"title": "Legal High 002", "src": "/public/LH2EP002.mp4", "poster": "/public/LH2EP002.jpg"},
+		{"title": "Legal High 003", "src": "/public/LH2EP003.mp4", "poster": "/public/LH2EP003.jpg"},
+		{"title": "Legal High 004", "src": "/public/LH2EP004.mp4", "poster": "/public/LH2EP004.jpg"},
+		{"title": "Legal High 005", "src": "/public/LH2EP005.mp4", "poster": "/public/LH2EP005.png"},
+		{"title": "Legal High 006", "src": "/public/LH2EP006.mp4", "poster": "/public/LH2EP006.png"},
+		{"title": "Legal High 007", "src": "/public/LH2EP007.mp4", "poster": "/public/LH2EP007.png"},
+		{"title": "Legal High 008", "src": "/public/LH2EP008.mp4", "poster": "/public/LH2EP008.png"},
+		{"title": "Legal High 009", "src": "/public/LH2EP009.mp4", "poster": "/public/LH2EP009.png"},
+		{"title": "Legal High 010", "src": "/public/LH2EP010.mp4", "poster": "/public/LH2EP010.png"},
+		{"title": "Legal High 011", "src": "/public/LHSP.mp4", "poster": "/public/LHSP.png"}
 	];
 	$scope.play = $scope.medias[0];
 	$scope.choose = function(m) {
