@@ -3,7 +3,7 @@
 		<div ng-repeat="media in medias" ng-click="choose(media)" ng-class="{true:'selected', false:''}[play.title==media.title]">{{media.title}}</div>
 	</div>
 	<div class="studio" >
-		<video ng-src="{{play.src}}" controls preload="auto" poster="{{play.poster}}" >
+		<video ng-src="{{play.src}}" controls preload="auto" poster="{{play.poster}}" type="{{play.type}}" >
 			HTML5 Video is required for this example
 		</video>
 		<h3>{{play.title}}</h3>
