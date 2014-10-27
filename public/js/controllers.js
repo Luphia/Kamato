@@ -366,6 +366,15 @@ KamatoControllers.controller('ChatCtrl', ['$scope', '$compile', '$window', '$rou
 }]);
 
 KamatoControllers.controller('MediaCtrl', function($scope, $http) {
+	$scope.initializeWindowSize = function() {
+		return $scope.height = $window.innerHeight - 60;
+	};
+	$scope.initializeWindowSize();
+	angular.element($window).bind('resize', function() {
+		$scope.initializeWindowSize();
+		return $scope.$apply();
+	});
+
 	$scope.medias = [
 		{"title": "Legal High 001", "src": "/public/LHEP001.mp4", "poster": "/public/LHEP001.jpg", "type": "video/mp4"},
 		{"title": "Legal High 002", "src": "/public/LHEP002.mp4", "poster": "/public/LHEP002.jpg", "type": "video/mp4"},

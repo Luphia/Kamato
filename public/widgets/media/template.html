@@ -1,5 +1,5 @@
 <div class="media">
-	<div class="menu">
+	<div class="menu" style="height: {{height}}px">
 		<div ng-repeat="media in medias" ng-click="choose(media)" ng-class="{true:'selected', false:''}[play.title==media.title]">{{media.title}}</div>
 	</div>
 	<div class="studio" >
