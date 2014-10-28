@@ -119,11 +119,11 @@ var start = function() {
 
 	// google auth
 	router.get('/auth/google', controllers.google.auth);
-	router.get('/auth/google/return', passport.authenticate('google', { failureRedirect: '/auth/fail' }), controllers.google.authReturn);
+	router.get('/auth/google/return', controllers.google.authReturn);
 
 	// facebook auth
 	router.get('/auth/facebook', controllers.facebook.auth);
-	router.get('/auth/facebook/return', passport.authenticate('facebook', { failureRedirect: '/auth/fail' }), controllers.facebook.authReturn);
+	router.get('/auth/facebook/return', controllers.facebook.authReturn);
 
 
 	// http
