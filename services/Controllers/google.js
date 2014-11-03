@@ -1,41 +1,31 @@
-var active, config;
-var public_path = 'https://googledrive.com/host/',
-	passport = require('passport'),
-	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var active, config, passport,
+	public_path = 'https://googledrive.com/host/';
+
+var	Result = require('../Objects/Result.js'),
+	Passport = require('../OAuth/Passport.google.js');
 
 module.exports = {
 	init: function(_config) {
 		config = _config;
 		public_path += config.public_path + "/";
 
-		if(config.clientID) {
-			passport.use(new GoogleStrategy(config,
-				function(accessToken, refreshToken, profile, done) {
-					process.nextTick(function () {
-
-						// find or create user profile
-						console.log(profile);
-
-						profile.identifier = identifier;
-						return done(null, profile);
-					});
-				}
-			));
-
-			active = true;
-		}
+		passport = new Passport(config);
 	},
-	file: function(req, res) {
+	file: function(req, res, next) {
+		res.result = new Result();
 		var filename = req.params[0];
-		res.writeHead(307, {
-			"Location": public_path + filename
+
+		res.result.response(next, 3, '', {
+			"path": public_path + filename
 		});
-		res.end();
 	},
-	auth: passport.authenticate('google', { scope: [
-		'https://www.googleapis.com/auth/userinfo.profile',
-		'https://www.googleapis.com/auth/userinfo.email'
-	] }),
+	auth: function(req, res, next) {
+		res.result = new Result();
+
+		res.result.response(next, 3, '', {
+			"path": passport.getAuthLink()
+		});	
+	},
 	authReturn: function(req, res) {
 		res.write(JSON.stringify(req.params));
 		res.write(JSON.stringify(req.query));

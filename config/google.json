@@ -1,8 +1,19 @@
 {
-	"consumer_key": "",
-	"consumer_secret": "",
-	"token": "",
-	"token_secret": "",
-	"api_key": "",
-	"public_path": ""
+	"response_type": "code",
+	"redirect_uri": "",
+	"scope": "https://www.googleapis.com/auth/plus.login",
+	"client_id": "",
+	"client_secret": "",
+	"public_path": "",
+	"grant_type": "authorization_code",
+	"url": {
+		"authPath": "https://accounts.google.com/o/oauth2/auth",
+		"getToken": "https://accounts.google.com/o/oauth2/token",
+		"getProfile": "https://www.googleapis.com/userinfo/v2/me",
+		"getFriends": false,
+		"getActivities": false,
+		"getSleep": false,
+		"getPhysiological": false,
+		"getNutrition": false
+	}
 }

@@ -1,0 +1,21 @@
+{
+	"response_type": "code",
+	"oauth_callback": "",
+	"oauthConsumerKey": "",
+	"clientSecretKey": "",
+	"grant_type": "authorization_code",
+	"auth_PIN": "",
+	"url": {
+		"preAuth": "https://api.fitbit.com/oauth/request_token",
+		"authPath": "https://www.fitbit.com/oauth/authenticate",
+		"authClientAccessPath": "http://www.fitbit.com/oauth/oauth_allow",
+		"allowPath": "https://www.fitbit.com/oauth?oauth_token={replaceOauthToken}&display=&authentication=true&oauth_allow=Allow",
+		"getToken": "",
+		"getProfile": "",
+		"getFriends": false,
+		"getActivities": false,
+		"getSleep": false,
+		"getPhysiological": false,
+		"getNutrition": false
+	}
+}

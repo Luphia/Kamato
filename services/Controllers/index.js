@@ -3,8 +3,7 @@ var index = function(req, res){
 };
 
 var filters = require('./filters.js'),
-	google = require('./google.js'),
-	facebook = require('./facebook.js'),
+	passport = require('./passport.js'),
 	oauth2 = require('./oauth2.js'),
 	user = require('./user.js'),
 	easyDB = require('./easyDB.js');
@@ -12,10 +11,7 @@ var filters = require('./filters.js'),
 var log4js, db;
 
 module.exports = function(_config, _log4js) {
-	var serverConfig = _config.get('server') || {},
-		googleConfig = _config.get('google') || {},
-		facebookConfig = _config.get('facebook') || {},
-		easyDBConfig = _config.get('mongo') || {};
+	var easyDBConfig = _config.get('mongo') || {};
 
 	log4js = _log4js;
 
@@ -25,22 +21,15 @@ module.exports = function(_config, _log4js) {
 		hack: log4js.getLogger('Kamato.HACK')
 	};
 
-	googleConfig.callbackURL = serverConfig.url + "auth/google/return";
-	googleConfig.clientID = googleConfig.client_id;
-	googleConfig.clientSecret = googleConfig.client_secret;
-	facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
-
+	passport.init(_config, logger);
 	filters.init(_config, logger);
-	google.init(googleConfig, logger);
-	facebook.init(facebookConfig, logger);
 	easyDB.init(easyDBConfig, logger);
 	user.init({userTable: "userprofile"}, easyDB, logger);
 
 	return {
 		index: index,
 		filters: filters,
-		google: google,
-		facebook: facebook,
+		passport: passport,
 		oauth2: oauth2,
 		user: user,
 		easyDB: easyDB

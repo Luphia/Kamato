@@ -103,7 +103,7 @@ var start = function() {
 	router.get('/oauth/renew/:token', controllers.oauth2.renewToken);
 
 	router.all('/oauth2/*', controllers.oauth2.callback);
-	router.get('/public/*', controllers.google.file);
+	router.get('/public/*', controllers.passport.file);
 	router.get('/secret/*', app.oauth.authorise(), function (req, res) {
 		res.send('Secret area');
 	});
@@ -117,14 +117,9 @@ var start = function() {
 	router.get('/me', controllers.user.data);
 	router.post('/login', controllers.user.login);
 
-	// google auth
-	router.get('/auth/google', controllers.google.auth);
-	router.get('/auth/google/return', controllers.google.authReturn);
-
-	// facebook auth
-	router.get('/auth/facebook', controllers.facebook.auth);
-	router.get('/auth/facebook/return', controllers.facebook.authReturn);
-
+	// OAuth2
+	router.get('/auth/:platform', controllers.passport.auth);
+	router.get('/auth/:platform/return', controllers.passport.authReturn);
 
 	// http
 	server.listen(app.get('port'), function () {

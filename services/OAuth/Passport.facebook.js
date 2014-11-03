@@ -6,7 +6,7 @@
 	var oauth = new require('./services/Objects/Passport.js')();
 	oauth.getAuthLink();
 
-	var token = oauth.getToken({"code":"4/agfqHCbgBTFAWWvW7Rgj6zRjVsX_lbseaIhWRBlxwcc.4jZGqNanlTcUgrKXntQAax1O9SK_kgI","authuser":"0","num_sessions":"1","prompt":"consent","session_state":"2dbec5095820e81e3ae0e4cf01c599e4128e6d6b..3e50"});
+	var token = oauth.getToken();
 
 	oauth.getProfile(token);
 	oauth.getFriends(token);
@@ -29,28 +29,10 @@ var parseQuery = function(data) {
 	}
 	return tmp.join("&");
 };
-var testconfig = {
-	"response_type": "code",
-	"redirect_uri": "https://simple.tanpopo.cc/auth/google/return",
-	"scope": "https://www.googleapis.com/auth/plus.login",
-	"client_id": "964145913352-d8i2c39q3bfkhrhe494i9imk0tnf9jsi.apps.googleusercontent.com",
-	"client_secret": "_tD4b3CLLh04UiPQJF_2SQI9",
-	"grant_type": "authorization_code",
-	"url": {
-		"authPath": "https://accounts.google.com/o/oauth2/auth",
-		"getToken": "https://accounts.google.com/o/oauth2/token",
-		"getProfile": "https://www.googleapis.com/userinfo/v2/me",
-		"getFriends": false,
-		"getActivities": false,
-		"getSleep": false,
-		"getPhysiological": false,
-		"getNutrition": false
-	}
-};
 
-module.exports = function(_type, _config) {
-	var init = function(type, config) {
-		this.type = type;
+module.exports = function(_config) {
+	var init = function(config) {
+
 		if(_config) {
 			this.config = config;
 		}
@@ -168,7 +150,7 @@ module.exports = function(_type, _config) {
 		"getSleep": getSleep,
 		"getPhysiological": getPhysiological
 	};
-	return passport.init(_type, _config);
+	return passport.init(_config);
 };
 
 

@@ -106,6 +106,18 @@ module.exports = {
 			_res.status(404);
 			return _res.render('error404', querystring.parse('path=' + _req.originalUrl.substr(1)));
 		}
-		_res.jsonp(_res.result.toJSON());
+
+		var rs = _res.result.toJSON();
+		switch(rs.result) {
+			case 3:
+				_res.writeHead(307, {
+					"Location": rs.data.path
+				});
+				_res.end();
+				break;
+			default: 
+				_res.jsonp(rs);
+				break;
+		}
 	}
 };
