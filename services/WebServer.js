@@ -118,8 +118,8 @@ var start = function() {
 	router.post('/login', controllers.user.login);
 
 	// OAuth2
-	router.get('/auth/:platform', controllers.passport.auth);
-	router.get('/auth/:platform/return', controllers.passport.authReturn);
+	router.get('/oauth/:platform', controllers.passport.auth);
+	router.get('/oauth/:platform/return', controllers.passport.authReturn);
 
 	// http
 	server.listen(app.get('port'), function () {
