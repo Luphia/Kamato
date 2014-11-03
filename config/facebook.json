@@ -1,5 +1,15 @@
 {
-	"clientID": "",
-	"clientSecret": "",
-	"callbackURL": "http://localhost/auth/facebook/return"
+	"redirect_uri": "",
+	"client_id": "",
+	"client_secret": "",
+	"url": {
+		"authPath": "https://www.facebook.com/dialog/oauth",
+		"getToken": "https://accounts.google.com/o/oauth2/token",
+		"getProfile": "https://www.googleapis.com/userinfo/v2/me",
+		"getFriends": false,
+		"getActivities": false,
+		"getSleep": false,
+		"getPhysiological": false,
+		"getNutrition": false
+	}
 }

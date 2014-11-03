@@ -1,8 +1,9 @@
 var config, logger,
-	passport = {
-		"google": require('./google.js'),
-		"facebook": require('./facebook.js')
-	};
+	passport = {};
+
+var Result = require('../Objects/Result.js'),
+	Google = require('../OAuth/Passport.google.js'),
+	Facebook = require('../OAuth/Passport.facebook.js');
 
 module.exports = {
 	init: function(_config, _logger) {
@@ -14,28 +15,33 @@ module.exports = {
 			facebookConfig = _config.get('facebook') || {};
 
 		googleConfig.callbackURL = serverConfig.url + "auth/google/return";
-		googleConfig.clientID = googleConfig.client_id;
-		googleConfig.clientSecret = googleConfig.client_secret;
-
 		facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
 
-		passport.google.init(googleConfig, logger);
-		passport.facebook.init(facebookConfig, logger);
+		passport.google = new Google(googleConfig);
+		passport.facebook = new Facebook(facebookConfig);
 	},
 	file: function(req, res, next) {
-		passport.google.file(req, res, next);
+		res.result = new Result();
+		var filename = req.params[0];
+
+		res.result.response(next, 3, '', {
+			"path": passport.google.getPublic(filename)
+		});
 	},
 	auth: function(req, res, next) {
 		res.result = new Result();
 
+		var platform = req.params.platform;
 		res.result.response(next, 3, '', {
-			"path": passport.getAuthLink()
-		});	
+			"path": passport[platform].getAuthLink()
+		});
 	},
-	authReturn: function(req, res) {
+	authReturn: function(req, res, next) {
+		res.result = new Result();
+		var platform = req.params.platform;
+
 		res.write("params:");
 		res.write(JSON.stringify(req.params));
-		res.write("\n");
 		res.write("body:");
 		res.write(JSON.stringify(req.query));
 		res.end();

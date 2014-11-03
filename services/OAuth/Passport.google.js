@@ -43,6 +43,10 @@ module.exports = function(_config) {
 		return this;
 	};
 
+	var getPublic = function(file) {
+		return this.config.public_path + file;
+	};
+
 	// 取得認證連結網址
 	var getAuthLink = function() {
 		var link = this.config.url.authPath;
@@ -140,6 +144,7 @@ module.exports = function(_config) {
 
 	var passport = {
 		"init": init,
+		"getPublic": getPublic,
 		"getAuthLink": getAuthLink,
 		"getToken": getToken,
 		"renewToken": renewToken,
