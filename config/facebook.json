@@ -2,6 +2,8 @@
 	"redirect_uri": "",
 	"client_id": "",
 	"client_secret": "",
+	"scope": "public_profile user_friends email user_likes",
+	"response_type": "code",
 	"url": {
 		"authPath": "https://www.facebook.com/dialog/oauth",
 		"getToken": "https://accounts.google.com/o/oauth2/token",

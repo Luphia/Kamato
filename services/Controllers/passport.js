@@ -38,12 +38,20 @@ module.exports = {
 	},
 	authReturn: function(req, res, next) {
 		res.result = new Result();
-		var platform = req.params.platform;
+		var platform = passport[req.params.platform];
+		var data = req.query;
 
-		res.write("params:");
-		res.write(JSON.stringify(req.params));
-		res.write("body:");
-		res.write(JSON.stringify(req.query));
-		res.end();
+		if(platform) {
+			var token = platform.getToken(data);
+			var user = platform.getProfile(token);
+			res.result.response(next, 1, 'login successful', user);
+		}
+		else {
+			res.write("params:");
+			res.write(JSON.stringify(req.params));
+			res.write("body:");
+			res.write(JSON.stringify(req.query));
+			res.end();
+		}
 	}
 };
