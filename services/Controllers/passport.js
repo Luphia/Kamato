@@ -2,8 +2,7 @@ var config, logger,
 	passport = {};
 
 var Result = require('../Objects/Result.js'),
-	Google = require('../OAuth/Passport.google.js'),
-	Facebook = require('../OAuth/Passport.facebook.js');
+	AuthModule = require('../Passport');
 
 module.exports = {
 	init: function(_config, _logger) {
@@ -17,8 +16,8 @@ module.exports = {
 		googleConfig.callbackURL = serverConfig.url + "auth/google/return";
 		facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
 
-		passport.google = new Google(googleConfig);
-		passport.facebook = new Facebook(facebookConfig);
+		passport.google = new AuthModule.Google(googleConfig);
+		passport.facebook = new AuthModule.Facebook(facebookConfig);
 	},
 	file: function(req, res, next) {
 		res.result = new Result();

@@ -860,10 +860,9 @@ module.exports = {
 	dbListData: function(table, cond) {
 		var rs;
  		var schema = getSchema(table);
-console.log(table);
-console.log(schema);
+
 		if(!schema) { return []; }
-console.log(cond);
+
 		db.collection(table).find(cond).toArray(function(_err, _data) {
 			if(_err) {
 				logger.exception.error(_err);
