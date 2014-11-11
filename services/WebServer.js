@@ -121,6 +121,10 @@ var start = function() {
 	router.get('/oauth/:platform', controllers.passport.auth);
 	router.get('/oauth/:platform/return', controllers.passport.authReturn);
 
+	// DEMO APP
+	router.get('/ui/dashboard/:uid', function(req, res, next) { res.render('demo_summary', req.params); });
+	router.get('/ui/challenge/:uid', function(req, res, next) { res.render('demo_summary', req.params); });
+
 	// http
 	server.listen(app.get('port'), function () {
 		logger.info.info('Server listening at port %d', app.get('port'));
