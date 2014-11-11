@@ -366,9 +366,9 @@ blockquote small {
 #sidebar {
     width: 233px;
     float: left;
-    background: rgba(0,0,0,0.3);
     height: 100%;
-    position: absolute;
+    position: fixed;
+    padding: 20px;
 }
 
 #sidebar .side-menu  {
@@ -1836,12 +1836,12 @@ a.list-group-item.active > .badge,
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 512px) {
     /* --------------------------------------------------------
         Template Blur Skins for Desktop
     -----------------------------------------------------------*/
     [id^="skin-blur-"] {
-        background-size: 100% 100%;
+        background-size: auto 100%;
         background-attachment: fixed;
     }
 
@@ -2015,7 +2015,7 @@ a.list-group-item.active > .badge,
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 512px) {
     /* --------------------------------------------------------
         Template Skins for Mobile
     -----------------------------------------------------------*/
@@ -2092,7 +2092,7 @@ a.list-group-item.active > .badge,
     }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 590px) {
     /* Content */
     #main {
         min-height: 100%;

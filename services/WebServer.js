@@ -123,7 +123,7 @@ var start = function() {
 
 	// DEMO APP
 	router.get('/ui/dashboard/:uid', function(req, res, next) { res.render('demo_summary', req.params); });
-	router.get('/ui/challenge/:uid', function(req, res, next) { res.render('demo_summary', req.params); });
+	router.get('/ui/challenge/:uid', function(req, res, next) { res.render('demo_challenge', req.params); });
 
 	// http
 	server.listen(app.get('port'), function () {

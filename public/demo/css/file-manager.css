@@ -1,3 +1,7 @@
+body {
+	font-family: 微軟正黑體;
+}
+
 .elfinder-dialog-resize {
 	margin-top: .3em;
 }
@@ -1694,4 +1698,94 @@ only screen and (                min-resolution: 2dppx) {
 	.elfinder-ltr .elfinder-navbar {
 		display: none !important;
 	}
+}
+
+/** 自行定義的css */
+.mac-os > table {
+	background-color: rgba(0, 0, 0, .2);
+	border-bottom: solid 1px rgba(255, 255, 255, .3);
+}
+.mac-os td {
+	padding: 0 5px;
+}
+.flag {
+	display: block;
+	width: 80px;
+	color: #fff;
+	text-align: center;
+	background: rgba(255, 0, 0, 0.3);
+	position: relative;
+	margin: 5px 5px 40px;
+	z-index: -8;
+}
+.flag::after {
+	content: '';
+	border-left: solid 40px rgba(255, 0, 0, 0.3);
+	border-right: solid 40px rgba(255, 0, 0, 0.3);
+	border-top: solid 0px rgba(255, 0, 0, 0.3);
+	border-bottom: solid 30px transparent;
+	position: absolute;
+	bottom: -30px;
+	left: 0px;
+}
+.flag.sec {
+	min-height: 80px;
+}
+.flag.sec::after {
+	content: '';
+	border-left: solid 40px transparent;
+	border-right: solid 40px transparent;
+	border-top: solid 30px rgba(255, 0, 0, 0.3);
+	border-bottom: solid 0px transparent;
+	position: absolute;
+	bottom: -30px;
+	left: 0px;
+	z-index: -9;
+}
+.flag .title {
+	background: rgba(255, 0, 0, 0.50);
+	font-size: 1em;
+	color: #fff;
+	line-height: 2em;
+	margin-bottom: 10px;
+}
+.flag .rank {
+	line-height: 50px;
+}
+
+.trophy {
+	display: block;
+	position: relative;
+}
+.fa-trophy_01 {
+	display: block;
+	text-align: center;
+	position: relative;
+}
+.fa-trophy_01::after {
+	content: "\f091";
+	text-shadow: 0px 0px 5px #ee8800;
+}
+.trophy .rank {
+	width: 100%;
+	text-align: center;
+	position: absolute;
+	top: 10px;
+	font-size: 2em;
+	font-weight: bold;
+	color: #f80;
+	z-index: 1;
+	line-height: 1em;
+}
+.flag .target {
+
+}
+.flag .target .value {
+	font-size: 2em;
+	line-height: 1.5em;
+}
+.flag .target .unit {
+	font-size: .8em;
+	text-align: right;
+	padding-right: 10px;
 }

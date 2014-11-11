@@ -1,202 +1,172 @@
-doctype
+doctype html
 html
-head
-    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0')
-    meta(name='format-detection', content='telephone=no')
-    meta(charset='UTF-8')
-    meta(name='description', content='本日健康分析')
-    meta(name='keywords', content='Super Admin, Admin, Template, Bootstrap')
-    title 本日健康分析
-    //
-       CSS 
-    link(href='/demo/css/bootstrap.min.css', rel='stylesheet')
-    link(href='/demo/css/animate.min.css', rel='stylesheet')
-    link(href='/demo/css/font-awesome.min.css', rel='stylesheet')
-    link(href='/demo/css/form.css', rel='stylesheet')
-    link(href='/demo/css/style.css', rel='stylesheet')
-    link(href='/demo/css/icons.css', rel='stylesheet')
-    link(href='/demo/css/generics.css', rel='stylesheet')
-  body#skin-blur-violate(style='width: 800px;')
+  head
+    meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
+    meta(name="format-detection", content="telephone=no")
+    meta(charset="UTF-8")
+    meta(name="description", content="本日健康分析")
+    meta(name="keywords", content="Super Admin, Admin, Template, Bootstrap")
+    title &#26412;&#26085;&#20581;&#24247;&#20998;&#26512;
+    // CSS
+    link(href="/demo/css/bootstrap.min.css", rel="stylesheet")
+    link(href="/demo/css/animate.min.css", rel="stylesheet")
+    link(href="/demo/css/font-awesome.min.css", rel="stylesheet")
+    link(href="/demo/css/form.css", rel="stylesheet")
+    link(href="/demo/css/style.css", rel="stylesheet")
+    link(href="/demo/css/icons.css", rel="stylesheet")
+    link(href="/demo/css/generics.css", rel="stylesheet")
+  body#skin-blur-city(style="width: 600px;")
     header#header.media
-      a.logo.pull-left(href='#') 本日健康分析
-    //
-       Sidebar 
+      a.logo.pull-left(href="#") &#26412;&#26085;&#20581;&#24247;&#20998;&#26512;
+    // Sidebar
     aside#sidebar
-      //
-         Sidbar Widgets 
+      // Sidbar Widgets
       .side-widgets.overflow
-        //
-           Profile Menu 
+        // Profile Menu
         #profile-menu.text-center.s-widget.m-b-25.dropdown
-          //
-             Table Hover 
+          // Table Hover
           #tableHover.block-area
             .table-responsive.overflow
               table.table.table-bordered.table-hover.tile
                 thead
                   tr
-                    th 個人資訊.
+                    th &#20491;&#20154;&#36039;&#35338;.
+                tbody
                   tr
                     td
                       .data
-                        .m-t-5.m-r-100 身高
-                        h2.m-t-20.m-l-35.m-r-35(data-value='175') 175
+                        .m-t-5.m-r-100 &#36523;&#39640;
+                        h2.m-t-20.m-l-35.m-r-35(data-value="175") 175
                         small.m-b-0.m-l-100.m-r-35 cm
                   tr
                     td
                       .data
-                        .m-t-5.m-r-100 體重
-                        h2.m-t-20.m-l-35.m-r-35(data-value='65') 65
+                        .m-t-5.m-r-100 &#39636;&#37325;
+                        h2.m-t-20.m-l-35.m-r-35(data-value="65") 65
                         small.m-b-0.m-l-100.m-r-35 kg
                   tr
                     td
                       .data
-                        .m-t-5.m-r-100 體脂
-                        h2.m-t-20.m-l-35.m-r-35(data-value='16.3') 16.3
+                        .m-t-5.m-r-100 &#39636;&#33026;
+                        h2.m-t-20.m-l-35.m-r-35(data-value="16.3") 16.3
                         small.m-b-0.m-l-100.m-r-35 %
                   tr
                     td
                       .data
-                        .m-t-5.m-r-100 年齡
-                        h2.m-t-20.m-l-35.m-r-35(data-value='33') 33
-                        small.m-b-0.m-l-100.m-r-35 歲
-    //
-       Content 
+                        .m-t-5.m-r-100 &#24180;&#40801;
+                        h2.m-t-20.m-l-35.m-r-35(data-value="33") 33
+                        small.m-b-0.m-l-100.m-r-35 &#27506;
+    // Content
     section#content.container
-      //
-         Projects 
+      // Projects
       .s-widget.m-b-25
         h2.tile-title Projects on going
         .s-widget-body
           .side-border
-            small 運動量
+            small &#36939;&#21205;&#37327;
             .progress.progress-small
-              a.progress-bar.tooltips.progress-bar-info(href='#', data-toggle='tooltip', title='', style='width: 60%;', data-original-title='60%')
+              a.progress-bar.tooltips.progress-bar-info(href="#", data-toggle="tooltip", title="", style="width: 60%;", data-original-title="60%")
                 span.sr-only 60% Complete
           br
           .side-border
             small
-              | 睡眠量
+              | &#30561;&#30496;&#37327;
             .progress.progress-small
-              a.tooltips.progress-bar.progress-bar-danger(href='#', data-toggle='tooltip', title='', style='width: 23%;', data-original-title='23%')
+              a.tooltips.progress-bar.progress-bar-danger(href="#", data-toggle="tooltip", title="", style="width: 23%;", data-original-title="23%")
                 span.sr-only 23% Complete
             span.pull-left
-              img(src='/demo/img/icon/spam.png', alt='過低')
-              | 過低
+              img(src="img/icon/spam.png", alt="過低")
+              | &#36942;&#20302;
           br
           br
           .side-border
             small
-              | 營養攝取量
+              | &#29151;&#39178;&#25885;&#21462;&#37327;
             .progress.progress-small
-              a.tooltips.progress-bar.progress-bar-danger(href='#', data-toggle='tooltip', title='', style='width: 87%;', data-original-title='87%')
+              a.tooltips.progress-bar.progress-bar-danger(href="#", data-toggle="tooltip", title="", style="width: 87%;", data-original-title="87%")
                 span.sr-only 87% Complete
             span.pull-right
-              img(src='/demo/img/icon/spam.png', alt='過高')
-              | 過高
-      //
-         Breadcrumb 
+              img(src="img/icon/spam.png", alt="過高")
+              | &#36942;&#39640;
+      // Breadcrumb
       ol.breadcrumb.hidden-xs
         li
-          a(href='#') Home
+          a(href="#") Home
         li
-          a(href='#') Library
+          a(href="#") Library
         li.active Data
       h4.page-title CHARTS
       .block-area
         h3.block-title FLOT CHART
         .tile
-          h2.tile-title 心跳
+          h2.tile-title &#24515;&#36339;
           .tile-config.dropdown
             ul.dropdown-menu.pull-right.text-right
               li
-                a(href='') Refresh
+                a(href="") Refresh
               li
-                a(href='') Settings
+                a(href="") Settings
           .p-10
-            #line-chart.main-chart(style='height: 250px;')
+            #line-chart.main-chart(style="height: 250px;")
         .tile
-          h2.tile-title 心跳
+          h2.tile-title &#24515;&#36339;
           .tile-config.dropdown
             ul.dropdown-menu.pull-right.text-right
               li
-                a(href='') Refresh
+                a(href="") Refresh
               li
-                a(href='') Settings
+                a(href="") Settings
           .p-10
-            #dynamic-chart.main-chart(style='height: 250px;')
+            #dynamic-chart.main-chart(style="height: 250px;")
         .tile
-          h2.tile-title 30日體重變化
+          h2.tile-title 30&#26085;&#39636;&#37325;&#35722;&#21270;
           .tile-config.dropdown
             ul.dropdown-menu.pull-right.text-right
               li
-                a(href='') Refresh
+                a(href="") Refresh
               li
-                a(href='') Settings
+                a(href="") Settings
           .p-10
-            #bar-chart.main-chart(style='height: 250px;')
+            #bar-chart.main-chart(style="height: 250px;")
     br
-    //
-       Javascript Libraries 
-    //
-       jQuery 
-    script(src='/demo/js/jquery.min.js')
-    //
-       jQuery Library 
-    script(src='/demo/js/jquery-ui.min.js')
-    //
-       jQuery UI 
-    script(src='/demo/js/jquery.easing.1.3.js')
-    //
-       jQuery Easing - Requirred for Lightbox 
-    //
-       Bootstrap 
-    script(src='/demo/js/bootstrap.min.js')
-    //
-       Charts 
-    script(src='/demo/js/charts/jquery.flot.js')
-    //
-       Flot Main 
-    script(src='/demo/js/charts/jquery.flot.time.js')
-    //
-       Flot sub 
-    script(src='/demo/js/charts/jquery.flot.animator.min.js')
-    //
-       Flot sub 
-    script(src='/demo/js/charts/jquery.flot.resize.min.js')
-    //
-       Flot sub - for repaint when resizing the screen 
-    script(src='/demo/js/charts/jquery.flot.orderBar.js')
-    //
-       Flot Bar chart 
-    script(src='/demo/js/charts/jquery.flot.pie.min.js')
-    //
-       Flot Pie chart 
-    script(src='/demo/js/sparkline.min.js')
-    //
-       Sparkline - Tiny charts 
-    script(src='/demo/js/easypiechart.js')
-    //
-       EasyPieChart - Animated Pie Charts 
-    script(src='/demo/js/charts.js')
-    //
-       All the above chart related functions 
-    //
-       Map 
-    script(src='/demo/js/maps/jvectormap.min.js')
-    //
-       jVectorMap main library 
-    script(src='/demo/js/maps/usa.js')
-    //
-       USA Map for jVectorMap 
-    script(src='/demo/js/maps/world.js')
-    //
-       World Map for jVectorMap 
-    //
-       UX 
-    script(src='/demo/js/scroll.min.js')
-    //
-       Custom Scrollbar 
-    //
-       Other 
-    script(src='/demo/js/functions.js')
+    // Javascript Libraries
+    // jQuery
+    script(src="/demo/js/jquery.min.js")
+    // jQuery Library
+    script(src="/demo/js/jquery-ui.min.js")
+    // jQuery UI
+    script(src="/demo/js/jquery.easing.1.3.js")
+    // jQuery Easing - Requirred for Lightbox
+    // Bootstrap
+    script(src="/demo/js/bootstrap.min.js")
+    // Charts
+    script(src="/demo/js/charts/jquery.flot.js")
+    // Flot Main
+    script(src="/demo/js/charts/jquery.flot.time.js")
+    // Flot sub
+    script(src="/demo/js/charts/jquery.flot.animator.min.js")
+    // Flot sub
+    script(src="/demo/js/charts/jquery.flot.resize.min.js")
+    // Flot sub - for repaint when resizing the screen
+    script(src="/demo/js/charts/jquery.flot.orderBar.js")
+    // Flot Bar chart
+    script(src="/demo/js/charts/jquery.flot.pie.min.js")
+    // Flot Pie chart
+    script(src="/demo/js/sparkline.min.js")
+    // Sparkline - Tiny charts
+    script(src="/demo/js/easypiechart.js")
+    // EasyPieChart - Animated Pie Charts
+    script(src="/demo/js/charts.js")
+    // All the above chart related functions
+    // Map
+    script(src="/demo/js/maps/jvectormap.min.js")
+    // jVectorMap main library
+    script(src="/demo/js/maps/usa.js")
+    // USA Map for jVectorMap
+    script(src="/demo/js/maps/world.js")
+    // World Map for jVectorMap
+    // UX
+    script(src="/demo/js/scroll.min.js")
+    // Custom Scrollbar
+    // Other
+    script(src="/demo/js/functions.js")
