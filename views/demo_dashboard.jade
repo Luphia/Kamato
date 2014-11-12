@@ -60,13 +60,16 @@ html
     section#content.container
       // Projects
       .s-widget.m-b-25
-        h2.tile-title Projects on going
+        h2.tile-title 活動分析
         .s-widget-body
           .side-border
             small &#36939;&#21205;&#37327;
             .progress.progress-small
               a.progress-bar.tooltips.progress-bar-info(href="#", data-toggle="tooltip", title="", style="width: 60%;", data-original-title="60%")
                 span.sr-only 60% Complete
+            span.sign.normal
+              i.fa.fa-exclamation-triangle
+
           br
           .side-border
             small
@@ -74,10 +77,9 @@ html
             .progress.progress-small
               a.tooltips.progress-bar.progress-bar-danger(href="#", data-toggle="tooltip", title="", style="width: 23%;", data-original-title="23%")
                 span.sr-only 23% Complete
-            span.pull-left
-              img(src="img/icon/spam.png", alt="過低")
-              | &#36942;&#20302;
-          br
+            span.sign.low
+              i.fa.fa-exclamation-triangle
+              span 過低
           br
           .side-border
             small
@@ -85,9 +87,10 @@ html
             .progress.progress-small
               a.tooltips.progress-bar.progress-bar-danger(href="#", data-toggle="tooltip", title="", style="width: 87%;", data-original-title="87%")
                 span.sr-only 87% Complete
-            span.pull-right
-              img(src="img/icon/spam.png", alt="過高")
-              | &#36942;&#39640;
+            span.sign.high
+              i.fa.fa-exclamation-triangle
+              span 過高
+
       // Breadcrumb
       ol.breadcrumb.hidden-xs
         li
@@ -95,19 +98,10 @@ html
         li
           a(href="#") Library
         li.active Data
-      h4.page-title CHARTS
+
       .block-area
-        h3.block-title FLOT CHART
-        .tile
-          h2.tile-title &#24515;&#36339;
-          .tile-config.dropdown
-            ul.dropdown-menu.pull-right.text-right
-              li
-                a(href="") Refresh
-              li
-                a(href="") Settings
-          .p-10
-            #line-chart.main-chart(style="height: 250px;")
+        h2.tile-title 生理數據
+
         .tile
           h2.tile-title &#24515;&#36339;
           .tile-config.dropdown

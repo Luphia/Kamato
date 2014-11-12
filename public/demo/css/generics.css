@@ -98,3 +98,39 @@
 .m-r-20 { margin-right: 20px !important; }
 .m-r-35 { margin-right: 35px !important; }
 .m-r-100 { margin-right: 100px !important; }
+
+
+.sign {
+	-webkit-animation: blink ease-out 1s;
+	-webkit-animation-iteration-count: infinite;
+    animation: blink ease-out 1s;
+    animation-iteration-count: infinite;
+
+    margin: 5px 0px;
+	background: rgba(255, 255, 255, .5);
+	padding: 3px 10px;
+	border-radius: 5px !important;
+}
+.sign.normal {
+	visibility: hidden;
+}
+.sign.high {
+	color: #f00;
+	border: solid 1px rgba(255, 0, 0, .5);
+}
+.sign.low {
+	color: #59f;
+	border: solid 1px rgba(80, 144, 255, .5);
+
+}
+@-webkit-keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: .5; }
+    100% { opacity: 1; }
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: .5; }
+    100% { opacity: 1; }
+}

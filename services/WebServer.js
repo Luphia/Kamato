@@ -122,7 +122,7 @@ var start = function() {
 	router.get('/oauth/:platform/return', controllers.passport.authReturn);
 
 	// DEMO APP
-	router.get('/ui/dashboard/:uid', function(req, res, next) { res.render('demo_summary', req.params); });
+	router.get('/ui/dashboard/:uid', function(req, res, next) { res.render('demo_dashboard', req.params); });
 	router.get('/ui/challenge/:uid', function(req, res, next) { res.render('demo_challenge', req.params); });
 
 	// http
