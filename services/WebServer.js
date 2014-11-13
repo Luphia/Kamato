@@ -20,18 +20,6 @@ var config,
 	operator,
 	router;
 
-var configure = function(_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
-	config = _config;
-	app = _app;
-	server = _server;
-	secureServer = _secureServer;
-	oauth = _oauth;
-	log4js = _log4js;
-	logger = _logger;
-	router = express.Router();
-	controllers = require('./Controllers')(config, _log4js);
-};
-
 var route = function(type, path, controller, auth) {
 	var method;
 	if(typeof path != 'string') { return false; }
@@ -59,7 +47,19 @@ var route = function(type, path, controller, auth) {
 	}
 
 	return true;
-}
+};
+
+var configure = function(_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
+	config = _config;
+	app = _app;
+	server = _server;
+	secureServer = _secureServer;
+	oauth = _oauth;
+	log4js = _log4js;
+	logger = _logger;
+	router = express.Router();
+	controllers = require('./Controllers')(config, _log4js, route);
+};
 
 var start = function() {
 	app.use(session({
@@ -121,10 +121,6 @@ var start = function() {
 	router.get('/oauth/:platform', controllers.passport.auth);
 	router.get('/oauth/:platform/return', controllers.passport.authReturn);
 
-	// DEMO APP
-	router.get('/ui/dashboard/:uid', function(req, res, next) { res.render('demo_dashboard', req.params); });
-	router.get('/ui/challenge/:uid', function(req, res, next) { res.render('demo_challenge', req.params); });
-
 	// http
 	server.listen(app.get('port'), function () {
 		logger.info.info('Server listening at port %d', app.get('port'));
@@ -136,10 +132,10 @@ var start = function() {
 			logger.info.info('Secure server listening at port %d', app.get('https'));
 		});
 	}
-}
+};
 
 module.exports = {
     configure: configure,
     start: start,
     route: route
-}
+};

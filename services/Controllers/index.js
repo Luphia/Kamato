@@ -6,13 +6,13 @@ var filters = require('./filters.js'),
 	passport = require('./passport.js'),
 	oauth2 = require('./oauth2.js'),
 	user = require('./user.js'),
-	easyDB = require('./easyDB.js');
+	easyDB = require('./easyDB.js'),
+	demo = require('./demo.js');
 
 var log4js, db;
 
-module.exports = function(_config, _log4js) {
+module.exports = function(_config, _log4js, route) {
 	var easyDBConfig = _config.get('mongo') || {};
-
 	log4js = _log4js;
 
 	var logger = {
@@ -25,6 +25,7 @@ module.exports = function(_config, _log4js) {
 	filters.init(_config, logger);
 	easyDB.init(easyDBConfig, logger);
 	user.init({userTable: "userprofile"}, easyDB, logger);
+	demo.init({}, logger, route);
 
 	return {
 		index: index,
@@ -32,6 +33,7 @@ module.exports = function(_config, _log4js) {
 		passport: passport,
 		oauth2: oauth2,
 		user: user,
-		easyDB: easyDB
+		easyDB: easyDB,
+		demo: demo
 	}
 };

@@ -116,6 +116,7 @@ module.exports = {
 				_res.end();
 				break;
 			default: 
+				_res.header("Access-Control-Allow-Origin", "*");
 				_res.jsonp(rs);
 				break;
 		}
