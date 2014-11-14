@@ -12,9 +12,9 @@ var MongoClient = require('mongodb').MongoClient,
 	url = require('url'),
 	Server = require('mongodb').Server,
 	format = require('util').format,
-	Result = require('../Objects/Result.js'),
-	Collection = require('../Objects/Collection.js'),
-	Parser = require('../Objects/Parser.js');
+	Result = require('../Classes/Result.js'),
+	Collection = require('../Classes/Collection.js'),
+	Parser = require('../Classes/Parser.js');
 
 var config,
 	logger,

@@ -1,33 +1,10 @@
 var config, logger,
 	passport = {};
 
-var Result = require('../Objects/Result.js'),
+var Result = require('../Classes/Result.js'),
 	AuthModule = require('../Passport');
 
-module.exports = {
-	init: function(_config, _logger) {
-		config = _config;
-		logger = _logger;
-
-		var serverConfig = _config.get('server') || {},
-			googleConfig = _config.get('google') || {},
-			facebookConfig = _config.get('facebook') || {};
-
-		googleConfig.callbackURL = serverConfig.url + "auth/google/return";
-		facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
-
-		passport.google = new AuthModule.Google(googleConfig);
-		passport.facebook = new AuthModule.Facebook(facebookConfig);
-	},
-	file: function(req, res, next) {
-		res.result = new Result();
-		var filename = req.params[0];
-
-		res.result.response(next, 3, '', {
-			"path": passport.google.getPublic(filename)
-		});
-	},
-	auth: function(req, res, next) {
+var auth = function(req, res, next) {
 		res.result = new Result();
 
 		var platform = req.params.platform;
@@ -35,7 +12,7 @@ module.exports = {
 			"path": passport[platform].getAuthLink()
 		});
 	},
-	authReturn: function(req, res, next) {
+	authReturn = function(req, res, next) {
 		res.result = new Result();
 		var platform = passport[req.params.platform];
 		var data = req.query;
@@ -52,5 +29,32 @@ module.exports = {
 			res.write(JSON.stringify(req.query));
 			res.end();
 		}
+	};
+
+module.exports = {
+	init: function(_config, _logger, route) {
+		config = _config;
+		logger = _logger;
+
+		var serverConfig = _config.get('server') || {},
+			googleConfig = _config.get('google') || {},
+			facebookConfig = _config.get('facebook') || {};
+
+		googleConfig.callbackURL = serverConfig.url + "auth/google/return";
+		facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
+
+		passport.google = new AuthModule.Google(googleConfig);
+		passport.facebook = new AuthModule.Facebook(facebookConfig);
+
+		route.get('/oauth/:platform', auth);
+		route.get('/oauth/:platform/return', authReturn);
+	},
+	file: function(req, res, next) {
+		res.result = new Result();
+		var filename = req.params[0];
+
+		res.result.response(next, 3, '', {
+			"path": passport.google.getPublic(filename)
+		});
 	}
 };

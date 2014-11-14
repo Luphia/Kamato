@@ -1,8 +1,8 @@
 var config,
 	oauth,
 	operator,
-	Result = require('../Objects/Result.js'),
-	Token = require('../Objects/Token.js');
+	Result = require('../Classes/Result.js'),
+	Token = require('../Classes/Token.js');
 
 var setResult = function(result, next, _rs, _msg, _data) {
 	_rs && result.setResult(_rs);

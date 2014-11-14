@@ -1,4 +1,4 @@
-var Result = require('../Objects/Result.js'),
+var Result = require('../Classes/Result.js'),
 	querystring = require('querystring'),
 	config,
 	logger;

@@ -11,7 +11,7 @@
 	}
  */
 
-var Result = require('../Objects/Result.js');
+var Result = require('../Classes/Result.js');
 
 var config,
 	logger;
@@ -162,10 +162,10 @@ var uiDashboard = function(req, res) {
 		config = _config;
 		logger = _logger;
 
-		route('get', '/ui/dashboard/:uid', uiDashboard);
-		route('get', '/ui/challenge/:uid', uiChallenge);
-		route('get', '/ui/dashboard/:uid/json', getDashboard);
-		route('get', '/ui/challenge/:uid/json', getChallenge);
+		route.get('/ui/dashboard/:uid', uiDashboard);
+		route.get('/ui/challenge/:uid', uiChallenge);
+		route.get('/ui/dashboard/:uid/json', getDashboard);
+		route.get('/ui/challenge/:uid/json', getChallenge);
 	};
 
 module.exports = {

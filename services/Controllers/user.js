@@ -11,7 +11,7 @@
 	}
  */
 
-var Result = require('../Objects/Result.js');
+var Result = require('../Classes/Result.js');
 
 var config,
 	logger,

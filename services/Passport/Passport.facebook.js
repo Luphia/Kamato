@@ -3,7 +3,7 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Objects/Passport.js')();
+	var oauth = new require('./services/Passport/Passport.facebook.js')();
 	oauth.getAuthLink();
 
 	var token = oauth.getToken();

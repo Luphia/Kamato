@@ -3,7 +3,7 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Objects/runkeeperPassport.js')();
+	var oauth = new require('./services/Passport/runkeeperPassport.js')();
 	oauth.getAuthLink();
 
 	var token = oauth.getToken({"code":"5ce5c113413144d8beb8abcc90eefa47"});

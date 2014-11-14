@@ -1,0 +1,16 @@
+doctype
+html(ng-app='Pass')
+  head
+    title Kamato
+    link(rel='stylesheet', href='/css/pass.css')
+    script(src='/lib/angular/angular.min.js')
+    script(src='/lib/angular/angular-route.min.js')
+    script(src='/js/pass.js')
+
+  body
+    div(class='main', ng-controller='authentication', ng-init='result=#{result};')
+      div(class='container')
+        div(class='result')
+        div(class='body')
+          div(class='logo', platform='#{platform}')
+          div(class='message') {{message}}

@@ -3,7 +3,7 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Objects/Passport.js')();
+	var oauth = new require('./services/Passport/Passport.google.js')();
 	oauth.getAuthLink();
 
 	var token = oauth.getToken();
@@ -48,7 +48,7 @@ module.exports = function(_config) {
 	};
 
 	// 取得認證連結網址
-	var getAuthLink = function() {
+	var getAuthLink = function(method) {
 		var link = this.config.url.authPath;
 		var params = {
 			"response_type": this.config.response_type,
@@ -56,6 +56,7 @@ module.exports = function(_config) {
 			"scope": this.config.scope,
 			"client_id": this.config.client_id
 		};
+		if(method) { params.redirect_uri += ("/" + method); }
 		return link + "?" + parseQuery(params);
 	};
 

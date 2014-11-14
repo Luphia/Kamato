@@ -21,7 +21,7 @@ var config,
 var redis = require('socket.io-redis'),
 	MongoClient = require('mongodb').MongoClient,
 	url = require('url'),
-	Result = require('./Objects/Result.js');
+	Result = require('./Classes/Result.js');
 
 var usernames = {},
 	numUsers = 0;
@@ -187,8 +187,8 @@ var start = function() {
 	});
 
 	//push service
-	route('all', '/push/', module.exports.pushMessage);
-	route('all', '/push/:channel', module.exports.pushMessage);
+	route.all('/push/', module.exports.pushMessage);
+	route.all('/push/:channel', module.exports.pushMessage);
 
 	logger.info.info("Socket start");
 	active = true;

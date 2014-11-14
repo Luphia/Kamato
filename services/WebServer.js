@@ -20,7 +20,7 @@ var config,
 	operator,
 	router;
 
-var route = function(type, path, controller, auth) {
+var routing = function(type, path, controller, auth) {
 	var method;
 	if(typeof path != 'string') { return false; }
 
@@ -47,6 +47,13 @@ var route = function(type, path, controller, auth) {
 	}
 
 	return true;
+};
+var route = {
+	all: function(path, controller, auth) { routing('all' , path, controller, auth); },
+	get: function(path, controller, auth) { routing('get' , path, controller, auth); },
+	put: function(path, controller, auth) { routing('put' , path, controller, auth); },
+	post: function(path, controller, auth) { routing('post' , path, controller, auth); },
+	delete: function(path, controller, auth) { routing('delete' , path, controller, auth); }
 };
 
 var configure = function(_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
@@ -116,10 +123,6 @@ var start = function() {
 	// user data
 	router.get('/me', controllers.user.data);
 	router.post('/login', controllers.user.login);
-
-	// OAuth2
-	router.get('/oauth/:platform', controllers.passport.auth);
-	router.get('/oauth/:platform/return', controllers.passport.authReturn);
 
 	// http
 	server.listen(app.get('port'), function () {

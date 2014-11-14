@@ -3,7 +3,7 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Objects/jawbonePassport.js')();
+	var oauth = new require('./services/Passport/jawbonePassport.js')();
 	oauth.getAuthLink();
 
 	var token = oauth.getToken({"code":"W3AjaI7_iOV5d9yyEQhHckLsustPIqURZcydp94F-AzbYPZq2li5cjDuWmnec0mgNDtv3sbXTWQBJ9ZshZjnXGnsJP0LaG7m9eAlsF4YQ0Gpsod0ctBiYrcEWeky2T-__WIduvNTO8rTCxGULsWO8Uu-9BxDohRVEk8-KWMwV7BRgiwMc06L-ypEIwFltv7s1el8M-Bg2Nrk8lNHm2EhXf13coH8-zAh"});

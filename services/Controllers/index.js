@@ -21,10 +21,10 @@ module.exports = function(_config, _log4js, route) {
 		hack: log4js.getLogger('Kamato.HACK')
 	};
 
-	passport.init(_config, logger);
-	filters.init(_config, logger);
-	easyDB.init(easyDBConfig, logger);
-	user.init({userTable: "userprofile"}, easyDB, logger);
+	passport.init(_config, logger, route);
+	filters.init(_config, logger, route);
+	easyDB.init(easyDBConfig, logger, route);
+	user.init({userTable: "userprofile"}, logger, route, easyDB);
 	demo.init({}, logger, route);
 
 	return {

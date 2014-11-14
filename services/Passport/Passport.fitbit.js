@@ -3,7 +3,7 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Objects/fitbitPassport.js')();
+	var oauth = new require('./services/Passport/Passport.fitbit.js')();
 	oauth.getPreAuthLink();
 	var temporaryOauthData = oauth.getTemporaryTokenAndSecret();
 	oauth.getAuthLink();
