@@ -1,3 +1,9 @@
+var Mongo = require('mongodb'),
+	Client = Mongo.MongoClient,
+	DB = Mongo.Db,
+	Server = Mongo.Server,
+	Collection = require('../Classes/Collection.js');
+
 module.exports = function() {
 	var connect = function() {},
 		disconnect = function() {},
