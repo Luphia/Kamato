@@ -108,7 +108,7 @@ var tableExist = function(table) {
 };
 var getSchema = function(table) {
 	var rs;
-console.log(table);
+
 	db.collection('_tables').find({'name': table}).toArray(function(_err, _data) {
 		if(_err) {
 			logger.exception.error(_err);
