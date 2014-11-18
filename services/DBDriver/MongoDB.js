@@ -13,6 +13,7 @@
 
 var Collection = require('../Classes/Collection.js'),
 	Mongo = require('mongodb'),
+	Worker = require('../Classes/Worker.js'),
 	Client = Mongo.MongoClient,
 	dbURL,
 	defaultDB = "mongodb://127.0.0.1:27017/",
@@ -94,6 +95,12 @@ module.exports = function() {
 			else { callback(err, (data.length > 0)); }
 		});
 	},
+		tableCount = function(table, callback) {
+		DB.collection(table).count(function(err, count) {
+			if(err) { callback(err); }
+			else { callback(err, count); }
+		});
+	},
 		getSchema = function(table, callback) {
 		DB.collection('_tables').find({'name': table}).toArray(function(err, data) {
 			if(err) { callback(err); }
@@ -123,13 +130,13 @@ module.exports = function() {
 			if(key.indexOf('_', 0) == 0) { continue; }
 			tableSchema.columns[key] = schema[key];
 		}
-		db.collection('_tables').insert(tableSchema, function(err, data) {
+		DB.collection('_tables').insert(tableSchema, function(err, data) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});
 	},
 		getID = function(table, callback) {
-		db.collection('_tables').findAndModify(
+		DB.collection('_tables').findAndModify(
 			{'name': table}, 
 			['max_serial_num'],
 			{$inc: {"max_serial_num": 1}},
@@ -149,10 +156,10 @@ module.exports = function() {
 			return false;
 		}
 		else {
-			db.collection('_tables').find({'name': table}).toArray(function(err, data) {
-				if(err) { callback(err) }
+			DB.collection('_tables').find({'name': table}).toArray(function(err, data) {
+				if(err) { callback(err); }
 				else if(!(data.length > 0) || data[0].max_serial_num < id) {
-					db.collection('_tables').findAndModify(
+					DB.collection('_tables').findAndModify(
 						{'name': table},
 						['max_serial_num'],
 						{$set: {"max_serial_num": id}},
@@ -169,21 +176,85 @@ module.exports = function() {
 			});
 		}
 	},
-		listTable = function() {},
-		getTable = function() {},
-		postTable = function() {},
-		putTable = function() {},
-		deleteTable = function() {},
-		listData = function() {},
-		getData = function() {},
-		postData = function() {},
-		putData = function() {},
-		deleteData = function() {};
+		listTable = function(callback) {
+		DB.collection('_tables').find().toArray(function(err, data) {
+			if(err) { callback(err); }
+			else {
+				var list = [];
+				for(var k in _data) {
+					if(_data[k].name.replace(/^([^.]*)./, "").indexOf('system.', 0) == 0) {
+						// do not show system table
+					}
+					else if(_data[k].name.replace(/^([^.]*)./, "").indexOf('_', 0) == 0) {
+						// do not show protected table
+					}
+					else {
+						list.push(_data[k].name);
+					}
+				}
+
+				callback(err, list);
+			}
+		});
+	},
+		getTable = function(table, callback) {
+		getSchema(table, function(err, schema) {
+			if(err) { callback(err); }
+			else if(schema) {
+				tableCount(table, function(_err, count) {
+					if(_err) { callback(_err); }
+					else {
+						schema.table_length = count;
+						callback(_err, data);
+					}
+				});
+			}
+			else { callback(err, false); }
+		});
+	},
+		postTable = function(table, schema, callback) {
+		tableExist(table, function(err, exist) {
+			if(err) { callback(err); }
+			else {
+				if(exist) {
+					callback(err, false);
+				}
+				else {
+					setSchema(table, schema, callback);
+				}
+			}
+		});
+	},
+		putTable = function(table, schema, callback) {
+		setSchema(table, schema, callback);
+	},
+		deleteTable = function(table, callback) {
+		var todo = 2;
+		var done = function(err) {
+			todo--;
+			if(todo <= 0) { return false; }
+
+			if(err) { callback(err); }
+			else if(todo <= 0) { callback(err, true); }
+		};
+		DB.collection('_tables').findAndModify(
+			{name: table}, [], {}, {remove: true}, done
+		);
+		DB.collection(table).remove(done);
+	},
+		listData = function(table, callback) {
+
+	},
+		getData = function(query, callback) {},
+		postData = function(query, callback) {},
+		putData = function(query, callback) {},
+		deleteData = function(query, callback) {};
 
 	var MongoDB = {
 		connect: connect,
 		disconnect: disconnect,
 		tableExist: tableExist,
+		tableCount: tableCount,
 		getSchema: getSchema,
 		setSchema: setSchema,
 		getID: getID,
