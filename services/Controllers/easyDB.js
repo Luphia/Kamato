@@ -323,9 +323,26 @@ var parseCondiction = function(ast) {
 	!ast && (ast = {});
 	if(ast.operator) {
 		rs = {};
-		switch(ast.operator) {
+		switch(ast.operator.toLowerCase()) {
 			case "=":
 				rs[ast.left] = parseValue(ast.right);
+				break;
+			case "like":
+				var arr = parseValue(ast.right).split('*'),
+					reg = '';
+
+				if(arr.length == 1) {
+					reg = arr[0];
+				}
+				else {
+					if(arr[0].length > 0) { reg = '^' + arr[0] + ".*"; }
+					arr.splice(0, 1);
+
+					reg += arr.join('.*');
+					if(arr[arr.length - 1].length > 0) { reg += '$'; }
+				}
+
+				rs[ast.left] = {"$regex": new RegExp(reg)};
 				break;
 			case "!=":
 				rs[ast.left] = {"$ne": parseValue(ast.right)};
