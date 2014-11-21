@@ -1,5 +1,5 @@
 module.exports = function() {
-	var do = function() {
+	var work = function() {
 
 	}
 	,	done = function(job) {
@@ -40,7 +40,7 @@ module.exports = function() {
 	}
 	,	start = function() {
 		this.active = true;
-		do();
+		work();
 		return this;
 	}
 	,	stop = function() {

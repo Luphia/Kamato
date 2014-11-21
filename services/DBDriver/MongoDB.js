@@ -95,31 +95,31 @@ module.exports = function() {
 		option.host = dbURL.host;
 		option.port = dbURL.port;
 
-		MongoClient.connect(url.format(option), function(err, _db) {
+		Client.connect(url.format(option), function(err, _db) {
 			if(err) { callback(err); }
 			else {
 				callback(err, _db);
 				DB = _db;
 			}
-		);
+		});
 		return true;
-	},
-		disconnect = function() {
+	}
+	,	disconnect = function() {
 		return DB.close();
-	},
-		tableExist = function(table, callback) {
+	}
+	,	tableExist = function(table, callback) {
 		DB.collection('_tables').find({'name': table}).toArray(function(err, data) {
 			if(err) { callback(err); }
 			else { callback(err, (data.length > 0)); }
 		});
-	},
-		tableCount = function(table, callback) {
+	}
+	,	tableCount = function(table, callback) {
 		DB.collection(table).count(function(err, count) {
 			if(err) { callback(err); }
 			else { callback(err, count); }
 		});
-	},
-		getSchema = function(table, callback) {
+	}
+	,	getSchema = function(table, callback) {
 		DB.collection('_tables').find({'name': table}).toArray(function(err, data) {
 			if(err) { callback(err); }
 			else {
@@ -135,8 +135,8 @@ module.exports = function() {
 				callback(err, rs);
 			}
 		});
-	},
-		setSchema = function(table, schema, callback) {
+	}
+	,	setSchema = function(table, schema, callback) {
 		var rs;
 
 		var tableSchema = {
@@ -152,8 +152,8 @@ module.exports = function() {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});
-	},
-		getID = function(table, callback) {
+	}
+	,	getID = function(table, callback) {
 		DB.collection('_tables').findAndModify(
 			{'name': table}, 
 			['max_serial_num'],
@@ -165,8 +165,8 @@ module.exports = function() {
 				else { callback(err, data.max_serial_num + 1); }
 			}
 		);
-	},
-		checkID = function(table, id, callback) {
+	}
+	,	checkID = function(table, id, callback) {
 		id = parseInt(id);
 
 		if(!id) {
@@ -193,8 +193,8 @@ module.exports = function() {
 				}
 			});
 		}
-	},
-		listTable = function(callback) {
+	}
+	,	listTable = function(callback) {
 		DB.collection('_tables').find().toArray(function(err, data) {
 			if(err) { callback(err); }
 			else {
@@ -214,8 +214,8 @@ module.exports = function() {
 				callback(err, list);
 			}
 		});
-	},
-		getTable = function(table, callback) {
+	}
+	,	getTable = function(table, callback) {
 		getSchema(table, function(err, schema) {
 			if(err) { callback(err); }
 			else if(schema) {
@@ -229,8 +229,8 @@ module.exports = function() {
 			}
 			else { callback(err, false); }
 		});
-	},
-		postTable = function(table, schema, callback) {
+	}
+	,	postTable = function(table, schema, callback) {
 		tableExist(table, function(err, exist) {
 			if(err) { callback(err); }
 			else {
@@ -242,11 +242,11 @@ module.exports = function() {
 				}
 			}
 		});
-	},
-		putTable = function(table, schema, callback) {
+	}
+	,	putTable = function(table, schema, callback) {
 		setSchema(table, schema, callback);
-	},
-		deleteTable = function(table, callback) {
+	}
+	,	deleteTable = function(table, callback) {
 		var todo = 2;
 		var done = function(err) {
 			todo--;
@@ -259,16 +259,53 @@ module.exports = function() {
 			{name: table}, [], {}, {remove: true}, done
 		);
 		DB.collection(table).remove(done);
-	},
-		listData = function(table, query, callback) {
+	}
+	,	listData = function(table, query, callback) {
 		var condition = parseCondiction(query);
+		var limit;
 		var find = DB.collection(table).find(condition);
+		if(limit = query.LIMIT) {
+			if(limit.nb > 0) {
+				find = find.limit(limit.nb);
+			}
+			if(limit.from > 0) {
+				find = find.skip(limit.from);
+			}
+		}
 
-	},
-		getData = function(table, query, callback) {},
-		postData = function(table, query, callback) {},
-		putData = function(table, query, callback) {},
-		deleteData = function(table, query, callback) {};
+		find.toArray(function(err, data) {
+			if(err) { callback(err); }
+			else { callback(err, data); }
+		});
+	}
+	,	getData = function(table, query, callback) {
+		var condition = parseCondiction(query);
+		DB.collection(table).find(condition).toArray(function(err, data) {
+			if(err) { callback(err); }
+			else if(data.length > 0) { callback(err, data[0]); }
+			else { callback(err, false); }
+		});
+	}
+	,	postData = function(table, query, data, callback) {
+		DB.collection(table).insert(data, function(err, _data) {
+			if(err) { callback(err); }
+			else { callback(true); }
+		});
+	}
+	,	putData = function(table, query, data, callback) {
+		var condition = parseCondiction(query);
+		db.collection(table).update(condition, data, {w:1, upsert: true}, function(err) {
+			if(err) { callback(err); }
+			else { callback(err, true); }
+		});
+	}
+	,	deleteData = function(table, query, callback) {
+		var condition = parseCondiction(query);
+		db.collection(table).findAndModify(condition, [], {}, {remove: true}, function(err, data) {
+			if(err) { callback(err); }
+			else { callback(err, true); }
+		});
+	};
 
 	var MongoDB = {
 		connect: connect,

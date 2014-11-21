@@ -1762,11 +1762,12 @@ only screen and (                min-resolution: 2dppx) {
 	display: block;
 	text-align: center;
 	position: relative;
-	font-size: 5em;
+	font-size: 4.8em;
+	color: rgba(255, 255, 255, .8);
 }
 .fa-trophy_01::after {
 	content: "\f091";
-	text-shadow: 0px 0px 5px #ee8800;
+	/* text-shadow: 0px 0px 5px #ee8800; */
 }
 .trophy .rank {
 	width: 100%;
