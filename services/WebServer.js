@@ -87,6 +87,7 @@ var start = function() {
 	app.set('port', config.get('server').port);
 	app.set('https', config.get('server').https);
 	app.set('view engine', 'jade');
+	app.engine('html', require('ejs').renderFile);
 
 	app.use(log4js.connectLogger(logger.info, { level: log4js.levels.INFO }));
 	//app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));

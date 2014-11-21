@@ -17,10 +17,10 @@ var config,
 	logger;
 
 var uiDashboard = function(req, res) {
-		res.render('demo_dashboard', req.params);
+		res.render('dashboard.html', req.params);
 	},
 	uiChallenge = function(req, res) {
-		res.render('demo_challenge', req.params);
+		res.render('challenge.html', req.params);
 	},
 	getDashboard = function(req, res, next) {
 		res.result = new Result();

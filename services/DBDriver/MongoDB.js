@@ -21,12 +21,30 @@ var Collection = require('../Classes/Collection.js'),
 
 var parseCondiction = function(ast) {
 	var rs = {};
+
 	!ast && (ast = {});
 	if(ast.operator) {
 		rs = {};
-		switch(ast.operator) {
+		switch(ast.operator.toLowerCase()) {
 			case "=":
 				rs[ast.left] = parseValue(ast.right);
+				break;
+			case "like":
+				var arr = parseValue(ast.right).split('*'),
+					reg = '';
+
+				if(arr.length == 1) {
+					reg = arr[0];
+				}
+				else {
+					if(arr[0].length > 0) { reg = '^' + arr[0] + ".*"; }
+					arr.splice(0, 1);
+
+					reg += arr.join('.*');
+					if(arr[arr.length - 1].length > 0) { reg += '$'; }
+				}
+
+				rs[ast.left] = {"$regex": new RegExp(reg)};
 				break;
 			case "!=":
 				rs[ast.left] = {"$ne": parseValue(ast.right)};
@@ -242,13 +260,15 @@ module.exports = function() {
 		);
 		DB.collection(table).remove(done);
 	},
-		listData = function(table, callback) {
+		listData = function(table, query, callback) {
+		var condition = parseCondiction(query);
+		var find = DB.collection(table).find(condition);
 
 	},
-		getData = function(query, callback) {},
-		postData = function(query, callback) {},
-		putData = function(query, callback) {},
-		deleteData = function(query, callback) {};
+		getData = function(table, query, callback) {},
+		postData = function(table, query, callback) {},
+		putData = function(table, query, callback) {},
+		deleteData = function(table, query, callback) {};
 
 	var MongoDB = {
 		connect: connect,
