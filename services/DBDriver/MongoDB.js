@@ -88,7 +88,7 @@ module.exports = function() {
 		!option && (option = {});
 		!option.url && (option.url = defaultDB);
 
-		dbURL = url.parse(option.uri);
+		dbURL = url.parse(option.url);
 
 		option.protocol = 'mongodb:';
 		option.slashes = true;
