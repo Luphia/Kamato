@@ -74,17 +74,23 @@ var Schema = function(table) {
 
 	return rs;
 };
-
+/*
+var edb=require('./services/Classes/EasyDB.js');
+var db = new edb();
+ */
 module.exports = function(conf) {
 	!conf && (conf = {});
 
 	var init = function(config) {
 		this.config(config);
-		setDriver(config.driver);
+		this.setDriverPath(config.driverPath);
+		this.setDriver(config.driver);
+		return this;
 	}
 	,	setDriver = function(driver) {
 		!!driver && (this.params.driver = driver);
-		this.DB = require(this.params.driverPath + this.params.driver);
+		console.log(this);
+		this.DB = new require(this.params.driverPath + this.params.driver)();
 	}
 	,	setDriverPath = function(path) {
 		!!path && (this.driverPath = path);
