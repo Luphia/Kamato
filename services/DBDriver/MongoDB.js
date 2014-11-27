@@ -286,10 +286,17 @@ module.exports = function() {
 			else { callback(err, false); }
 		});
 	}
-	,	postData = function(table, query, data, callback) {
+	,	postData = function(table, data, callback) {
 		DB.collection(table).insert(data, function(err, _data) {
 			if(err) { callback(err); }
 			else { callback(true); }
+		});
+	}
+	,	updateData = function(table, query, data, callback) {
+		var condition = parseCondiction(query);
+		db.collection(table).update(condition, data, {multi: true}, function(err) {
+			if(err) { callback(err); }
+			else { callback(err, true); }
 		});
 	}
 	,	putData = function(table, query, data, callback) {
@@ -324,6 +331,7 @@ module.exports = function() {
 		listData: listData,
 		getData: getData,
 		postData: postData,
+		updateData: updateData,
 		putData: putData,
 		deleteData: deleteData
 	};
