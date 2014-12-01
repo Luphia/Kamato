@@ -44,12 +44,12 @@ var dbconn = function(option) {
 		require('deasync').runLoopOnce();
 	}
 	return rs;
-}
+};
 var checkTable = function(table) {
 	!table && (table = '');
 	while(table.substr(0, 1) == '_') { table = table.substr(1); }
 	return table;
-}
+};
 var dataType = function(type) {
 	// default type: String;
 	var rtType = "String";
@@ -297,15 +297,19 @@ var checkValue = function(value) {
 
 	return rs;
 };
-var parseValue = function(value) {
+var parseValue = function(value, type) {
 	var rs;
 
 	value = value.trim();
 	if(value.indexOf("'") == 0 || value.indexOf('"') == 0) {
 		rs = value.substr(1, value.length - 2);
+		if(type) { rs = dataTransfer(rs, type); }
 	}
 	else {
-		if(value == 'true') {
+		if(type) {
+			rs = dataTransfer(value, type);
+		}
+		else if(value == 'true') {
 			rs = true;
 		}
 		else if(value == 'false') {
@@ -318,14 +322,15 @@ var parseValue = function(value) {
 
 	return rs;
 };
-var parseCondiction = function(ast) {
+var parseCondiction = function(ast, schema) {
 	var rs = {};
 	!ast && (ast = {});
+	!schema && (schema = {});
 	if(ast.operator) {
 		rs = {};
 		switch(ast.operator.toLowerCase()) {
 			case "=":
-				rs[ast.left] = parseValue(ast.right);
+				rs[ast.left] = parseValue(ast.right, schema[ast.left]);
 				break;
 			case "like":
 				var arr = parseValue(ast.right).split('*'),
@@ -345,26 +350,26 @@ var parseCondiction = function(ast) {
 				rs[ast.left] = {"$regex": new RegExp(reg)};
 				break;
 			case "!=":
-				rs[ast.left] = {"$ne": parseValue(ast.right)};
+				rs[ast.left] = {"$ne": parseValue(ast.right, schema[ast.left])};
 				break;
 			case ">":
-				rs[ast.left] = {"$gt": parseFloat(ast.right)};
+				rs[ast.left] = {"$gt": parseValue(ast.right, schema[ast.left])};
 				break;
 			case ">=":
-				rs[ast.left] = {"$gte": parseFloat(ast.right)};
+				rs[ast.left] = {"$gte": parseValue(ast.right, schema[ast.left])};
 				break;
 			case "<":
-				rs[ast.left] = {"$lt": parseFloat(ast.right)};
+				rs[ast.left] = {"$lt": parseValue(ast.right, schema[ast.left])};
 				break;
 			case "<=":
-				rs[ast.left] = {"$lte": parseFloat(ast.right)};
+				rs[ast.left] = {"$lte": parseValue(ast.right, schema[ast.left])};
 				break;
 		}
 	}
 	else if(ast.logic) {
 		var cond = [];
 		for(var key in ast.terms) {
-			cond.push(parseCondiction(ast.terms[key]));
+			cond.push(parseCondiction(ast.terms[key], schema));
 		}
 
 		switch(ast.logic) {
@@ -713,11 +718,13 @@ module.exports = {
 
 	listData: function(req, res, next) {
 		var table = checkTable(req.params.table),
+			schema = getSchema(table),
 			start = parseInt(req.query.s),
 			end = parseInt(req.query.e),
 			pick = parseInt(req.query.p),
 			query;
-		req.query.q && (query = parseCondiction(Parser.sql2ast(checkQuery(req.query.q)).WHERE));
+
+		req.query.q && (query = parseCondiction(Parser.sql2ast(checkQuery(req.query.q)).WHERE, schema.columns));
 
 		// default pick 50 records
 		if(!(pick >= 0)) {

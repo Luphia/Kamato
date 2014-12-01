@@ -22,15 +22,17 @@ var Collection = require('../Classes/Collection.js'),
 var parseCondiction = function(ast) {
 	var rs = {};
 
+	ast.WHERE && (ast = ast.WHERE);
+
 	!ast && (ast = {});
 	if(ast.operator) {
 		rs = {};
 		switch(ast.operator.toLowerCase()) {
 			case "=":
-				rs[ast.left] = parseValue(ast.right);
+				rs[ast.left] = ast.right;
 				break;
 			case "like":
-				var arr = parseValue(ast.right).split('*'),
+				var arr = ast.right.split('*'),
 					reg = '';
 
 				if(arr.length == 1) {
@@ -47,19 +49,19 @@ var parseCondiction = function(ast) {
 				rs[ast.left] = {"$regex": new RegExp(reg)};
 				break;
 			case "!=":
-				rs[ast.left] = {"$ne": parseValue(ast.right)};
+				rs[ast.left] = {"$ne": ast.right};
 				break;
 			case ">":
-				rs[ast.left] = {"$gt": parseFloat(ast.right)};
+				rs[ast.left] = {"$gt": ast.right};
 				break;
 			case ">=":
-				rs[ast.left] = {"$gte": parseFloat(ast.right)};
+				rs[ast.left] = {"$gte": ast.right};
 				break;
 			case "<":
-				rs[ast.left] = {"$lt": parseFloat(ast.right)};
+				rs[ast.left] = {"$lt": ast.right};
 				break;
 			case "<=":
-				rs[ast.left] = {"$lte": parseFloat(ast.right)};
+				rs[ast.left] = {"$lte": ast.right};
 				break;
 		}
 	}
@@ -199,15 +201,15 @@ module.exports = function() {
 			if(err) { callback(err); }
 			else {
 				var list = [];
-				for(var k in _data) {
-					if(_data[k].name.replace(/^([^.]*)./, "").indexOf('system.', 0) == 0) {
+				for(var k in data) {
+					if(data[k].name.replace(/^([^.]*)./, "").indexOf('system.', 0) == 0) {
 						// do not show system table
 					}
-					else if(_data[k].name.replace(/^([^.]*)./, "").indexOf('_', 0) == 0) {
+					else if(data[k].name.replace(/^([^.]*)./, "").indexOf('_', 0) == 0) {
 						// do not show protected table
 					}
 					else {
-						list.push(_data[k].name);
+						list.push(data[k].name);
 					}
 				}
 
@@ -252,7 +254,7 @@ module.exports = function() {
 			todo--;
 			if(todo <= 0) { return false; }
 
-			if(err) { callback(err); }
+			if(err) { callback(err); todo = 0; }
 			else if(todo <= 0) { callback(err, true); }
 		};
 		DB.collection('_tables').findAndModify(
@@ -289,7 +291,7 @@ module.exports = function() {
 	,	postData = function(table, data, callback) {
 		DB.collection(table).insert(data, function(err, _data) {
 			if(err) { callback(err); }
-			else { callback(true); }
+			else { callback(err, true); }
 		});
 	}
 	,	updateData = function(table, query, data, callback) {

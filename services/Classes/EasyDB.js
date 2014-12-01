@@ -43,6 +43,127 @@ var Schema = function(table) {
 	else { rs = dataType(typeof value); }
 	return rs;
 }
+,	dataTransfer = function(value, type) {
+	if(typeof type != "string") { return checkValue(value); }
+	var rs = value;
+	if(value === null) { return null; }
+
+	switch(type) {
+		case "String":
+			if(!value) {
+				rs = "";
+			}
+			else {
+				rs = value.toString();
+			}
+			break;
+
+		case "Number":
+			rs = isNaN(parseFloat(value))? null: parseFloat(value);
+			break;
+
+		case "Date":
+			rs = isNaN(new Date(value))? null: new Date(value);
+			break;
+
+		case "Boolean":
+			if(typeof value == 'string') { value = value.toLowerCase(); }
+			switch(value) {
+				case true:
+				case "true":
+				case "t":
+				case 1:
+				case "1":
+					rs = true;
+					break;
+
+				case false:
+				case "false":
+				case "f":
+				case 0:
+				case "0":
+					rs = false;
+					break;
+
+				default:
+					rs = null;
+					break;
+			}
+
+			break;
+
+		case "JSON":
+			rs = typeof value == 'object'? value: {};
+			break;
+
+		case "Buffer":
+			break;
+	}
+
+	return rs;
+}
+,	parseData = function(data) {
+	var type = typeof(data),
+		rs = {};
+
+	if(type != 'object') {
+		key = '_' + type;
+		rs[key] = data;
+	}
+	else {
+		rs = data;
+	}
+
+	return rs;
+}
+,	checkValue = function(value) {
+	var rs;
+
+	if( /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(value) ) { rs = parseFloat(value); }
+	else if( !isNaN(Date.parse(value)) ) { rs = new Date(value); }
+	else { rs = value; }
+
+	return rs;
+}
+,	parseValue = function(value, type) {
+	var rs;
+
+	value = value.trim();
+	if(value.indexOf("'") == 0 || value.indexOf('"') == 0) {
+		rs = value.substr(1, value.length - 2);
+		if(type) { rs = dataTransfer(rs, type); }
+	}
+	else {
+		if(type) {
+			rs = dataTransfer(value, type);
+		}
+		else if(value == 'true') {
+			rs = true;
+		}
+		else if(value == 'false') {
+			rs = false;
+		}
+		else {
+			rs = parseFloat(value);
+		}
+	}
+
+	return rs;
+}
+var preCondiction = function(ast, schema) {
+	!ast && (ast = {});
+	!schema && (schema = {});
+	if(ast.operator) {
+		ast.right = parseValue(ast.right, schema[ast.left]);
+	}
+	else if(ast.logic) {
+		for(var key in ast.terms) {
+			ast.terms[key] = preCondiction(ast.terms[key], schema);
+		}
+	}
+
+	return ast;
+}
 ,	parseSet = function(set) {
 	var rs = {};
 	for(var key in set) {
@@ -77,6 +198,13 @@ var Schema = function(table) {
 /*
 var edb=require('./services/Classes/EasyDB.js');
 var db = new edb();
+db.connect({url: 'mongodb://10.10.23.31:27010/easyDB'})
+db.listTable()
+db.postTable('user', {name: 'String', birth: 'Date'})
+db.postData('user', {name: 'A', birth: '1982-04-01'})
+db.postData('user', {name: 'B', birth: '1988-09-18'})
+db.postData('user', {name: 'B', birth: '1995-08-23'})
+db.listData('user', "birth < '1990-01-01' and birth > '1984-01-01'");
  */
 module.exports = function(conf) {
 	!conf && (conf = {});
@@ -132,8 +260,8 @@ module.exports = function(conf) {
 				break;
 			case "UPDATE":
 				var table = query.UPDATE[0].table;
-					schema = this.getSchema(table),
-					cond = parseCondiction(query.WHERE),
+					schema = this.getSchema(table).columns,
+					cond = preCondiction(query.WHERE),
 					rowData = compareSchema( parseSet(query.SET), schema );
 				db.collection(table).update(cond, {$set: rowData}, {multi: true, upsert: true}, function(_err, _data) {
 					if(_err) {
@@ -147,7 +275,7 @@ module.exports = function(conf) {
 				break;
 			case "DELETE":
 				var table = query['DELETE FROM'][0].table,
-					cond = parseCondiction(query.WHERE),
+					cond = preCondiction(query.WHERE),
 					limit = query.LIMIT;
 				db.collection(table).remove(cond, {justOne: limit && (limit.nb == 1)}, function(_err, _data) {
 					if(_err) {
@@ -160,7 +288,7 @@ module.exports = function(conf) {
 		}
 	}
 	,	getID = function(table) {
-		var rs;
+		var rs, check;
 		table = checkTable(table);
 
 		this.DB.tableExist(table, function(err, data) {
@@ -172,7 +300,10 @@ module.exports = function(conf) {
 		}
 
 		if(!check) {
-			this.postTable(table);
+			check = undefined;
+			this.postTable(table, function(err, data) {
+				check = err? false: data;
+			});
 		}
 
 		this.DB.getID(table, function(err, data) {
@@ -310,10 +441,37 @@ module.exports = function(conf) {
 	}
 	,	listData = function(table, query) {
 		table = checkTable(table);
-		var rs;
 
-		this.DB.listData(table, query, function(err, data) {
+		if(!query) { query = '' }
+		else {
+			var tmp = query.toLowerCase();
+		
+			if(	
+				tmp.indexOf("select") != 0 &&
+				tmp.indexOf("update") != 0 &&
+				tmp.indexOf("insert") != 0 &&
+				tmp.indexOf("delete") != 0 &&
+				tmp.indexOf("where") != 0
+			) {
+				query = "WHERE " + query;
+			}
+		}
+
+		var rs
+		,	schema = this.getSchema(table).columns
+		,	cond = Parser.sql2ast(query);
+		cond.WHERE = preCondiction( cond.WHERE, schema );
+
+		this.DB.listData(table, cond, function(err, data) {
 			rs = err? false: data;
+			if(err) { rs = false; }
+			else {
+				var collection = new Collection();
+				for(var key in data) {
+					collection.add( compareSchema(data[key], schema) );
+				}
+				rs = collection.toJSON();
+			}
 		});
 
 		while(rs === undefined) {
@@ -322,11 +480,14 @@ module.exports = function(conf) {
 
 		return rs;
 	}
-	,	getData = function(table, query) {
-		var rs;
+	,	getData = function(table, id) {
+		table = checkTable(table);
+		var rs
+		,	schema = this.getSchema(table)
+		,	cond = Parser.sql2ast("WHERE _id = " + id);
 
-		this.DB.getData(table, query, function(err, data) {
-			rs = err? false: data;
+		this.DB.getData(table, cond, function(err, data) {
+			rs = err? false: compareSchema(data, schema);
 		});
 
 		while(rs === undefined) {
@@ -336,8 +497,10 @@ module.exports = function(conf) {
 		return rs;
 	}
 	,	postData = function(table, data) {
-		var check, rs, id;
+		var check, rs, id, schema;
 		table = checkTable(table);
+		schema = this.getSchema(table);
+		data = compareSchema(data, schema);
 
 		id = this.getID(table);
 		data._id = id;
@@ -353,9 +516,20 @@ module.exports = function(conf) {
 	}
 	,	putData = function(table, id, data) {
 		table = checkTable(table);
-		var rs,
-			query = Parser.sql2ast("WHERE id = " + id);
+		var rs, check
+		,	schema = this.getSchema(table)
+		,	query = Parser.sql2ast("WHERE _id = " + id);
+		data = compareSchema(data, schema);
 
+		this.DB.checkID(table, id, function(err, data) {
+			check = err? false: data;
+		});
+
+		while(check === undefined) {
+			require('deasync').runLoopOnce();
+		}
+
+		data._id = id;
 		this.DB.putData(table, query, data, function(err, data) {
 			rs = err? false: true;
 		});
@@ -368,8 +542,8 @@ module.exports = function(conf) {
 	}
 	,	deleteData = function(table, id) {
 		table = checkTable(table);
-		var rs,
-			query = Parser.sql2ast("WHERE id = " + id);
+		var rs
+		,	query = Parser.sql2ast("WHERE _id = " + id);
 
 		this.DB.deleteData(table, query, function(err, data) {
 			rs = err? false: true;
@@ -390,6 +564,9 @@ module.exports = function(conf) {
 		connect: connect,
 		disconnect: disconnect,
 		sql: sql,
+		getID: getID,
+		getSchema: getSchema,
+		setSchema: setSchema,
 		listTable: listTable,
 		getTable: getTable,
 		getTable: getTable,
