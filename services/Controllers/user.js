@@ -33,7 +33,7 @@ module.exports = {
 	},
 	data: function(req, res, next) {
 	    var userData = req.session || {};
-	    req.session.test = 'test session msg and print session';
+	    userData.text = 'test! session msg and print session';
 		userData.ip = req.connection.remoteAddress;
 		res.send(userData);
 	},
