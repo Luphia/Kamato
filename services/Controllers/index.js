@@ -12,7 +12,9 @@ var filters = require('./filters.js'),
 var log4js, db;
 
 module.exports = function(_config, _log4js, route) {
-	var easyDBConfig = _config.get('mongo') || {};
+	var easyDBConfig = _config.get('mongo') || {}
+	,	userConfig = {"userTable": "users", "driver": "EasyMongo", "option": {"url": easyDBConfig.uri}};
+
 	log4js = _log4js;
 
 	var logger = {
@@ -24,7 +26,7 @@ module.exports = function(_config, _log4js, route) {
 	passport.init(_config, logger, route);
 	filters.init(_config, logger, route);
 	easyDB.init(easyDBConfig, logger, route);
-	user.init({userTable: "userprofile"}, logger, route, easyDB);
+	user.init(userConfig, logger, route);
 	demo.init({}, logger, route);
 
 	return {

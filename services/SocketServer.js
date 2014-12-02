@@ -11,6 +11,7 @@
 var config,
 	server,
 	secureServer,
+    session,
 	io,
 	logger,
 	route,
@@ -32,10 +33,11 @@ var session = require('express-session'),
 var usernames = {},
 	numUsers = 0;
 
-var configure = function (_config, _server, _secureServer, _logger, _route) {
+var configure = function (_config, _server, _secureServer, _session, _logger, _route) {
     config = _config;
     server = _server;
     secureServer = _secureServer;
+    session = _session;
     logger = _logger;
     route = _route;
 

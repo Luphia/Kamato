@@ -238,7 +238,6 @@ module.exports = function(conf) {
 	}
 	,	setDriver = function(driver) {
 		!!driver && (this.params.driver = driver);
-		console.log(this);
 		this.DB = new require(this.params.driverPath + this.params.driver)();
 	}
 	,	setDriverPath = function(path) {

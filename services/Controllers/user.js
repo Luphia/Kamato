@@ -11,17 +11,25 @@
 	}
  */
 
-var Result = require('../Classes/Result.js');
+var Result = require('../Classes/Result.js')
+,	UserManager = require('../Classes/UserManager.js')
+,	EasyDB = require('../Classes/EasyDB.js');
 
-var config,
-	logger,
-	easyDB;
+var config
+,	logger
+,	easyDB
+,	UserManager;
 
 module.exports = {
-	init: function(_config, _db, _logger) {
+	init: function(_config, _logger, _route) {
 		config = _config;
-		easyDB = _db;
 		logger = _logger;
+		easyDB = new EasyDB(config);
+		easyDB.connect(config.option);
+		userManager = new UserManager(easyDB);
+
+		_route.get('/me', module.exports.data);
+		_route.post('/login', module.exports.login);
 	},
 	data: function(req, res, next) {
 	    var userData = req.session || {};

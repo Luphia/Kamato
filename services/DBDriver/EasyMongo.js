@@ -5,7 +5,7 @@
 	}
 
 	option: {
-		uri: "mongodb://127.0.0.1:27017/",
+		url: "mongodb://127.0.0.1:27017/",
 		user: null,
 		pass: null
 	}
@@ -13,6 +13,7 @@
 
 var Collection = require('../Classes/Collection.js'),
 	Mongo = require('mongodb'),
+	url = require('url'),
 	Worker = require('../Classes/Worker.js'),
 	Client = Mongo.MongoClient,
 	dbURL,
@@ -310,7 +311,7 @@ module.exports = function() {
 	}
 	,	deleteData = function(table, query, callback) {
 		var condition = parseCondition(query);
-console.log(condition);//--
+
 		DB.collection(table).remove(condition, {}, function(err, data) {
 			if(err) { callback(err); }
 			else { callback(err, true); }

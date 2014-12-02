@@ -607,7 +607,7 @@ module.exports = {
 				});
 				break;
 			case "INSERT1":
-				var table = checkTable( query['DELETE FROM'][0].table ),
+				var table = checkTable( query['DELETE FROM'][0].table );
 				break;
 			case "DELETE1":
 				var table = checkTable( query['DELETE FROM'][0].table ),
