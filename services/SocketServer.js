@@ -23,6 +23,12 @@ var redis = require('socket.io-redis'),
 	url = require('url'),
 	Result = require('./Classes/Result.js');
 
+var session = require('express-session'),
+    RedisStore = require('connect-redis')(session),
+    RedisSession,
+    socketHandshake = require('socket.io-handshake'),
+    cookieParser = require('cookie-parser');
+
 var usernames = {},
 	numUsers = 0;
 
@@ -32,24 +38,14 @@ var configure = function (_config, _server, _secureServer, _logger, _route) {
     secureServer = _secureServer;
     logger = _logger;
     route = _route;
+
+    RedisSession = new RedisStore();
     io = require('socket.io').listen(server);
     io.adapter(redis(config.get('redis')));
     secureServer && (io.listen(secureServer));
 
     db = dbconn(config.get('mongo'));
 };
-
-//var cookie = require('cookie'),
-//    session = require('express-session'),
-//    RedisStore = require('connect-redis')(session),
-//    RedisSession = new RedisStore(configure.redis),
-//    expressSession = require('express-session');
-
-var session = require('express-session'),
-    RedisStore = require('connect-redis')(session),
-    RedisSession = new RedisStore(configure.redis),// Q1 configure.redis ??
-    socketHandshake = require('socket.io-handshake'),
-    cookieParser = require('cookie-parser');
 
 var dbconn = function (option) {
     var rs,
@@ -86,34 +82,6 @@ var start = function () {
         console.log(socket.handshake.sessionID);
         console.log(session.test);
         console.log(session.ip);
-
-        //var cookies = cookie.parse(socket.request.headers.cookie);
-        //var ssid = cookies['connect.sid'];
-        //if (ssid) {
-        //    var regex = /^s\:(.+)\..+$/;
-        //    regex.exec(ssid);
-        //    var sid = RedisSession.prefix + RegExp.$1;
-
-        //    handshake.sessionID = RegExp.$1;
-        //    handshake.sessionStore = RedisSession;
-
-        //    //handshake.sessionStore = RedisSession;
-        //    //handshake.sessionStore.get(handshake.sessionID, function (err, data) {
-        //    //    handshake.session = new expressSession.Session(handshake, data);
-        //    //    console.log(handshake.session);
-        //    //});
-
-        //    //handshake.sessionStore.client.get(sid, function (err, result) {
-        //    //    var aa = cookieParser.signedCookie(result, config.get('server').secret);
-        //    //    var bb = cookieParser.signedCookies(cookies, secret);
-        //    //    console.log(aa);
-        //    //    //var a = [];
-        //    //    //a.push(result);
-        //    //    handshake.session = result;
-        //    //    console.log(handshake.session);
-        //    //});
-
-        //};
 
         var addedUser = false;
         socket.channel = [];
