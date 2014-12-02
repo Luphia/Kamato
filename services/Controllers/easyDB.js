@@ -422,20 +422,32 @@ var parseInsert = function(columns, values, schema) {
 	!schema && (schema = {});
 
 	var data = [];
-	if(values[0].length > 0) {
 
+	for(var key in values) {
+		var tmp = parseSingleInsert(columns, values[key], schema);
+		tmp && data.push( tmp );
+	}
+
+	return data;
+};
+var parseSingleInsert = function(columns, values, schema) {
+	var tmp = {};
+	if(columns && columns.length > 0) {
+		for(var key in columns) {
+			tmp[columns[key]] = values[key];
+		}
 	}
 	else {
-		if(columns.length > 0) {
+		var n = 0;
+		for(var key in schema) {
+			if( values[n] === undefined ) { break; }
+			else { tmp[key] = values[n++]; }
+		}
 
-		}
-		else {
-			var schemaArr = [];
-			for(var key in schema) {
-				schemaArr.push({"name": key, "type": schema[key]});
-			}
-		}
+		if(n == 0) { return undefined; }
 	}
+
+	return tmp;
 };
 var dataTransfer = function(value, type) {
 	if(typeof type != "string") { return checkValue(value); }
@@ -587,7 +599,7 @@ module.exports = {
 
 		query.hasOwnProperty("SELECT") && (operate = "SELECT" + query.SELECT.length);
 		query.hasOwnProperty("UPDATE") && (operate = "UPDATE" + query.UPDATE.length);
-		query.hasOwnProperty("INSERT INTO") && (operate = "INSERT" + query['INSERT INTO'].length);
+		query.hasOwnProperty("INSERT INTO") && (operate = "INSERT" + 1);
 		query.hasOwnProperty("DELETE FROM") && (operate = "DELETE" + query['DELETE FROM'].length);
 
 		switch(operate) {
@@ -607,7 +619,28 @@ module.exports = {
 				});
 				break;
 			case "INSERT1":
-				var table = checkTable( query['DELETE FROM'][0].table );
+				var table = checkTable( query['INSERT INTO'].table )
+				,	schema = getSchema(table)
+				,	data = parseInsert(query['INSERT INTO'].columns, query.VALUES, schema);
+
+				if(data.length == 0) { res.result.response(next, 0, 'insert failed'); }
+				else {
+					var id = [];
+					for(var key in data) {
+						data[key] = compareSchema(data[key], schema);
+						data[key]._id = getID(table);
+						id.push(data[key]._id);
+					}
+
+					db.collection(table).insert(data, function(_err, _data) {
+						if(_err) {
+							logger.exception.error(_err);
+							return setResult(res.result, next, 0, 'insert failed');
+						}
+						setResult(res.result, next, 1, 'insert rows: ' + id.join(', '));
+					});
+				}
+
 				break;
 			case "DELETE1":
 				var table = checkTable( query['DELETE FROM'][0].table ),

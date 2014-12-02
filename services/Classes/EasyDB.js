@@ -11,6 +11,20 @@ var driverPath = '../DBDriver/'
 	}
  */
 
+ /*
+var edb=require('./services/Classes/EasyDB.js');
+var db = new edb();
+db.connect({url: 'mongodb://10.10.23.31:27010/easyDB'})
+db.listTable()
+db.postTable('user', {name: 'String', birth: 'Date'})
+db.postData('user', {name: 'A', birth: '1982-04-01'})
+db.postData('user', {name: 'B', birth: '1988-09-18'})
+db.postData('user', {name: 'B', birth: '1995-08-23'})
+db.listData('user', "birth < '1990-01-01' and birth > '1984-01-01'");
+
+db.postData('user', [{name: 'D', birth: '1982-05-01'}, {name: 'E', birth: '1982-06-01'}, {name: 'F', birth: '1982-07-01'}])
+ */
+
 var Schema = function(table) {
 		return { "name": table, "max_serial_num": 0, "columns": {} };
 	}
@@ -212,21 +226,7 @@ var preCondiction = function(ast, schema) {
 
 	return rs;
 };
-/*
-var edb=require('./services/Classes/EasyDB.js');
-var db = new edb();
-db.connect({url: 'mongodb://10.10.23.31:27010/easyDB'})
-db.listTable()
-db.postTable('user', {name: 'String', birth: 'Date'})
-db.postData('user', {name: 'A', birth: '1982-04-01'})
-db.postData('user', {name: 'B', birth: '1988-09-18'})
-db.postData('user', {name: 'B', birth: '1995-08-23'})
-db.listData('user', "birth < '1990-01-01' and birth > '1984-01-01'");
 
-
-
-db.postData('user', [{name: 'D', birth: '1982-05-01'}, {name: 'E', birth: '1982-06-01'}, {name: 'F', birth: '1982-07-01'}])
- */
 module.exports = function(conf) {
 	!conf && (conf = {});
 
