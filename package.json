@@ -48,7 +48,10 @@
     "passport-google-oauth": ">=0.1.5",
     "deasync": ">=0.0.7",
     "node-rest-client": ">=1.4.1",
-    "request": ">=2.47.0"
+    "request": ">=2.47.0",
+    "debug": "*",
+    "socket.io-handshake":"*",
+    "cookie-parser":"*"
   },
   "devDependencies": {
     "grunt": ">=0.4.5",
