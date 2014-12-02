@@ -416,6 +416,27 @@ var parseSet = function(set) {
 
 	return rs;
 };
+var parseInsert = function(columns, values, schema) {
+	!columns && (columns = []);
+	!values && (values = []);
+	!schema && (schema = {});
+
+	var data = [];
+	if(values[0].length > 0) {
+
+	}
+	else {
+		if(columns.length > 0) {
+
+		}
+		else {
+			var schemaArr = [];
+			for(var key in schema) {
+				schemaArr.push({"name": key, "type": schema[key]});
+			}
+		}
+	}
+};
 var dataTransfer = function(value, type) {
 	if(typeof type != "string") { return checkValue(value); }
 	var rs = value;
@@ -573,9 +594,9 @@ module.exports = {
 			case "SELECT1":
 				break;
 			case "UPDATE1":
-				var table = query.UPDATE[0].table,
+				var table = checkTable( query.UPDATE[0].table ),
 					schema = getSchema(table),
-					cond = parseCondiction(query.WHERE),
+					cond = parseCondiction(query.WHERE, schema.columns),
 					rowData = compareSchema( parseSet(query.SET), schema );
 				db.collection(table).update(cond, {$set: rowData}, {multi: true, upsert: true}, function(_err, _data) {
 					if(_err) {
@@ -586,10 +607,12 @@ module.exports = {
 				});
 				break;
 			case "INSERT1":
+				var table = checkTable( query['DELETE FROM'][0].table ),
 				break;
 			case "DELETE1":
-				var table = query['DELETE FROM'][0].table,
-					cond = parseCondiction(query.WHERE),
+				var table = checkTable( query['DELETE FROM'][0].table ),
+					schema = getSchema(table),
+					cond = parseCondiction(query.WHERE, schema.columns),
 					limit = query.LIMIT;
 				db.collection(table).remove(cond, {justOne: limit && (limit.nb == 1)}, function(_err, _data) {
 					if(_err) {
@@ -801,7 +824,7 @@ module.exports = {
 		var table = checkTable(req.params.table),
 			schema = getSchema(table),
 			query = Parser.sql2ast(checkQuery(req.query.q)),
-			cond = parseCondiction(query.WHERE),
+			cond = parseCondiction(query.WHERE, schema.columns),
 			limit = query.LIMIT,
 			rowData = req.body;
 
@@ -817,8 +840,9 @@ module.exports = {
 	},
 	queryForDelete: function(req, res, next) {
 		var table = checkTable(req.params.table),
+			schema = getSchema(table),
 			query = Parser.sql2ast(checkQuery(req.query.q)),
-			cond = parseCondiction(query.WHERE),
+			cond = parseCondiction(query.WHERE, schema.columns),
 			limit = query.LIMIT;
 
 		db.collection(table).remove(cond, {justOne: (limit && (limit.nb == 1))}, function(_err, _data) {

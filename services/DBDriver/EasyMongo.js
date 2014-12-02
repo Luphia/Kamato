@@ -19,7 +19,7 @@ var Collection = require('../Classes/Collection.js'),
 	defaultDB = "mongodb://127.0.0.1:27017/",
 	DB;
 
-var parseCondiction = function(ast) {
+var parseCondition = function(ast) {
 	var rs = {};
 
 	ast.WHERE && (ast = ast.WHERE);
@@ -68,7 +68,7 @@ var parseCondiction = function(ast) {
 	else if(ast.logic) {
 		var cond = [];
 		for(var key in ast.terms) {
-			cond.push(parseCondiction(ast.terms[key]));
+			cond.push(parseCondition(ast.terms[key]));
 		}
 
 		switch(ast.logic) {
@@ -263,7 +263,7 @@ module.exports = function() {
 		DB.collection(table).remove(done);
 	}
 	,	listData = function(table, query, callback) {
-		var condition = parseCondiction(query);
+		var condition = parseCondition(query);
 		var limit;
 		var find = DB.collection(table).find(condition);
 		if(limit = query.LIMIT) {
@@ -281,7 +281,7 @@ module.exports = function() {
 		});
 	}
 	,	getData = function(table, query, callback) {
-		var condition = parseCondiction(query);
+		var condition = parseCondition(query);
 		DB.collection(table).find(condition).toArray(function(err, data) {
 			if(err) { callback(err); }
 			else if(data.length > 0) { callback(err, data[0]); }
@@ -295,22 +295,23 @@ module.exports = function() {
 		});
 	}
 	,	updateData = function(table, query, data, callback) {
-		var condition = parseCondiction(query);
-		db.collection(table).update(condition, data, {multi: true}, function(err) {
+		var condition = parseCondition(query);
+		DB.collection(table).update(condition, data, {multi: true}, function(err) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});
 	}
 	,	putData = function(table, query, data, callback) {
-		var condition = parseCondiction(query);
-		db.collection(table).update(condition, data, {w:1, upsert: true}, function(err) {
+		var condition = parseCondition(query);
+		DB.collection(table).update(condition, data, {w:1, upsert: true}, function(err) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});
 	}
 	,	deleteData = function(table, query, callback) {
-		var condition = parseCondiction(query);
-		db.collection(table).findAndModify(condition, [], {}, {remove: true}, function(err, data) {
+		var condition = parseCondition(query);
+console.log(condition);//--
+		DB.collection(table).remove(condition, {}, function(err, data) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});

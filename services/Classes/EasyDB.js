@@ -19,6 +19,23 @@ var Schema = function(table) {
 		while(table.substr(0, 1) == '_') { table = table.substr(1); }
 		return table;
 	}
+,	checkSQL = function(sql) {
+	if(!sql || typeof sql != 'string') { return ''; }
+
+	var tmp = sql.toLowerCase();
+
+	if(
+		tmp.indexOf("select") != 0 &&
+		tmp.indexOf("update") != 0 &&
+		tmp.indexOf("insert") != 0 &&
+		tmp.indexOf("delete") != 0 &&
+		tmp.indexOf("where") != 0
+	) {
+		sql = "WHERE " + sql;
+	}
+
+	return sql;
+}
 ,	dataType = function(type) {
 	// default type: String;
 	var rtType = "String";
@@ -205,6 +222,10 @@ db.postData('user', {name: 'A', birth: '1982-04-01'})
 db.postData('user', {name: 'B', birth: '1988-09-18'})
 db.postData('user', {name: 'B', birth: '1995-08-23'})
 db.listData('user', "birth < '1990-01-01' and birth > '1984-01-01'");
+
+
+
+db.postData('user', [{name: 'D', birth: '1982-05-01'}, {name: 'E', birth: '1982-06-01'}, {name: 'F', birth: '1982-07-01'}])
  */
 module.exports = function(conf) {
 	!conf && (conf = {});
@@ -425,6 +446,20 @@ module.exports = function(conf) {
 
 		return rs;
 	}
+	,	cleanTable = function(table) {
+		table = checkTable(table);
+		var rs;
+
+		this.DB.deleteData(table, {}, function(err, data) {
+			rs = err? false: true;
+		});
+
+		while(rs === undefined) {
+			require('deasync').runLoopOnce();
+		}
+
+		return rs;
+	}
 	,	deleteTable = function(table) {
 		table = checkTable(table);
 		var rs;
@@ -444,17 +479,7 @@ module.exports = function(conf) {
 
 		if(!query) { query = '' }
 		else {
-			var tmp = query.toLowerCase();
-		
-			if(	
-				tmp.indexOf("select") != 0 &&
-				tmp.indexOf("update") != 0 &&
-				tmp.indexOf("insert") != 0 &&
-				tmp.indexOf("delete") != 0 &&
-				tmp.indexOf("where") != 0
-			) {
-				query = "WHERE " + query;
-			}
+			query = checkSQL(query);
 		}
 
 		var rs
@@ -497,15 +522,25 @@ module.exports = function(conf) {
 		return rs;
 	}
 	,	postData = function(table, data) {
-		var check, rs, id, schema;
+		var check, rs, schema, id = [];
 		table = checkTable(table);
 		schema = this.getSchema(table);
-		data = compareSchema(data, schema);
 
-		id = this.getID(table);
-		data._id = id;
+		if(data.length > 1) {
+			for(var key in data) {
+				data[key] = compareSchema(data[key], schema);
+				data[key]._id = this.getID(table);
+				id.push(data[key]._id);
+			}
+		}
+		else {
+			data = compareSchema(data, schema);
+			data._id = this.getID(table);
+			id.push(data._id);
+		}
+
 		this.DB.postData(table, data, function(err, data) {
-			rs = err? false: id;
+			rs = err? false: id.join(', ');
 		});
 
 		while(rs === undefined) {
@@ -540,12 +575,29 @@ module.exports = function(conf) {
 
 		return rs;
 	}
-	,	deleteData = function(table, id) {
+	,	deleteData = function(table, query) {
 		table = checkTable(table);
-		var rs
-		,	query = Parser.sql2ast("WHERE _id = " + id);
+		var rs,	cond
+		,	schema = this.getSchema(table);
 
-		this.DB.deleteData(table, query, function(err, data) {
+		if(new RegExp('^[0-9]*$').test(query)) {
+			cond = Parser.sql2ast("WHERE _id = " + query);
+			cond.WHERE = preCondiction( cond.WHERE, schema );
+		}
+		else {
+			query = checkSQL(query);
+
+			cond = Parser.sql2ast(query);
+			cond.WHERE = preCondiction( cond.WHERE, schema );
+		}
+
+		var x = 0;
+		for(var key in cond) {
+			x++;
+		}
+		if(x == 0) { return false; }
+
+		this.DB.deleteData(table, cond, function(err, data) {
 			rs = err? false: true;
 		});
 
@@ -572,6 +624,7 @@ module.exports = function(conf) {
 		getTable: getTable,
 		postTable: postTable,
 		putTable: putTable,
+		cleanTable: cleanTable,
 		deleteTable: deleteTable,
 		listData: listData,
 		getData: getData,
