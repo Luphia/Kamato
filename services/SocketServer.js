@@ -41,7 +41,7 @@ var configure = function (_config, _server, _secureServer, _session, _logger, _r
     logger = _logger;
     route = _route;
 
-    RedisSession = new RedisStore();
+    RedisSession = new RedisStore(config.get('redis'));
     io = require('socket.io').listen(server);
     io.adapter(redis(config.get('redis')));
     secureServer && (io.listen(secureServer));
