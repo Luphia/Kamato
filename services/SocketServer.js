@@ -82,7 +82,7 @@ var start = function () {
     io.on('connection', function (socket) {
         var session = socket.handshake.session;
         console.log(socket.handshake.sessionID);
-        console.log(session.test);
+        console.log(session.text);
         console.log(session.ip);
 
         var addedUser = false;
