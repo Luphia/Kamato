@@ -105,11 +105,8 @@ var start = function() {
 	router.delete('/oauth/token/:token', controllers.oauth2.deleteToken);
 	router.get('/oauth/renew/:token', controllers.oauth2.renewToken);
 
-	router.all('/oauth2/*', controllers.oauth2.callback);
+	// CDN
 	router.get('/public/*', controllers.passport.file);
-	router.get('/secret/*', app.oauth.authorise(), function (req, res) {
-		res.send('Secret area');
-	});
 
 	// easyDB
 	router.all('/db/', app.oauth.authorise(), controllers.easyDB.route);

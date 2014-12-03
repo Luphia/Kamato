@@ -30,6 +30,8 @@ module.exports = {
 
 		_route.get('/me', module.exports.data);
 		_route.post('/login', module.exports.login);
+		_route.get('/oauth2/:platform', module.exports.outerLogin);
+		_route.get('/oauth2/:platform/*', module.exports.outerLogin);
 	},
 	data: function(req, res, next) {
 	    var userData = req.session || {};
@@ -57,6 +59,16 @@ module.exports = {
 	},
 	outerLogin: function(req, res, next) {
 		res.result = new Result();
-		platform = req.params.platform;
+		var params = {};
+
+		for(var key in _req.query) {
+			params[key] = _req.query[key];
+		}
+		for(var key in _req.params) {
+			params[key] = _req.params[key];
+		}
+		
+		res.result.response(next, 1, 'Login with: ' + _req.params.platform, data);
+		//userManager.findByPlatform()
 	}
 };
