@@ -1,6 +1,6 @@
 /*
 	user table:
-		_id, account, password(sha1), picture, google, facebook, fitbit, nikeplus, jawbone, runkeeper
+		_id, account, password(sha1), name, picture, google, facebook, fitbit, nikeplus, jawbone, runkeeper
  */
 var crypto = require('crypto');
 
@@ -69,9 +69,9 @@ module.exports = function (EasyDB) {
 	    } else {
 	        switch (platform) {
 	            case 'google':
-	                db.postData('users', { google: userData });
+	                db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, google: userData });
 	            case 'facebook':
-	                db.postData('users', { facebook: userData });
+	                db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, facebook: userData });
 	            case 'fitbit':
 	            case 'nikeplus':
 	            case 'jawbone':
@@ -135,9 +135,9 @@ module.exports = function (EasyDB) {
 	    if (dbt) {
 	        switch (platform) {
 	            case 'google':
-	                dbt = db.postData('users', { 'google': userData });
+	                dbt = db.postData('users', { google: userData });
 	            case 'facebook':
-	                dbt = db.postData('users', { 'facebook': userData });
+	                dbt = db.postData('users', { facebook: userData });
 	            case 'fitbit':
 	            case 'nikeplus':
 	            case 'jawbone':
