@@ -68,19 +68,10 @@ module.exports = function (EasyDB) {
 	        return false; // 'platform userData exist';
 	    } else {
 
-	        var dbj = '{ name: userData.data[0].name, picture: userData.data[0].picture, ' + platform + ': userData }';
-	        db.postData('users', JSON.parse(dbj));
+	        var dbj = { name: userData.data[0].name, picture: userData.data[0].picture };
+	        dbj[platform] = userData;
+	        db.postData('users', dbj);
 
-	        //switch (platform) {
-	        //    case 'google':
-	        //        db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, google: userData });
-	        //    case 'facebook':
-	        //        db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, facebook: userData });
-	        //    case 'fitbit':
-	        //    case 'nikeplus':
-	        //    case 'jawbone':
-	        //    case 'runkeeper':
-	        //};
 	        return { _id: dbt._id };
 	    };
 	}
@@ -92,17 +83,12 @@ module.exports = function (EasyDB) {
 
 	    var platform = data.platform;
 	    var userData = data.userData;
-	    var dbt = null;
-	    switch (platform) {
-	        case 'google':
-	            dbt = db.listData('users', "google=" + userData).list[0];
-	        case 'facebook':
-	            dbt = db.listData('users', "facebook=" + userData).list[0];
-	        case 'fitbit':
-	        case 'nikeplus':
-	        case 'jawbone':
-	        case 'runkeeper':
-	    };
+
+	    var dbj = {};
+	    dbj[platform] = userData;
+	    db.postData('users', dbj);
+
+	    var dbt = listData('users', dbj).list[0];
 
 	    if (dbt) {
 	        return { _id: dbt._id, name: dbt.name, picture: dbt.picture };
@@ -137,16 +123,9 @@ module.exports = function (EasyDB) {
 
 	    var dbt = db.listData('users', "_id=" + _id).list[0];
 	    if (dbt) {
-	        switch (platform) {
-	            case 'google':
-	                dbt = db.postData('users', { google: userData });
-	            case 'facebook':
-	                dbt = db.postData('users', { facebook: userData });
-	            case 'fitbit':
-	            case 'nikeplus':
-	            case 'jawbone':
-	            case 'runkeeper':
-	        };
+	        var dbj = {};
+	        dbj[platform] = userData;
+	        db.postData('users', dbj);	        
 	        return true;
 	    } else {
 	        return false; // 'not found';
