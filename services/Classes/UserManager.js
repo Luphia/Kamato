@@ -86,7 +86,6 @@ module.exports = function (EasyDB) {
 
 	    var dbj = {};
 	    dbj[platform] = userData;
-	    db.postData('users', dbj);
 
 	    var dbt = listData('users', dbj).list[0];
 
