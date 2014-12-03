@@ -32,15 +32,6 @@ module.exports = {
 		_route.post('/login', module.exports.login);
 		_route.get('/oauth2/:platform', module.exports.outerLogin);
 		_route.get('/oauth2/:platform/*', module.exports.outerLogin);
-
-		_route.get('/logintest', module.exports.logintest); //only test
-		_route.get('/addtest', module.exports.addtest); // only test
-	},
-	addtest: function (req, res, next) {
-	    res.send(userManager.add({ account: '123', password: '456' }));
-	},
-	logintest: function (req, res, next) {
-	    res.send(userManager.login({ account: '123', password: '456' }));
 	},
 	data: function(req, res, next) {
 	    var userData = req.session || {};
