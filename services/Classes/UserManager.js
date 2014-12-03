@@ -67,16 +67,20 @@ module.exports = function (EasyDB) {
 	    if (dbt) {
 	        return false; // 'platform userData exist';
 	    } else {
-	        switch (platform) {
-	            case 'google':
-	                db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, google: userData });
-	            case 'facebook':
-	                db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, facebook: userData });
-	            case 'fitbit':
-	            case 'nikeplus':
-	            case 'jawbone':
-	            case 'runkeeper':
-	        };
+
+	        var dbj = '{ name: userData.data[0].name, picture: userData.data[0].picture, ' + platform + ': userData }';
+	        db.postData('users', JSON.parse(dbj));
+
+	        //switch (platform) {
+	        //    case 'google':
+	        //        db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, google: userData });
+	        //    case 'facebook':
+	        //        db.postData('users', { name: userData.data[0].name, picture: userData.data[0].picture, facebook: userData });
+	        //    case 'fitbit':
+	        //    case 'nikeplus':
+	        //    case 'jawbone':
+	        //    case 'runkeeper':
+	        //};
 	        return { _id: dbt._id };
 	    };
 	}
