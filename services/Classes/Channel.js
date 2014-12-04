@@ -6,9 +6,10 @@
 //         watchallroom,
 //         watchoneroom(room),
 //         sID,
-//         FileBOT(base64, kind, cb)
+//         FileBOT(data, cb) => data={fileid, body, kind }
 
 var fs = require('fs');
+var crypto = require('crypto');
 
 module.exports = function (opt) {
     var init = function (opt) {
@@ -95,18 +96,41 @@ module.exports = function (opt) {
                 cb({ result: 1, info: file });
             };
         });
-
     };
     var FileBOT = function (data, cb) {
-        var base64 = data.body;
+        var fileid = data.fileid;
+        var body = data.body;
         var kind = data.kind;
-        base64_decode(base64, './files/' + kind, function (data) {
+        base64_decode(body, './files/' + kind, function (data) {
+            data['fileid'] = fileid;
+            data['response'] = 'FileBOT';
             cb(data);
         });
     };
 
     //Encrypt BOT Fnc
-    var EncryptBOT = function () {
+    var EncryptBOT = function (data, cb) {
+        var messageid = data.messageid;
+        var method = data.method || 'MD5';
+        var encrypt = data.encrypt;
+        var body = data.body;
+        var response = 'EncryptBOT';
+
+        if (typeof encrypt == 'undefined') {
+            switch (method) {
+                case 'MD5':
+                    data.body = crypto.createHash('md5').update(body).digest('hex');
+                    data['encrypt'] = 'MD5';
+                    data['response'] = 'EncryptBOT';
+                    data['result'] = 1;
+                    data['info'] = '';
+                    cb(data);
+                case 'SHA1':
+            };
+
+        } else {
+            //decrypt
+        };
     };
 
     var channel = {
