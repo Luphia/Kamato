@@ -1,19 +1,34 @@
-﻿// opt => {channel,room, socket, io}
+﻿// opt => {channel,room, socket, io, auto:t/f}
 
-// fnc =>  joinroom,
-//         leaveroom,
-//         changeroom,
+// fnc =>  joinroom(room, cb),
+//         leaveroom(room, cb),
+//         changeroom(room, cb),
 //         watchallroom,
-//         watchoneroom,
+//         watchoneroom(room),
 //         sID,
+//         FileBOT(base64, kind, cb)
+
+var fs = require('fs');
 
 module.exports = function (opt) {
     var init = function (opt) {
         this.io = opt.io || null;
-        this.channel = opt.channel || 'default';
+        this.channel = opt.channel || null;
         this.room = opt.room || 'default';
         this.socket = opt.socket || null;
-        return this;
+        if (opt.auto == true) {
+            return auto(this);
+        } else {
+            return this;
+        };
+    };
+
+    //start
+    var auto = function (object) {
+        var socket = object.socket;
+        var room = object.room;
+        socket.join(room);
+        return object;
     };
 
     //join room
@@ -44,7 +59,7 @@ module.exports = function (opt) {
         });
     };
 
-    //watch all room list from socket.io namespace
+    //watch all room and users list from socket.io namespace
     var watchallroom = function () {
         var io = this.io;
         var socket = this.socket;
@@ -52,7 +67,7 @@ module.exports = function (opt) {
         return io.nsps[name].adapter.rooms;
     };
 
-    //watch one room list from socket.io namespace
+    //watch one room and users list from socket.io namespace
     var watchoneroom = function (room) {
         var io = this.io;
         var socket = this.socket;
@@ -66,6 +81,19 @@ module.exports = function (opt) {
         return socket.handshake.sessionID;
     };
 
+    //File System BOT Fnc
+    function base64_encode(file) {
+        var f = fs.readFileSync(file);
+        return new Buffer(f).toString('base64');
+    };
+    function base64_decode(base64str, file) {
+        var f = new Buffer(base64str, 'base64');
+        fs.writeFileSync(file, f);
+    };
+    var FileBOT = function (base64, kind, cb) {
+        base64_decode(base64, './files/' + kind);
+    };
+
     var channel = {
         init: init,
         joinroom: joinroom,
@@ -73,8 +101,9 @@ module.exports = function (opt) {
         changeroom: changeroom,
         watchallroom: watchallroom,
         watchoneroom: watchoneroom,
-        sID: sID
+        sID: sID,
+        FileBOT: FileBOT
     };
 
     return channel.init(opt);
-}
+};
