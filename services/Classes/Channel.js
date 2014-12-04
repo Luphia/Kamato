@@ -122,13 +122,19 @@ module.exports = function (opt) {
                 case 'MD5':
                     data.body = crypto.createHash('md5').update(body).digest('hex');
                     data['encrypt'] = 'MD5';
-                    data['response'] = 'EncryptBOT';
                     data['result'] = 1;
                     data['info'] = '';
-                    cb(data);
+                    break;
                 case 'SHA1':
+                    data.body = crypto.createHash('sha1').update(body).digest('hex');
+                    data['encrypt'] = 'SHA1';
+                    data['result'] = 1;
+                    data['info'] = '';
+                    break;
             };
-
+            data['response'] = response;
+            delete data.method;
+            cb(data);
         } else {
             //decrypt
         };
