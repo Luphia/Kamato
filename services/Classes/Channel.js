@@ -86,12 +86,27 @@ module.exports = function (opt) {
         var f = fs.readFileSync(file);
         return new Buffer(f).toString('base64');
     };
-    function base64_decode(base64str, file) {
+    function base64_decode(base64str, file, cb) {
         var f = new Buffer(base64str, 'base64');
-        fs.writeFileSync(file, f);
+        fs.writeFile(file, f, function (error) {
+            if (error) {
+                cb({ result: 0, info: file });
+            } else {
+                cb({ result: 1, info: file });
+            };
+        });
+
     };
-    var FileBOT = function (base64, kind, cb) {
-        base64_decode(base64, './files/' + kind);
+    var FileBOT = function (data, cb) {
+        var base64 = data.body;
+        var kind = data.kind;
+        base64_decode(base64, './files/' + kind, function (data) {
+            cb(data);
+        });
+    };
+
+    //Encrypt BOT Fnc
+    var EncryptBOT = function () {
     };
 
     var channel = {
@@ -102,7 +117,8 @@ module.exports = function (opt) {
         watchallroom: watchallroom,
         watchoneroom: watchoneroom,
         sID: sID,
-        FileBOT: FileBOT
+        FileBOT: FileBOT,
+        EncryptBOT: EncryptBOT
     };
 
     return channel.init(opt);
