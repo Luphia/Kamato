@@ -2,12 +2,14 @@ var index = function(req, res){
 	res.render('index');
 };
 
-var filters = require('./filters.js'),
-	passport = require('./passport.js'),
-	oauth2 = require('./oauth2.js'),
-	user = require('./user.js'),
-	easyDB = require('./easyDB.js'),
-	demo = require('./demo.js');
+var filters = require('./filters.js')
+,	passport = require('./passport.js')
+,	oauth2 = require('./oauth2.js')
+,	user = require('./user.js')
+,	easyDB = require('./easyDB.js')
+,	manage = require('./manage.js')
+,	demo = require('./demo.js')
+;
 
 var log4js, db;
 
@@ -27,6 +29,7 @@ module.exports = function(_config, _log4js, route) {
 	filters.init(_config, logger, route);
 	easyDB.init(easyDBConfig, logger, route);
 	user.init(userConfig, logger, route);
+	manage.init(easyDBConfig, logger, route);
 	demo.init({}, logger, route);
 
 	return {

@@ -30,6 +30,9 @@ var Schema = function(table) {
 	}
 ,	checkTable = function(table) {
 		!table && (table = '');
+		table = table.trim();
+		if(table.length == 0) { return false; }
+
 		while(table.substr(0, 1) == '_') { table = table.substr(1); }
 		return table;
 	}
@@ -43,6 +46,7 @@ var Schema = function(table) {
 		tmp.indexOf("update") != 0 &&
 		tmp.indexOf("insert") != 0 &&
 		tmp.indexOf("delete") != 0 &&
+		tmp.indexOf("limit") != 0 &&
 		tmp.indexOf("where") != 0
 	) {
 		sql = "WHERE " + sql;
@@ -311,6 +315,8 @@ module.exports = function(conf) {
 		var rs, check;
 		table = checkTable(table);
 
+		if(!table) { return false; }
+
 		this.DB.tableExist(table, function(err, data) {
 			check = err? false: data;
 		});
@@ -340,8 +346,11 @@ module.exports = function(conf) {
 		var rs;
 		table = checkTable(table);
 
+		if(!table) { return false; }
+
 		this.DB.getSchema(table, function(err, data) {
 			rs = err? false: data;
+			rs._id = 'Number';
 		});
 
 		while(rs === undefined) {
@@ -352,6 +361,8 @@ module.exports = function(conf) {
 	}
 	,	setSchema = function(table, schema) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs
 		,	tableSchema = new Schema(table);
 
@@ -372,6 +383,8 @@ module.exports = function(conf) {
 	}
 	,	setSchemaByValue = function(table, value) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs
 		,	tableSchema = new Schema(table);
 
@@ -405,6 +418,8 @@ module.exports = function(conf) {
 	}
 	,	getTable = function(table) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs;
 
 		this.DB.getTable(table, function(err, data) {
@@ -419,6 +434,8 @@ module.exports = function(conf) {
 	}
 	,	postTable = function(table, schema) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs;
 
 		this.DB.postTable(table, schema, function(err, data) {
@@ -433,6 +450,8 @@ module.exports = function(conf) {
 	}
 	,	putTable = function(table, schema) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs;
 
 		this.DB.putTable(table, schema, function(err, data) {
@@ -447,6 +466,8 @@ module.exports = function(conf) {
 	}
 	,	cleanTable = function(table) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs;
 
 		this.DB.deleteData(table, {}, function(err, data) {
@@ -461,6 +482,8 @@ module.exports = function(conf) {
 	}
 	,	deleteTable = function(table) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs;
 
 		this.DB.deleteTable(table, function(err, data) {
@@ -475,6 +498,7 @@ module.exports = function(conf) {
 	}
 	,	listData = function(table, query) {
 		table = checkTable(table);
+		if(!table) { return false; }
 
 		if(!query) { query = '' }
 		else {
@@ -504,11 +528,46 @@ module.exports = function(conf) {
 
 		return rs;
 	}
+	,	pageData = function(table, query) {
+		table = checkTable(table);
+		if(!table) { return false; }
+
+		if(!query) { query = '' }
+		else {
+			query = checkSQL(query);
+		}
+
+		var rs
+		,	schema = this.getSchema(table).columns
+		,	cond = Parser.sql2ast(query);
+		cond.WHERE = preCondiction( cond.WHERE, schema );
+
+		this.DB.pageData(table, cond, function(err, data) {
+			rs = err? false: data;
+			if(err) { rs = false; }
+			else {
+				var collection = new Collection();
+				for(var key in data) {
+					collection.add( compareSchema(data[key], schema) );
+				}
+				rs = collection.toJSON();
+			}
+		});
+
+		while(rs === undefined) {
+			require('deasync').runLoopOnce();
+		}
+
+		return rs;
+	}
 	,	getData = function(table, id) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs
 		,	schema = this.getSchema(table)
 		,	cond = Parser.sql2ast("WHERE _id = " + id);
+		cond.WHERE = preCondiction(cond.WHERE, schema);
 
 		this.DB.getData(table, cond, function(err, data) {
 			rs = err? false: compareSchema(data, schema);
@@ -523,6 +582,8 @@ module.exports = function(conf) {
 	,	postData = function(table, data) {
 		var check, rs, schema, id = [];
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		schema = this.getSchema(table);
 
 		if(data.length > 1) {
@@ -550,9 +611,12 @@ module.exports = function(conf) {
 	}
 	,	putData = function(table, id, data) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs, check
 		,	schema = this.getSchema(table)
 		,	query = Parser.sql2ast("WHERE _id = " + id);
+		query.WHERE = preCondiction( query.WHERE, schema );
 		data = compareSchema(data, schema);
 
 		this.DB.checkID(table, id, function(err, data) {
@@ -576,6 +640,8 @@ module.exports = function(conf) {
 	}
 	,	deleteData = function(table, query) {
 		table = checkTable(table);
+		if(!table) { return false; }
+
 		var rs,	cond
 		,	schema = this.getSchema(table);
 
@@ -626,6 +692,7 @@ module.exports = function(conf) {
 		cleanTable: cleanTable,
 		deleteTable: deleteTable,
 		listData: listData,
+		pageData: pageData,
 		getData: getData,
 		postData: postData,
 		putData: putData,

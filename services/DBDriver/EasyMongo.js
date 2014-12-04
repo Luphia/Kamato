@@ -20,6 +20,7 @@ var Collection = require('../Classes/Collection.js'),
 	defaultDB = "mongodb://127.0.0.1:27017/",
 	DB;
 
+
 var parseCondition = function(ast) {
 	var rs = {};
 
@@ -281,6 +282,26 @@ module.exports = function() {
 			else { callback(err, data); }
 		});
 	}
+	,	pageData = function(table, query, callback) {
+		var condition = parseCondition(query);
+		var limit;
+
+		if(limit = query.LIMIT) {
+			if(limit.from > 0) {
+				condition['_id'] = {"$lte": limit.from};
+			}
+			if(!limit.nb) {
+				limit.nb = 20;
+			}
+		}
+
+		var find = DB.collection(table).find(condition).sort({'_id': -1}).limit(limit.nb);
+
+		find.toArray(function(err, data) {
+			if(err) { callback(err); }
+			else { callback(err, data); }
+		});
+	}
 	,	getData = function(table, query, callback) {
 		var condition = parseCondition(query);
 		DB.collection(table).find(condition).toArray(function(err, data) {
@@ -333,6 +354,7 @@ module.exports = function() {
 		putTable: putTable,
 		deleteTable: deleteTable,
 		listData: listData,
+		pageData: pageData,
 		getData: getData,
 		postData: postData,
 		updateData: updateData,
