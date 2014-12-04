@@ -1,4 +1,4 @@
-﻿// opt => {channel,room,socket}
+﻿// opt => {channel,room, socket, io}
 
 // fnc =>  joinroom,
 //         leaveroom,
