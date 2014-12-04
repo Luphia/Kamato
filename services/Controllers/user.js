@@ -51,7 +51,7 @@ module.exports = {
         var x = userManager.login(data);
         if (x == false) {
             res.result.response(next, 0, 'Login Fail');
-            res.session = userManager.login(data);
+            res.session = null;
             next();
         } else {
             res.result.response(next, 1, 'Login Success', x);
