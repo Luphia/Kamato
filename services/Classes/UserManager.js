@@ -119,12 +119,12 @@ module.exports = function (EasyDB) {
 	    var _id = data._id;
 	    var platform = data.platform;
 	    var userData = data.userData;
-
+        
 	    var dbt = db.listData('users', "_id=" + _id).list[0];
 	    if (dbt) {
 	        var dbj = {};
 	        dbj[platform] = userData;
-	        db.postData('users', dbj);	        
+	        db.postData('tokens', dbj);
 	        return true;
 	    } else {
 	        return false; // 'not found';
