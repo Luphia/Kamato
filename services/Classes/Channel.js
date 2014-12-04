@@ -7,6 +7,7 @@
 //         watchoneroom(room),
 //         sID,
 //         FileBOT(data, cb) => data={fileid, body, kind }
+//         EncryptBOT(data, cb) => data={messageid, method, body}
 
 var fs = require('fs');
 var crypto = require('crypto');
