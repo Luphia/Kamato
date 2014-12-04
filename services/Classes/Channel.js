@@ -1,4 +1,4 @@
-﻿// opt => {channel,room, socket, io, auto:t/f}
+﻿// opt => {channel, room, socket, io, auto:t/f}
 
 // fnc =>  joinroom(room, cb),
 //         leaveroom(room, cb),
@@ -6,13 +6,26 @@
 //         watchallroom,
 //         watchoneroom(room),
 //         sID,
-//         FileBOT(data, cb) => data={fileid, body, kind }
-//         EncryptBOT(data, cb) => data={messageid, method, body}
+//         FileBOT(data, cb)             => data={Id, body, kind }
+//         EncryptBOT(data, cb)          => data={Id, method, body}
+//         MailBOT(data, cb)             => data={Id, title, mailto, ccto, content}
 
 var fs = require('fs');
 var crypto = require('crypto');
+var nodemailer = require('nodemailer');
 
 module.exports = function (opt) {
+
+    var Mailconfig = {
+        service: 'Gmail',
+        auth: {
+            user: 'playshowiii@gmail.com',
+            pass: 'qazwsxqazwsx'
+        }
+    };
+    // setup MailBOT SMTP transport
+    var transporter = nodemailer.createTransport(Mailconfig);
+
     var init = function (opt) {
         this.io = opt.io || null;
         this.channel = opt.channel || null;
@@ -99,11 +112,11 @@ module.exports = function (opt) {
         });
     };
     var FileBOT = function (data, cb) {
-        var fileid = data.fileid;
+        var Id = data.Id;
         var body = data.body;
         var kind = data.kind;
         base64_decode(body, './files/' + kind, function (data) {
-            data['fileid'] = fileid;
+            data['Id'] = Id;
             data['response'] = 'FileBOT';
             cb(data);
         });
@@ -111,7 +124,7 @@ module.exports = function (opt) {
 
     //Encrypt BOT Fnc
     var EncryptBOT = function (data, cb) {
-        var messageid = data.messageid;
+        var Id = data.Id;
         var method = data.method || 'MD5';
         var encrypt = data.encrypt;
         var body = data.body;
@@ -140,6 +153,35 @@ module.exports = function (opt) {
         };
     };
 
+    //Mail BOT Fnc
+    var MailBOT = function (data, cb) {
+        var Id = data.Id;
+        var mailto = data.mailto;
+        var content = data.content;
+        var response = 'MailBOT';
+        var title = data.title || null;
+        var ccto = data.ccto || null;
+
+        var Mailopt = {
+            from: '資策會測試 ✔ <' + Mailconfig.auth.user + '>', // sender address
+            to: mailto, // list of receivers
+            cc: ccto, // list of receivers
+            subject: title, // Subject line
+            html: content, // html body
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(Mailopt, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Message sent: ' + info.response);
+            };
+        });
+
+    };
+
+
     var channel = {
         init: init,
         joinroom: joinroom,
@@ -149,7 +191,8 @@ module.exports = function (opt) {
         watchoneroom: watchoneroom,
         sID: sID,
         FileBOT: FileBOT,
-        EncryptBOT: EncryptBOT
+        EncryptBOT: EncryptBOT,
+        MailBOT: MailBOT
     };
 
     return channel.init(opt);

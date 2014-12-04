@@ -51,7 +51,8 @@
     "deasync": ">=0.0.7",
     "node-rest-client": ">=1.4.1",
     "request": ">=2.47.0",
-    "debug": "*"    
+    "debug": "*",
+    "nodemailer": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.5",
