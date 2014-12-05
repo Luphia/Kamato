@@ -33,8 +33,8 @@ module.exports = {
         _route.get('/login', module.exports.login);
         _route.get('/loginout', module.exports.loginout);
         _route.post('/addtoken', module.exports.addtoken);
-        //_route.post('/register', module.exports.register);
-        //_route.get('/check', module.exports.check);
+        _route.post('/regist', module.exports.regist);
+        _route.get('/check', module.exports.check);
 
         _route.get('/oauth2/:platform', module.exports.outerLogin);
         _route.get('/oauth2/:platform/*', module.exports.outerLogin);
@@ -47,7 +47,7 @@ module.exports = {
     },
     login: function (req, res, next) {
         res.result = new Result();
-        var data = { account: '123', password: '456' } //req.body;
+        var data = req.body;
         var x = userManager.login(data);
         var s = req.session;
         if (x == false) {
@@ -66,20 +66,28 @@ module.exports = {
     },
     addtoken: function (req, res, next) {
         res.result = new Result();
-        var data = { account: '123', password: '456' } //req.body;
-        var x = userManager.login(data);
+        var data = req.body;
+        var x = userManager.addToken(data);
         if (x == false) {
-            res.result.response(next, 0, 'Login Fail');
-            res.session = null;
-            next();
+            res.result.response(next, 0, 'Addtoken Fail');
         } else {
-            res.result.response(next, 1, 'Login Success', x);
-            res.session = x;
-            next();
+            res.result.response(next, 1, 'Addtoken Success', x);
         };
     },
+    regist: function (req, res, next) {
+        res.result = new Result();
+        var data = req.body;
+        var x = userManager.addByPlatform(data);
+        if (x == false) {
+            res.result.response(next, 0, 'Regist Fail');
+        } else {
+            res.result.response(next, 1, 'Regist Success', x);
+        };
+    },
+    check: function (req, res, next) {
+        res.result = new Result();
 
-
+    },
     outerLogin: function (req, res, next) {
         res.result = new Result();
         var params = {};
