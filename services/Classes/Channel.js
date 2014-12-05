@@ -15,7 +15,9 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 
 module.exports = function (opt) {
-
+    var Fileconfig = {
+        folder: './files/'
+    };
     var Mailconfig = {
         service: 'Gmail',
         auth: {
@@ -115,7 +117,7 @@ module.exports = function (opt) {
         var Id = data.Id;
         var body = data.body;
         var kind = data.kind;
-        base64_decode(body, './files/' + kind, function (data) {
+        base64_decode(body, Fileconfig.folder + kind, function (data) {
             data['Id'] = Id;
             data['response'] = 'FileBOT';
             cb(data);
