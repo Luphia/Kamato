@@ -18,9 +18,7 @@ module.exports = function (EasyDB) {
 	    var account = data.account;
 	    var password = data.password;
 
-	    hash = crypto.createHash('sha1');
-	    hash.update(password);
-	    password = hash.digest('hex');
+	    password = crypto.createHash('sha1').update(password).digest('hex');
 	    var dbt = db.listData('users', "account=" + account).list[0];
 	    if (dbt) {
 	        var vpassword = dbt.password;
