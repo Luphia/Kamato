@@ -30,10 +30,10 @@ module.exports = {
 
         _route.get('/me', module.exports.data);
 
-        _route.get('/login', module.exports.login);
+        _route.post('/login', module.exports.login);
         _route.get('/loginout', module.exports.loginout);
         _route.get('/addtoken', module.exports.addtoken);
-        _route.get('/regist', module.exports.regist);
+        _route.post('/regist', module.exports.regist);
         _route.get('/check', module.exports.check);
 
         _route.get('/oauth2/:platform', module.exports.outerLogin);
