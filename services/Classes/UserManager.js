@@ -14,7 +14,6 @@ module.exports = function (EasyDB) {
 	, login = function (data) {
 	    var db = this.DB;
 
-	    var hash;
 	    var account = data.account;
 	    var password = data.password;
 
@@ -37,19 +36,17 @@ module.exports = function (EasyDB) {
 	, add = function (data) {
 	    var db = this.DB;
 
-	    var hash;
 	    var account = data.account;
 	    var password = data.password;
+	    password = crypto.createHash('sha1').update(password).digest('hex');
 
-	    hash = crypto.createHash('sha1');
-	    hash.update(password);
-	    password = hash.digest('hex');
 	    var dbt = db.listData('users', "account=" + account).list[0];
+
 	    if (dbt) {
 	        return false; // 'account exist';
 	    } else {
-	        db.postData('users', { account: account, password: password });
-	        return { _id: dbt._id };
+	        var id = db.postData('users', { account: account, password: password });
+	        return { _id: id };
 	    };
 	}
 
@@ -68,9 +65,9 @@ module.exports = function (EasyDB) {
 
 	        var dbj = { name: userData.data[0].name, picture: userData.data[0].picture };
 	        dbj[platform] = userData;
-	        db.postData('users', dbj);
+	        var id = db.postData('users', dbj);
 
-	        return { _id: dbt._id };
+	        return { _id: id };
 	    };
 	}
 
@@ -117,7 +114,7 @@ module.exports = function (EasyDB) {
 	    var _id = data._id;
 	    var platform = data.platform;
 	    var userData = data.userData;
-        
+
 	    var dbt = db.listData('users', "_id=" + _id).list[0];
 	    if (dbt) {
 	        var dbj = {};
