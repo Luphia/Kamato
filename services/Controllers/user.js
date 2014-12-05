@@ -31,10 +31,10 @@ module.exports = {
         _route.get('/me', module.exports.data);
 
         _route.get('/login', module.exports.login);
-        _route.get('/loginout', module.exports.login);
-        _route.post('/addtoken', module.exports.login);
-        _route.post('/register', module.exports.login);
-        _route.get('/check', module.exports.login);
+        _route.get('/loginout', module.exports.loginout);
+        _route.post('/addtoken', module.exports.addtoken);
+        //_route.post('/register', module.exports.register);
+        //_route.get('/check', module.exports.check);
 
         _route.get('/oauth2/:platform', module.exports.outerLogin);
         _route.get('/oauth2/:platform/*', module.exports.outerLogin);
@@ -47,7 +47,26 @@ module.exports = {
     },
     login: function (req, res, next) {
         res.result = new Result();
-        var data = req.body;
+        var data = { account: '123', password: '456' } //req.body;
+        var x = userManager.login(data);
+        var s = req.session;
+        if (x == false) {
+            res.result.response(next, 0, 'Login Fail');
+        } else {
+            s._id = x._id;
+            s.name = x.name;
+            s.picture = x.picture;
+            res.result.response(next, 1, 'Login Success', x);
+        };
+    },
+    loginout: function (req, res, next) {
+        res.result = new Result();
+        req.session.destroy();
+        res.result.response(next, 1, 'Session Destroy');
+    },
+    addtoken: function (req, res, next) {
+        res.result = new Result();
+        var data = { account: '123', password: '456' } //req.body;
         var x = userManager.login(data);
         if (x == false) {
             res.result.response(next, 0, 'Login Fail');
@@ -59,6 +78,8 @@ module.exports = {
             next();
         };
     },
+
+
     outerLogin: function (req, res, next) {
         res.result = new Result();
         var params = {};
