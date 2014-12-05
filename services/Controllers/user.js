@@ -32,8 +32,8 @@ module.exports = {
 
         _route.get('/login', module.exports.login);
         _route.get('/loginout', module.exports.loginout);
-        _route.post('/addtoken', module.exports.addtoken);
-        _route.post('/regist', module.exports.regist);
+        _route.get('/addtoken', module.exports.addtoken);
+        _route.get('/regist', module.exports.regist);
         _route.get('/check', module.exports.check);
 
         _route.get('/oauth2/:platform', module.exports.outerLogin);
@@ -77,7 +77,7 @@ module.exports = {
     regist: function (req, res, next) {
         res.result = new Result();
         var data = req.body;
-        var x = userManager.addByPlatform(data);
+        var x = userManager.add(data);
         if (x == false) {
             res.result.response(next, 0, 'Regist Fail');
         } else {
