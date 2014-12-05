@@ -56,6 +56,7 @@ module.exports = {
             s._id = x._id;
             s.name = x.name;
             s.picture = x.picture;
+            s.login = 1;
             res.result.response(next, 1, 'Login Success', x);
         };
     },
@@ -86,7 +87,12 @@ module.exports = {
     },
     check: function (req, res, next) {
         res.result = new Result();
-
+        var s = req.session;
+        if (s && s.name != null && s.login == 1) {
+            res.result.response(next, 1, 'Check Success', s);
+        } else {
+            res.result.response(next, -2, 'Check Fail');
+        };
     },
     outerLogin: function (req, res, next) {
         res.result = new Result();
