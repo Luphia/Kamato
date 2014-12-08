@@ -18,13 +18,7 @@ module.exports = function (opt) {
     var Fileconfig = {
         folder: './files/'
     };
-    var Mailconfig = {
-        service: 'Gmail',
-        auth: {
-            user: 'playshowiii@gmail.com',
-            pass: 'qazwsxqazwsx'
-        }
-    };
+    var Mailconfig = require('../../config/Mail.json');
     // setup MailBOT SMTP transport
     var transporter = nodemailer.createTransport(Mailconfig);
 

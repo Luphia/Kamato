@@ -1,0 +1,7 @@
+﻿{
+    "service": "Gmail",
+	"auth":{
+	    "user": "playshowiiii@gmail.com",
+        "pass": "qazwsxqazwsx"
+    }
+}
