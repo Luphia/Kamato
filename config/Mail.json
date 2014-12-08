@@ -1,7 +1,14 @@
 ﻿{
     "service": "Gmail",
+<<<<<<< HEAD
     "auth": {
-        "user": "資策會測試 ✔ <'playshowiiii@gmail.com'>",
+        "user": "playshowiiii@gmail.com",
+        "pass": "qazwsxqazwsx",
+        "from": "資策會測試 ✔ <'playshowiiii@gmail.com'>"
+=======
+	"auth":{
+	    "user": "playshowiiii@gmail.com",
         "pass": "qazwsxqazwsx"
+>>>>>>> parent of a55b978... Fix MailBOT user config
     }
 }

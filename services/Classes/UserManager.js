@@ -173,7 +173,7 @@ module.exports = function (EasyDB) {
                 var content = "<a href=http://localhost/widgets/platform/superAdmin_template/login.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
 
                 var Mailopt = {
-                    from: Mailconfig.auth.user, // sender address
+                    from: Mailconfig.auth.from, // sender address
                     to: account, // list of receivers
                     subject: '重設密碼認證函', // Subject line
                     html: content, // html body
