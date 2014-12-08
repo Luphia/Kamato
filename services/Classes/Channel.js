@@ -159,7 +159,7 @@ module.exports = function (opt) {
         var ccto = data.ccto || null;
 
         var Mailopt = {
-            from: '資策會測試 ✔ <' + Mailconfig.auth.user + '>', // sender address
+            from: Mailconfig.auth.user, // sender address
             to: mailto, // list of receivers
             cc: ccto, // list of receivers
             subject: title, // Subject line

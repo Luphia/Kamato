@@ -161,16 +161,19 @@ module.exports = function (EasyDB) {
         var dbt = db.listData('users', "account='" + account + "'").list[0];
         if (dbt) {
             var id = dbt._id;
-            var ans = db.putData('users', id, { password: faccount });
+
+            var RightNow = new Date();
+            var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + parseInt(RightNow.getHours() + 1, 10) + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
+
+            var ans = db.putData('users', id, { password: faccount, authtime: '2014-12-08T17:36:00Z' });
             if (ans == true) {
                 var Mailconfig = require('../../config/Mail.json');
                 var transporter = nodemailer.createTransport(Mailconfig);
 
-                //var content = "<a href='http://localhost/repassword?a=" + account + "&p=" + faccount + "'>請點選連結重新設定您的密碼</a>";
                 var content = "<a href=http://localhost/widgets/platform/superAdmin_template/login.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
 
                 var Mailopt = {
-                    from: '資策會測試 ✔ <' + Mailconfig.auth.user + '>', // sender address
+                    from: Mailconfig.auth.user, // sender address
                     to: account, // list of receivers
                     subject: '重設密碼認證函', // Subject line
                     html: content, // html body
@@ -197,8 +200,16 @@ module.exports = function (EasyDB) {
 
         var oldpass = data.oldpass;
         var newpass = data.newpass;
+
+        //var RightNow = new Date();
+        //var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + RightNow.getHours() + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
+
+        var dbta = db.listData('users', "authtime >= '2014-12-07' and authtime < '2014-12-10'").list[0];
+        console.log(dbta)
+
+
         var dbt = db.listData('users', "password='" + oldpass + "'").list[0];
-        console.log(db.listData('users'))
+        console.log(dbt)
         if (dbt) {
             var id = dbt._id;
             var password = crypto.createHash('sha1').update(newpass).digest('hex');
