@@ -1,7 +1,7 @@
 ﻿{
     "service": "Gmail",
-	"auth":{
-	    "user": "playshowiiii@gmail.com",
+    "auth": {
+        "user": "資策會測試 ✔ <'playshowiiii@gmail.com'>",
         "pass": "qazwsxqazwsx"
     }
 }
