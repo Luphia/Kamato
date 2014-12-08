@@ -700,8 +700,8 @@ module.exports = function(conf) {
 			require('deasync').runLoopOnce();
 		}
 
-		data._id = id;
-		this.DB.putData(table, query, data, function(err, data) {
+		newData = {$set: data};
+		this.DB.putData(table, query, newData, function(err, data) {
 			rs = err? false: true;
 		});
 
