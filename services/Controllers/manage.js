@@ -24,12 +24,12 @@ var Result = require('../Classes/Result.js')
 			res.result.response(next, 1, 'table not found: ' + table);
 		}
 	}
-,	listData = function(req, res, next) {
+,	flowData = function(req, res, next) {
 		res.result = new Result();
 		var userID = req.session.userID;
 		var table = req.params.table;
 		var query = req.query.q;
-		var data = connect(userID).pageData(table, query);
+		var data = connect(userID).flowData(table, query);
 
 		if(data) {
 			res.result.response(next, 1, 'Data in table : ' + table, data);
@@ -116,7 +116,7 @@ var Result = require('../Classes/Result.js')
 				delTable(req, res, next);
 				break;
 			case 'LIST5':
-				listData(req, res, next);
+				flowData(req, res, next);
 				break;
 			case 'GET5':
 				getData(req, res, next);

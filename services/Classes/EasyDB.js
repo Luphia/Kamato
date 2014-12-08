@@ -1,7 +1,8 @@
 var driverPath = '../DBDriver/'
 ,	defaultDriver = 'EasyMongo'
 ,	Collection = require('./Collection.js')
-,	Parser = require('./Parser.js');
+,	Parser = require('./Parser.js')
+,	defaultLimit = 30;
 
 /*
 	this.DB
@@ -528,7 +529,7 @@ module.exports = function(conf) {
 
 		return rs;
 	}
-	,	pageData = function(table, query) {
+	,	flowData = function(table, query) {
 		table = checkTable(table);
 		if(!table) { return false; }
 
@@ -541,8 +542,51 @@ module.exports = function(conf) {
 		,	schema = this.getSchema(table).columns
 		,	cond = Parser.sql2ast(query);
 		cond.WHERE = preCondiction( cond.WHERE, schema );
+		if(!cond.LIMIT) {
+			cond.LIMIT = {
+				"nb": defaultLimit
+			};
+		}
+		else if(!cond.LIMIT.nb) {
+			cond.LIMIT.nb = defaultLimit
+		}
 
-		this.DB.pageData(table, cond, function(err, data) {
+		this.DB.flowData(table, cond, function(err, data) {
+			rs = err? false: data;
+			if(err) { rs = false; }
+			else {
+				var collection = new Collection();
+				for(var key in data) {
+					collection.add( compareSchema(data[key], schema) );
+				}
+				rs = collection.toJSON();
+			}
+		});
+
+		while(rs === undefined) {
+			require('deasync').runLoopOnce();
+		}
+
+		return rs;
+	}
+	,	pageData = function(table, query) {
+		table = checkTable(table);
+		if(!table) { return false; }
+		var rs
+		,	schema = this.getSchema(table).columns
+		;
+
+		if(!query) {
+			query = {
+				"page": 1,
+				"list": defaultLimit
+			};
+		}
+		else if(!query.list) {
+			query.list = defaultLimit;
+		}
+
+		this.DB.pageData(table, query, function(err, data) {
 			rs = err? false: data;
 			if(err) { rs = false; }
 			else {
@@ -693,6 +737,7 @@ module.exports = function(conf) {
 		deleteTable: deleteTable,
 		listData: listData,
 		pageData: pageData,
+		flowData: flowData,
 		getData: getData,
 		postData: postData,
 		putData: putData,

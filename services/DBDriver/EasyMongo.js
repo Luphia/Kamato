@@ -227,7 +227,7 @@ module.exports = function() {
 					if(_err) { callback(_err); }
 					else {
 						schema.table_length = count;
-						callback(_err, data);
+						callback(_err, schema);
 					}
 				});
 			}
@@ -268,6 +268,7 @@ module.exports = function() {
 		var condition = parseCondition(query);
 		var limit;
 		var find = DB.collection(table).find(condition);
+
 		if(limit = query.LIMIT) {
 			if(limit.nb > 0) {
 				find = find.limit(limit.nb);
@@ -282,7 +283,7 @@ module.exports = function() {
 			else { callback(err, data); }
 		});
 	}
-	,	pageData = function(table, query, callback) {
+	,	flowData = function(table, query, callback) {
 		var condition = parseCondition(query);
 		var limit;
 
@@ -290,12 +291,31 @@ module.exports = function() {
 			if(limit.from > 0) {
 				condition['_id'] = {"$lte": limit.from};
 			}
-			if(!limit.nb) {
-				limit.nb = 20;
-			}
+		}
+		else {
+			limit = {};
 		}
 
 		var find = DB.collection(table).find(condition).sort({'_id': -1}).limit(limit.nb);
+
+		find.toArray(function(err, data) {
+			if(err) { callback(err); }
+			else { callback(err, data); }
+		});
+	}
+	,	pageData = function(table, query, callback) {
+		var limit, skip;
+
+		if(!query) {
+			query = {
+				"page": 1
+			};
+		}
+
+		limit = query.list || 0;
+		skip = (query.page - 1) * limit;
+
+		var find = DB.collection(table).find().sort({'_id': -1}).skip(skip).limit(limit);
 
 		find.toArray(function(err, data) {
 			if(err) { callback(err); }
@@ -355,6 +375,7 @@ module.exports = function() {
 		deleteTable: deleteTable,
 		listData: listData,
 		pageData: pageData,
+		flowData: flowData,
 		getData: getData,
 		postData: postData,
 		updateData: updateData,
