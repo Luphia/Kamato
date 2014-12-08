@@ -162,13 +162,12 @@ module.exports = function (EasyDB) {
         if (dbt) {
             var id = dbt._id;
             var ans = db.putData('users', id, { password: faccount });
-            console.log(ans)
             if (ans == true) {
                 var Mailconfig = require('../../config/Mail.json');
                 var transporter = nodemailer.createTransport(Mailconfig);
 
                 //var content = "<a href='http://localhost/repassword?a=" + account + "&p=" + faccount + "'>請點選連結重新設定您的密碼</a>";
-                var content = "<a href=http://localhost/widgets/platform/superAdmin_template/login.html?a=" + account + "&p=" + faccount + "'>請點選連結重新設定您的密碼</a>";
+                var content = "<a href=http://localhost/widgets/platform/superAdmin_template/login.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
 
                 var Mailopt = {
                     from: '資策會測試 ✔ <' + Mailconfig.auth.user + '>', // sender address
@@ -198,12 +197,12 @@ module.exports = function (EasyDB) {
 
         var oldpass = data.oldpass;
         var newpass = data.newpass;
-        console.log(data)
         var dbt = db.listData('users', "password='" + oldpass + "'").list[0];
         console.log(db.listData('users'))
         if (dbt) {
             var id = dbt._id;
-            db.putData('users', id, { password: newpass });
+            var password = crypto.createHash('sha1').update(newpass).digest('hex');
+            var ans = db.putData('users', id, { password: password });
             return true;
         } else {
             return false; // 'not found';

@@ -35,13 +35,14 @@ module.exports = {
         _route.get('/addtoken', module.exports.addtoken);
         _route.post('/regist', module.exports.regist);
         _route.get('/check', module.exports.check);
+        _route.post('/forgot', module.exports.forgot);
+        _route.post('/repassword', module.exports.repassword);
 
         _route.get('/oauth2/:platform', module.exports.outerLogin);
         _route.get('/oauth2/:platform/*', module.exports.outerLogin);
     },
     data: function (req, res, next) {
         var userData = req.session || {};
-        userData.text = 'test! session msg and print session';
         userData.ip = req.connection.remoteAddress;
         res.send(userData);
     },
@@ -94,6 +95,27 @@ module.exports = {
             res.result.response(next, -2, 'Check Fail');
         };
     },
+    forgot: function (req, res, next) {
+        res.result = new Result();
+        var data = req.body;
+        var x = userManager.forgot(data);
+        if (x == false) {
+            res.result.response(next, 0, 'Forgot Fail');
+        } else {
+            res.result.response(next, 1, 'Forgot Success', x);
+        };
+    },
+    repassword: function (req, res, next) {
+        res.result = new Result();
+        var data = req.body;
+        var x = userManager.repassword(data);
+        if (x == false) {
+            res.result.response(next, 0, 'Repassword Fail');
+        } else {
+            res.result.response(next, 1, 'Repassword Success', x);
+        };
+    },
+
     outerLogin: function (req, res, next) {
         res.result = new Result();
         var params = {};
