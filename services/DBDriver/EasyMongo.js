@@ -345,6 +345,13 @@ module.exports = function() {
 	}
 	,	putData = function(table, query, data, callback) {
 		var condition = parseCondition(query);
+		DB.collection(table).update(condition, {"$set": data}, {w:1, upsert: true}, function(err) {
+			if(err) { callback(err); }
+			else { callback(err, true); }
+		});
+	}
+	,	replaceData = function(table, query, data, callback) {
+		var condition = parseCondition(query);
 		DB.collection(table).update(condition, data, {w:1, upsert: true}, function(err) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
@@ -372,6 +379,7 @@ module.exports = function() {
 		getTable: getTable,
 		postTable: postTable,
 		putTable: putTable,
+		replaceData: replaceData,
 		deleteTable: deleteTable,
 		listData: listData,
 		pageData: pageData,

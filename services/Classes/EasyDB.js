@@ -653,6 +653,35 @@ module.exports = function(conf) {
 
 		return rs;
 	}
+	,	replaceData = function(table, id, data) {
+		table = checkTable(table);
+		if(!table) { return false; }
+
+		var rs, check
+		,	schema = this.getSchema(table)
+		,	query = Parser.sql2ast("WHERE _id = " + id);
+		query.WHERE = preCondiction( query.WHERE, schema );
+		data = compareSchema(data, schema);
+
+		this.DB.checkID(table, id, function(err, data) {
+			check = err? false: data;
+		});
+
+		while(check === undefined) {
+			require('deasync').runLoopOnce();
+		}
+
+		data._id = id;
+		this.DB.replaceData(table, query, data, function(err, data) {
+			rs = err? false: true;
+		});
+
+		while(rs === undefined) {
+			require('deasync').runLoopOnce();
+		}
+
+		return rs;
+	}
 	,	putData = function(table, id, data) {
 		table = checkTable(table);
 		if(!table) { return false; }
@@ -732,6 +761,7 @@ module.exports = function(conf) {
 		getTable: getTable,
 		getTable: getTable,
 		postTable: postTable,
+		replaceData: replaceData,
 		putTable: putTable,
 		cleanTable: cleanTable,
 		deleteTable: deleteTable,
