@@ -330,11 +330,8 @@ module.exports = function(conf) {
 		}
 
 		if(!check) {
-			check = undefined;
-			this.postTable(table, function(err, data) {
-				check = err? false: data;
-			});
-		}
+			this.postTable(table, {});
+		}	
 
 		this.DB.getID(table, function(err, data) {
 			rs = err? false: data;

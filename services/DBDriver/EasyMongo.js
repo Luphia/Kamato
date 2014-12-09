@@ -260,7 +260,7 @@ module.exports = function() {
 					callback(err, false);
 				}
 				else {
-					setSchema(table, schema, callback);
+					newSchema(table, schema, callback);
 				}
 			}
 		});
