@@ -5,10 +5,11 @@
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 
-function random(max, min) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
 module.exports = function (EasyDB) {
+    function random(max, min) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
     var init = function (EasyDB) {
         this.DB = EasyDB;
         return this;
@@ -157,6 +158,8 @@ module.exports = function (EasyDB) {
         var db = this.DB;
 
         var account = data.account;
+
+        //use random(max, min) random range
         var check = random(32767, 0);
         var Mailconfig = require('../../config/Mail.json');
 
@@ -213,7 +216,6 @@ module.exports = function (EasyDB) {
 
         if (dbta) {
             var dbt = db.listData('users', "password='" + oldpass + "'").list[0];
-            console.log(dbt)
             if (dbt) {
                 var id = dbt._id;
                 var password = crypto.createHash('sha1').update(newpass).digest('hex');
