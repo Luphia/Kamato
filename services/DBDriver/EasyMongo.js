@@ -91,13 +91,12 @@ module.exports = function() {
 		var rs;
 		!option && (option = {});
 		!option.url && (option.url = defaultDB);
-
 		dbURL = url.parse(option.url);
-
 		option.protocol = 'mongodb:';
 		option.slashes = true;
 		option.host = dbURL.host;
 		option.port = dbURL.port;
+		option.pathname = dbURL.pathname;
 
 		Client.connect(url.format(option), function(err, _db) {
 			if(err) { callback(err); }
@@ -140,10 +139,10 @@ module.exports = function() {
 			}
 		});
 	}
-	,	setSchema = function(table, schema, callback) {
-		var rs;
-
-		var tableSchema = {
+	,	newSchema = function(table, schema, callback) {
+		var rs
+		,	condition = { "name": table }
+		,	tableSchema = {
 			"name": table,
 			"max_serial_num": 0,
 			"columns": {}
@@ -152,7 +151,26 @@ module.exports = function() {
 			if(key.indexOf('_', 0) == 0) { continue; }
 			tableSchema.columns[key] = schema[key];
 		}
-		DB.collection('_tables').insert(tableSchema, function(err, data) {
+
+		DB.collection('_tables').update(condition, tableSchema, {w:1, upsert: true}, function(err, data) {
+			if(err) { callback(err); }
+			else { callback(err, true); }
+		});
+	}
+	,	setSchema = function(table, schema, callback) {
+		var rs
+		,	condition = { "name": table }
+		,	tableSchema = {
+			"$set": {
+				"columns": {}
+			}
+		};
+		for(var key in schema) {
+			if(key.indexOf('_', 0) == 0) { continue; }
+			tableSchema.$set.columns[key] = schema[key];
+		}
+
+		DB.collection('_tables').update(condition, tableSchema, {w:1, upsert: true}, function(err, data) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});
@@ -373,6 +391,7 @@ module.exports = function() {
 		tableExist: tableExist,
 		tableCount: tableCount,
 		getSchema: getSchema,
+		newSchema: newSchema,
 		setSchema: setSchema,
 		getID: getID,
 		checkID: checkID,
