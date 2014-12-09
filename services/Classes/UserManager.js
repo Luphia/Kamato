@@ -150,6 +150,9 @@ module.exports = function (EasyDB) {
 	        return false; // 'not found';
 	    };
 	}
+
+    // data = { account }
+	// return = true || false (not found)
     , forgot = function (data) {
         var db = this.DB;
 
@@ -165,7 +168,7 @@ module.exports = function (EasyDB) {
             var RightNow = new Date();
             var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + parseInt(RightNow.getHours() + 1, 10) + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
 
-            var ans = db.putData('users', id, { password: faccount, authtime: '2014-12-08T17:36:00Z' });
+            var ans = db.putData('users', id, { password: faccount, authtime: time });
             if (ans == true) {
                 var Mailconfig = require('../../config/Mail.json');
                 var transporter = nodemailer.createTransport(Mailconfig);
@@ -195,37 +198,33 @@ module.exports = function (EasyDB) {
             return false; // 'not found';
         };
     }
+
+    // data = { oldpassword, newpassword }
+	// return = true || false (not found)
     , repassword = function (data) {
         var db = this.DB;
 
         var oldpass = data.oldpass;
         var newpass = data.newpass;
 
-        //var RightNow = new Date();
-        //var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + RightNow.getHours() + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
+        var RightNow = new Date();
+        var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + RightNow.getHours() + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
+        var dbta = db.listData('users', "authtime >= '" + time + "'").list[0];
 
-        var dbta = db.listData('users', "authtime >= '2014-12-07' and authtime < '2014-12-10'").list[0];
-        console.log(dbta)
-
-
-        var dbt = db.listData('users', "password='" + oldpass + "'").list[0];
-        console.log(dbt)
-        if (dbt) {
-            var id = dbt._id;
-            var password = crypto.createHash('sha1').update(newpass).digest('hex');
-            var ans = db.putData('users', id, { password: password });
-            return true;
+        if (dbta) {
+            var dbt = db.listData('users', "password='" + oldpass + "'").list[0];
+            console.log(dbt)
+            if (dbt) {
+                var id = dbt._id;
+                var password = crypto.createHash('sha1').update(newpass).digest('hex');
+                var ans = db.putData('users', id, { password: password });
+                return true;
+            } else {
+                return false; // 'not found';
+            };
         } else {
-            return false; // 'not found';
+            return false; // 'over time';
         };
-
-
-
-
-        console.log(data)
-
-
-        return true;
     }
     ;
 
