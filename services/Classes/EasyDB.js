@@ -354,7 +354,7 @@ module.exports = function(conf) {
 
 		this.DB.getSchema(table, function(err, data) {
 			rs = err? false: data;
-			rs.columns._id = 'Number';
+			if(rs) { rs.columns._id = 'Number'; }
 		});
 
 		while(rs === undefined) {
