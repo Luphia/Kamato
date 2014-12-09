@@ -49,7 +49,12 @@ module.exports = {
     login: function (req, res, next) {
         res.result = new Result();
         var data = req.body;
-        var x = userManager.login(data);
+        var x = false;
+        if (data.user == 1) {
+            x = userManager.ulogin(data);
+        } else {
+            x = userManager.login(data);
+        };
         var s = req.session;
         if (x == false) {
             res.result.response(next, 0, 'Login Fail');

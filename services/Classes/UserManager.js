@@ -35,6 +35,25 @@ module.exports = function (EasyDB) {
 	        return false;
 	    };
 	}
+ 	, ulogin = function (data) {
+ 	    var db = this.DB;
+
+ 	    var account = data.account;
+ 	    var password = data.password;
+
+ 	    password = crypto.createHash('sha1').update(password).digest('hex');
+ 	    var dbt = db.listData('member', "account='" + account + "'").list[0];
+ 	    if (dbt) {
+ 	        var vpassword = dbt.password;
+ 	        if (vpassword == password) {
+ 	            return { _id: dbt._id, name: dbt.name, picture: dbt.picture };
+ 	        } else {
+ 	            return false;
+ 	        };
+ 	    } else {
+ 	        return false;
+ 	    };
+ 	}
 
 	// data = { account, password }
 	// return = _id || false (account exist)
@@ -233,6 +252,7 @@ module.exports = function (EasyDB) {
     var um = {
         init: init,
         login: login,
+        ulogin: ulogin,
         add: add,
         addByPlatform: addByPlatform,
         findByPlatform: findByPlatform,
