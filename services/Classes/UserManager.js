@@ -40,9 +40,8 @@ module.exports = function (EasyDB) {
 
  	    var account = data.account;
  	    var password = data.password;
-
  	    password = crypto.createHash('sha1').update(password).digest('hex');
- 	    var dbt = db.listData('member', "account='" + account + "'").list[0];
+ 	    var dbt = db.listData('members', "account='" + account + "'").list[0];
  	    if (dbt) {
  	        var vpassword = dbt.password;
  	        if (vpassword == password) {
@@ -79,6 +78,28 @@ module.exports = function (EasyDB) {
 	        return { _id: id };
 	    };
 	}
+    , uadd = function (data) {
+        var db = this.DB;
+
+        var account = data.account;
+        var password = data.password;
+
+        if (account.length == 0 || password.length == 0) {
+            return false;
+        };
+
+        password = crypto.createHash('sha1').update(password).digest('hex');
+
+        var dbt = db.listData('members', "account='" + account + "'").list[0];
+        if (dbt) {
+            return false; // 'account exist';
+        } else {
+            var id = db.postData('members', { account: account, password: password, authtime: 'Date' });
+            console.log(db.listData('members'))
+
+            return { _id: id };
+        };
+    }
 
 	// data = { platform, userData }
 	// return = _id || false (platform userData exist)
@@ -188,14 +209,59 @@ module.exports = function (EasyDB) {
             var id = dbt._id;
 
             var RightNow = new Date();
-            var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + parseInt(RightNow.getHours() + 1, 10) + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
+            var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + parseInt(RightNow.getHours() + Mailconfig.overtime, 10) + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
 
             var ans = db.putData('users', id, { password: faccount, authtime: time });
             if (ans == true) {
-                var Mailconfig = require('../../config/Mail.json');
                 var transporter = nodemailer.createTransport(Mailconfig);
 
                 var content = "<a href=http://localhost/widgets/platform/superAdmin_template/login.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
+
+                var Mailopt = {
+                    from: Mailconfig.auth.from, // sender address
+                    to: account, // list of receivers
+                    subject: '重設密碼認證函', // Subject line
+                    html: content, // html body
+                };
+
+                // send mail with defined transport object
+                transporter.sendMail(Mailopt, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                        return false;
+                    } else {
+                        console.log('Message sent: ' + info.response);
+                        return true;
+                    };
+                });
+            };
+
+        } else {
+            return false; // 'not found';
+        };
+    }
+    , uforgot = function (data) {
+        var db = this.DB;
+
+        var account = data.account;
+
+        //use random(max, min) random range
+        var check = random(32767, 0);
+        var Mailconfig = require('../../config/Mail.json');
+
+        var faccount = crypto.createHash('md5').update(account + check).digest('hex');
+        var dbt = db.listData('members', "account='" + account + "'").list[0];
+        if (dbt) {
+            var id = dbt._id;
+
+            var RightNow = new Date();
+            var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + parseInt(RightNow.getHours() + Mailconfig.overtime, 10) + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
+
+            var ans = db.putData('members', id, { password: faccount, authtime: time });
+            if (ans == true) {
+                var transporter = nodemailer.createTransport(Mailconfig);
+
+                var content = "<a href=http://localhost/member.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
 
                 var Mailopt = {
                     from: Mailconfig.auth.from, // sender address
@@ -247,12 +313,35 @@ module.exports = function (EasyDB) {
             return false; // 'over time';
         };
     }
+    , urepassword = function (data) {
+        var db = this.DB;
+
+        var oldpass = data.oldpass;
+        var newpass = data.newpass;
+
+        var RightNow = new Date();
+        var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + RightNow.getHours() + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
+        var dbta = db.listData('members', "authtime >= '" + time + "'").list[0];
+        if (dbta) {
+            var dbt = db.listData('members', "password='" + oldpass + "'").list[0];
+            if (dbt) {
+                var id = dbt._id;
+                var password = crypto.createHash('sha1').update(newpass).digest('hex');
+                var ans = db.putData('members', id, { password: password });
+                return true;
+            } else {
+                return false; // 'not found';
+            };
+        } else {
+            return false; // 'over time';
+        };
+    }
+
     ;
 
     var um = {
         init: init,
         login: login,
-        ulogin: ulogin,
         add: add,
         addByPlatform: addByPlatform,
         findByPlatform: findByPlatform,
@@ -260,7 +349,11 @@ module.exports = function (EasyDB) {
         addToken: addToken,
         getData: getData,
         forgot: forgot,
-        repassword: repassword
+        repassword: repassword,
+        ulogin: ulogin,
+        uadd: uadd,
+        uforgot: uforgot,
+        urepassword: urepassword
     };
 
     return um.init(EasyDB);
