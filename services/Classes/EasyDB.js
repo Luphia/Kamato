@@ -371,7 +371,7 @@ module.exports = function(conf) {
 			schema[key] = dataType(schema[key]);
 		}
 
-		if(getSchema(table)) {
+		if(this.getSchema(table)) {
 			this.DB.setSchema(table, schema, function(err, data) {
 				rs = !err;
 			});
