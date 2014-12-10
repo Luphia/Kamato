@@ -137,6 +137,8 @@
                 var ans = data.result;
                 if (ans == 1) {
                     location.href = "/selectAPP.html";
+                } else {
+                    alert(ans);
                 };
                 console.log(ans);
             });
