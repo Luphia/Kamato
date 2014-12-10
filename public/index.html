@@ -1,22 +1,103 @@
 <!doctype html>
+<!--[if IE 9 ]><html class="ie9"><![endif]-->
 <html lang="en" ng-app="Kamato">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<!-- su dmin -->
+<script src="../lib/super_admin/jquery.min.js"></script> 
+<!-- jQuery Library -->
+<script src="../lib/super_admin/charts/jquery.flot.js"></script> 
+<script src="../lib/super_admin/charts/jquery.flot.time.js"></script> 
+
 <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
-
-<script src="/lib/angular/angular.min.js"></script>
-<script src="/lib/angular/angular-route.min.js"></script>
-<script src="/lib/lodash.underscore.min.js"></script>
-<script src="/lib/angular/angular-google-maps.min.js"></script>
+<script src="./lib/angular/angular.min.js"></script>
+<script src="./lib/angular/angular-route.min.js"></script>
+<script src="./lib/lodash.underscore.min.js"></script>
+<script src="./lib/angular/angular-google-maps.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/lib/ngSocketIO/ng-socket-io.min.js"></script>
-<script src="/js/app.js"></script>
-<script src="/js/controllers.js"></script>
+<script src="./lib/ngSocketIO/ng-socket-io.min.js"></script>
+<!-- =========================== -->
+<script src="js/ngDialog.min.js"></script>
+<script src="js/ui-bootstrap-tpls-0.11.2.js"></script>
+<!-- =========================== -->
 
-<link rel="stylesheet" href="/css/app.css">
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<!-- UX -->
+<script src="../lib/super_admin/scroll.min.js"></script>
+
+<!-- All JS functions -->
+<script src="../lib/super_admin/functions.js"></script>
+<!--  -->
+<script src="./js/app.js"></script>
+<script src="./js/controllers.js"></script>
+
+<link rel="stylesheet" href="./css/app.css">
 </head>
 
-<body>
-<div ng-view></div>
+<body  id="skin-blur-violate" ng-controller="TemplateCtrl">
+    <header id="header" class="media">
+        <a href="" id="menu-toggle"></a> 
+        <a class="logo pull-left" href="#/platform/">SIMPLE</a>
+        
+        <div class="media-body">
+            <div class="media" id="top-menu">
+                <div class="pull-left tm-icon">
+                    <a data-drawer="messages" class="drawer-toggle" href="">
+                        <i class="sa-top-message"></i>
+                        <i class="n-count animated">5</i>
+                        <span>Messages</span>
+                    </a>
+                </div>
+                <div class="pull-left tm-icon">
+                    <a data-drawer="notifications" class="drawer-toggle" href="">
+                        <i class="sa-top-updates"></i>
+                        <i class="n-count animated">9</i>
+                        <span>Updates</span>
+                    </a>
+                </div>
+                <div id="time" class="pull-right">
+                    <span id="hours"></span>
+                    :
+                    <span id="min"></span>
+                    :
+                    <span id="sec"></span>
+                </div>
+                
+                <div class="media-body">
+                    <input type="text" class="main-search">
+                </div>
+            </div>
+        </div>
+    </header>
+	<section id="main" class="p-relative" role="main">
+        <!-- Sidebar -->
+        <aside id="sidebar">
+			<!-- <div class="side-widgets overflow"> -->
+                <!-- Profile Menu -->
+<!--                 <div class="text-center s-widget m-b-25 dropdown" id="profile-menu">
+                    <a href="" data-toggle="dropdown">
+                        <img class="profile-pic animated" src="widgets/platform/img/profile-pic.jpg" alt="">
+                    </a>
+                    <ul class="dropdown-menu profile-menu">
+                        <li ng-repeat="menu in profile_menu"><a href="">{{menu.title}}</a>
+                    </ul>
+                    <h4 class="m-0">Malinda Hollaway</h4>
+                    @malinda-h
+                </div>  -->
+            <!-- </div> -->
+            <ul class="list-unstyled side-menu">
+                <li ng-class="{'active': (selected == menu.name)}" ng-repeat="menu in sidebar" ng-click='active(menu)'>
+                    <a class="menu_icon" ng-class="menu.icon" href="{{menu.link}}">
+                        <span class="menu-item">{{menu.name}}</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        <section  ng-view id="content" class="container">
+        </section>
+    </section>      
+    <div class="clearfix"></div>
+<!-- <div ng-view></div> -->
 </body>
 </html>

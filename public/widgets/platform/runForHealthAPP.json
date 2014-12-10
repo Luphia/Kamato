@@ -1,0 +1,26 @@
+{
+	"public": {
+		"File": {
+			"Filename": "Index.html"
+			},
+		"Path": "/widgets/platform/",
+		"Subdir": {
+				"css": {
+						"Filename": "bootstrap.css",
+						"Filename": "calendar.css",
+						"Filename": "style.css"
+					},
+				"js": {
+						"Filename": "bootstrap.min.css",
+						"Filename": "charts.css",
+						"subdir": {
+							"Filename": "app.js"
+						}					
+				},
+				"img": {
+						"Filename": "icon1.png",
+						"Filename": "icon2.png"
+				}
+			},
+	}
+}

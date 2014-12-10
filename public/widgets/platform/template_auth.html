@@ -1,0 +1,169 @@
+<div class="platform">
+	<div class="container-fluid  clearfix">
+		<div class="title">
+			<h1>API 管理</h1>
+		</div>	
+		<div ng-show="api_list" class="listview list-container">
+			<header class="listview-header media">
+				<a tooltip="Create a New API" class="sa-list-add col-md-1" ng-click="create_api_page()"></a>
+				<!-- <div ng-show="apiSearch.length>0" class="clear col-md-1" ng-click="cleanSearch()"></div> -->
+				<div ng-show="apiSearch.length == 0" class="search col-md-1"></div>
+				<div class="col-md-10">
+					<input type="text" class="pull-left input-sm api_search " placeholder="Search API...." ng-model="apiSearch">
+				</div>
+			</header>
+			<div class="table-responsive block-area" >
+				<table class="table table-bordered tile">
+					<tr>
+						<th ng-repeat="h in api_table_head">{{h.name}}</th>
+					</tr>
+					<tr ng-repeat="item in apiList | filter:apiSearch">
+						<td>
+							<a class="bold_col" ng-click="show_apiReq_chart()">{{item.name}}</a>
+						</td>
+						<td>
+							<span ng-repeat="c in item.cate">{{c.property}}</span>
+						</td>
+						<td>
+							{{item.field}}
+						</td>
+						<td>
+							<button class="btn btn-alt btn-block" ng-click="del_api(item)">Delete</button>
+						</td>
+					</tr>
+				</table>			
+			</div>
+		</div>
+		<div ng-show="create_api" class="create_api">
+			<h2 class="text-center">新增API</h2>
+			<form class="form-horizontal">
+				<div class="form-group">
+					<h3 class="col-md-2 control-label">API Name</h3>
+					<div class="col-md-8">
+						<input type="text" class="form-control create_api_input" ng-model="new_api_name" ng-required="new_api_required">						
+					</div>
+					<div class="col-md-offset-2 col-md-4">
+						<button type="submit" class="btn m-t-10" ng-click="new_api()">Create</button>
+						<button type="submit" class="btn m-t-10" ng-click="return_api_page()">Cancel</button>				
+					</div>
+				</div>
+			</form>
+		</div>
+		<div ng-show="req_chart">
+			<div class="p-10">
+				<button type="submit" class="btn btn-lg btn-alt m-t-10" ng-click="return_api_page()">Back</button>
+				<h2>每日Request次數(req/day)</h2>
+				<activitychart ng-model="Request" class="main-chart" id="Request"></activitychart>
+			</div>				
+		</div>
+	</div>
+</div>
+
+
+
+<script type="text/ng-template" id="fb_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+		</div>
+	</div>
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth)" ng-class="{'auth_req': click}">{{auth.name}}</li>		
+		</ul>
+	</div>	
+</script> 
+
+<script type="text/ng-template" id="GooglePlus_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+		</div>
+	</div>
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth)" ng-class="{'auth_req': click}">{{auth.name}}</li>
+		</ul>
+	</div>	
+</script>
+<script type="text/ng-template" id="RunKeeper_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+		</div>
+	</div>
+
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth)" ng-class="{'auth_req': click}">{{auth.name}}</li>	
+		</ul>
+	</div>	
+</script>
+
+<script type="text/ng-template" id="Fitbit_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+		</div>
+	</div>
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth)" ng-class="{'auth_req': click}">{{auth.name}}
+			</li>	
+		</ul>
+
+	</div>	
+</script>
+
+<script type="text/ng-template" id="Jawbone_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+		</div>
+	</div>
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth)" ng-class="{'auth_req': click}">{{auth.name}}</li>
+		</ul>
+	</div>	
+</script>

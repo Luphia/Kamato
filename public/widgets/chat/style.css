@@ -275,7 +275,6 @@
   color: #fff;
   text-align: center;
   cursor: pointer;
-  margin: 10px;
 }
 
 .ng-scope.chat .message:not(.log).typing .messageBody {
