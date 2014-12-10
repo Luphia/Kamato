@@ -489,7 +489,7 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 // ====================== APP管理 bottom======================
 // ====================== easydb top======================
 
-	var db_link = "http://localhost/manage/db/";
+	var db_link = "./manage/db/";
 
 	$http.get(db_link).
         success(function(db) {
@@ -505,7 +505,6 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		$http.get(db_link+name+"/").
         success(function(schema) {
         	var t_d_temp = schema.data.list;
-        	$scope.colspan = Object.keys(schema.data.list[0]).length;
         	$scope.t_head = schema.data.list[0];
         
         	angular.forEach(t_d_temp, function(list_value, list_key){
@@ -531,11 +530,17 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		var id_key = id+key;
 		$scope.show_json= jsonTemp[id_key];
 		var t = document.getElementById(id);
-
-		var j = document.getElementsByClassName("json_text")[0];
+		var j_text = document.getElementsByClassName("json_text");
 		var style = document.createAttribute('style');
-		style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- event.offsetX-100)+"px";
-		j.setAttributeNode(style);
+
+		if((event.layerX + j_text.clientWidth) > 1583){
+			style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- j_text.clientWidth)+"px";
+		}
+		else{
+			style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- event.offsetX)+"px";			
+		}
+		j_text[0].setAttributeNode(style);
+		console.log(j_text[0]);
 	}
 
 	$scope.close = function(){
