@@ -18,7 +18,13 @@ module.exports = function (opt) {
     var Fileconfig = {
         folder: './files/'
     };
-    var Mailconfig = require('../../config/Mail.json');
+    var Mailconfig = {
+        service: 'Gmail',
+        auth: {
+            user: 'playshowiii@gmail.com',
+            pass: 'qazwsxqazwsx'
+        }
+    };
     // setup MailBOT SMTP transport
     var transporter = nodemailer.createTransport(Mailconfig);
 
@@ -159,7 +165,7 @@ module.exports = function (opt) {
         var ccto = data.ccto || null;
 
         var Mailopt = {
-            from: Mailconfig.auth.from, // sender address
+            from: '資策會測試 ✔ <' + Mailconfig.auth.user + '>', // sender address
             to: mailto, // list of receivers
             cc: ccto, // list of receivers
             subject: title, // Subject line

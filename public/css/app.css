@@ -1,25 +1,40 @@
-@import url("../widgets/summary/style.css");
+/*@import url("../widgets/summary/style.css");
 @import url("../widgets/map/style.css");
-@import url("../widgets/chat/style.css");
-@import url("../widgets/media/style.css");
-@import url("../widgets/platform/style.css");
-@import url("../widgets/artmatch/style.css");
+@import url("../widgets/chat/style.css");*/
+/*@import url("../widgets/media/style.css");*/
+@import url("../widgets/platform/css/ngDialog.css");
+@import url("../widgets/platform/css/ngDialog-theme-default.css");
+@import url("../widgets/platform/css/ngDialog-theme-plain.css");
+@import url("../widgets/platform/css/bootstrap.min.css");
+/*@import url("../widgets/platform/css/Kamato/style.css");*/
+/*=======super dimin*/
+@import url("../widgets/platform/css/animate.min.css");
+@import url("../widgets/platform/css/font-awesome.min.css");
+@import url("../widgets/platform/css/form.css");
+@import url("../widgets/platform/css/calendar.css");
+@import url("../widgets/platform/css/icons.css");
+@import url("../widgets/platform/css/generics.css");
+@import url("../widgets/platform/css/style.css");
+@import url("../widgets/platform/css/Kamato/style.css");
+/*=======super dimin*/
+/*@import url("../widgets/artmatch/style.css");*/
 
-html, body {
+
+/*html, body {
   height: 100%;
   margin: 0;
   padding: 0;
   background: #333;
-}
-
+}*/
+/*
 div.ng-scope {
-	/*
+	
 	width: 100%;
 	height: 100%;
 	display: block;
-	*/
-}
-
+	
+}*/
+/*
 div[ng-view] {
 	width: 100%;
 	height: 100%;
@@ -27,4 +42,4 @@ div[ng-view] {
 
 .hide {
 	display: none;
-}
+}*/

@@ -6,8 +6,8 @@ var Result = require('../Classes/Result.js'),
 
 var auth = function(req, res, next) {
 		res.result = new Result();
-		var platform = req.params.platform;
 
+		var platform = req.params.platform;
 		res.result.response(next, 3, '', {
 			"path": passport[platform].getAuthLink()
 		});
@@ -36,14 +36,15 @@ module.exports = {
 		config = _config;
 		logger = _logger;
 
-		var serverConfig = _config.get('server') || {};
+		var serverConfig = _config.get('server') || {},
+			googleConfig = _config.get('google') || {},
+			facebookConfig = _config.get('facebook') || {};
 
-		for(var key in AuthModule) {
-			var moduleName = key.toLowerCase();
-			var moduleConfig = config.get(moduleName) || {};
-			moduleConfig.callbackURL = serverConfig.url + "auth/" + moduleName + "/return";
-			passport[moduleName] = new AuthModule[key](moduleConfig);
-		}
+		googleConfig.callbackURL = serverConfig.url + "auth/google/return";
+		facebookConfig.callbackURL = serverConfig.url + "auth/facebook/return";
+
+		passport.google = new AuthModule.Google(googleConfig);
+		passport.facebook = new AuthModule.Facebook(facebookConfig);
 
 		route.get('/oauth/:platform', auth);
 		route.get('/oauth/:platform/return', authReturn);

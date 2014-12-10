@@ -16,7 +16,6 @@ var driverPath = '../DBDriver/'
 var edb=require('./services/Classes/EasyDB.js');
 var db = new edb();
 db.connect({url: 'mongodb://10.10.23.31:27010/easyDB'})
-db.listData('users', 'where authtime > "2012-10-10"')
 db.listTable()
 db.postTable('user', {name: 'String', birth: 'Date'})
 db.postData('user', {name: 'A', birth: '1982-04-01'})
@@ -189,10 +188,9 @@ var Schema = function(table) {
 }
 var preCondiction = function(ast, schema) {
 	!ast && (ast = {});
-	!schema && (schema = { "columns": {} });
-
+	!schema && (schema = {});
 	if(ast.operator) {
-		ast.right = parseValue(ast.right, schema.columns[ast.left]);
+		ast.right = parseValue(ast.right, schema[ast.left]);
 	}
 	else if(ast.logic) {
 		for(var key in ast.terms) {
@@ -220,7 +218,6 @@ var preCondiction = function(ast, schema) {
 }
 ,	compareSchema = function(data, schema) {
 	var rs = {};
-	!schema && (schema = { "columns": {} });
 	if(typeof schema != 'object' || !schema.strick) {
 		for(var key in data) {
 			rs[key] = dataTransfer(data[key]);
@@ -288,8 +285,8 @@ module.exports = function(conf) {
 				break;
 			case "UPDATE":
 				var table = query.UPDATE[0].table;
-					schema = this.getSchema(table),
-					cond = preCondiction(query.WHERE, schema),
+					schema = this.getSchema(table).columns,
+					cond = preCondiction(query.WHERE),
 					rowData = compareSchema( parseSet(query.SET), schema );
 				db.collection(table).update(cond, {$set: rowData}, {multi: true, upsert: true}, function(_err, _data) {
 					if(_err) {
@@ -330,8 +327,11 @@ module.exports = function(conf) {
 		}
 
 		if(!check) {
-			this.postTable(table, {});
-		}	
+			check = undefined;
+			this.postTable(table, function(err, data) {
+				check = err? false: data;
+			});
+		}
 
 		this.DB.getID(table, function(err, data) {
 			rs = err? false: data;
@@ -351,7 +351,7 @@ module.exports = function(conf) {
 
 		this.DB.getSchema(table, function(err, data) {
 			rs = err? false: data;
-			if(rs) { rs.columns._id = 'Number'; }
+			rs._id = 'Number';
 		});
 
 		while(rs === undefined) {
@@ -360,27 +360,21 @@ module.exports = function(conf) {
 
 		return rs;
 	}
-	,	setSchema = function(table, schema, replace) {
+	,	setSchema = function(table, schema) {
 		table = checkTable(table);
 		if(!table) { return false; }
 
-		var rs;
+		var rs
+		,	tableSchema = new Schema(table);
 
 		for(var key in schema) {
 			if(key.indexOf('_', 0) == 0) { continue; }
-			schema[key] = dataType(schema[key]);
+			tableSchema.columns[key] = dataType(schema[key]);
 		}
 
-		if(getSchema(table)) {
-			this.DB.setSchema(table, schema, function(err, data) {
-				rs = !err;
-			});
-		}
-		else {
-			this.DB.newSchema(table, schema, function(err, data) {
-				rs = !err;
-			});
-		}
+		this.DB.setSchema(table, tableSchema, function(err, data) {
+			rs = !err;
+		});
 
 		while(rs === undefined) {
 			require('deasync').runLoopOnce();
@@ -513,7 +507,7 @@ module.exports = function(conf) {
 		}
 
 		var rs
-		,	schema = this.getSchema(table)
+		,	schema = this.getSchema(table).columns
 		,	cond = Parser.sql2ast(query);
 		cond.WHERE = preCondiction( cond.WHERE, schema );
 
@@ -545,7 +539,7 @@ module.exports = function(conf) {
 		}
 
 		var rs
-		,	schema = this.getSchema(table)
+		,	schema = this.getSchema(table).columns
 		,	cond = Parser.sql2ast(query);
 		cond.WHERE = preCondiction( cond.WHERE, schema );
 		if(!cond.LIMIT) {
@@ -579,7 +573,7 @@ module.exports = function(conf) {
 		table = checkTable(table);
 		if(!table) { return false; }
 		var rs
-		,	schema = this.getSchema(table)
+		,	schema = this.getSchema(table).columns
 		;
 
 		if(!query) {
@@ -659,35 +653,6 @@ module.exports = function(conf) {
 
 		return rs;
 	}
-	,	replaceData = function(table, id, data) {
-		table = checkTable(table);
-		if(!table) { return false; }
-
-		var rs, check
-		,	schema = this.getSchema(table)
-		,	query = Parser.sql2ast("WHERE _id = " + id);
-		query.WHERE = preCondiction( query.WHERE, schema );
-		data = compareSchema(data, schema);
-
-		this.DB.checkID(table, id, function(err, data) {
-			check = err? false: data;
-		});
-
-		while(check === undefined) {
-			require('deasync').runLoopOnce();
-		}
-
-		data._id = id;
-		this.DB.replaceData(table, query, data, function(err, data) {
-			rs = err? false: true;
-		});
-
-		while(rs === undefined) {
-			require('deasync').runLoopOnce();
-		}
-
-		return rs;
-	}
 	,	putData = function(table, id, data) {
 		table = checkTable(table);
 		if(!table) { return false; }
@@ -706,8 +671,8 @@ module.exports = function(conf) {
 			require('deasync').runLoopOnce();
 		}
 
-		newData = {$set: data};
-		this.DB.putData(table, query, newData, function(err, data) {
+		data._id = id;
+		this.DB.putData(table, query, data, function(err, data) {
 			rs = err? false: true;
 		});
 
@@ -767,7 +732,6 @@ module.exports = function(conf) {
 		getTable: getTable,
 		getTable: getTable,
 		postTable: postTable,
-		replaceData: replaceData,
 		putTable: putTable,
 		cleanTable: cleanTable,
 		deleteTable: deleteTable,

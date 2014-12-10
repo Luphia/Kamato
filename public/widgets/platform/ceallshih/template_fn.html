@@ -1,0 +1,205 @@
+
+<div class="platform">
+	<div class="header">
+		<div class="brand">Simple</div>
+		<div class="nav">
+			<ul>
+				<li ng-repeat="nav in navs" ng-class="{'currentPage':nav.page == '外部資料授權'}"><a href="#">{{nav.page}}</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="container clearfix">
+		<div class="resource" ng-repeat="resource in resources" ng-class="{'on': resource.isActive}" ng-click="openDialog(resource.name)">
+			<div class="logo"></div>
+			<div class="name">{{resource.name}}</div>
+		
+		</div>		
+	</div>
+</div>
+
+<script type="text/ng-template" id="fb_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+			<!--// <li class="auth_req" ng-repeat="list in auth_array"> {{list}}</li>-->
+		</div>
+	</div>
+	<hr>  <!-- //分隔線  -->
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth.name)" ng-mousedown="auth.click = !auth.click" ng-class="{'auth_req': auth.click}">{{auth.name}}</li>
+			<!-- // <button ng-click="add_auth(per)" ng-disabled="per.selected">add</button>	
+			// <button ng-click="remove_auth(per)" ng-disabled="!per.selected">remove</button>		--!>		
+		</ul>
+	</div>	
+</script> 
+
+<script type="text/ng-template" id="GooglePlus_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+			<!--// <li class="auth_req" ng-repeat="list in auth_array"> {{list}}</li>-->
+		</div>
+	</div>
+	<hr>  <!-- //分隔線  -->
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth.name)" ng-mousedown="auth.click = !auth.click" ng-class="{'auth_req': auth.click}">{{auth.name}}</li>
+			<!-- // <button ng-click="add_auth(per)" ng-disabled="per.selected">add</button>	
+			// <button ng-click="remove_auth(per)" ng-disabled="!per.selected">remove</button>		--!>		
+		</ul>
+	</div>	
+</script>
+
+<script type="text/ng-template" id="NikePlus_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+			<!--// <li class="auth_req" ng-repeat="list in auth_array"> {{list}}</li>-->
+		</div>
+	</div>
+	<hr>  <!-- //分隔線  -->
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth.name)" ng-mousedown="auth.click = !auth.click" ng-class="{'auth_req': auth.click}">{{auth.name}}</li>
+
+			<!-- // <button ng-click="add_auth(per)" ng-disabled="per.selected">add</button>	
+			// <button ng-click="remove_auth(per)" ng-disabled="!per.selected">remove</button>		--!>		
+		</ul>
+	</div>	
+</script>
+
+<script type="text/ng-template" id="RunKeeper_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+			<!--// <li class="auth_req" ng-repeat="list in auth_array"> {{list}}</li>-->
+		</div>
+	</div>
+	<hr>  <!-- //分隔線  -->
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth.name)" ng-mousedown="auth.click = !auth.click" ng-class="{'auth_req': auth.click}">{{auth.name}}</li>
+			<!-- // <button ng-click="add_auth(per)" ng-disabled="per.selected">add</button>	
+			// <button ng-click="remove_auth(per)" ng-disabled="!per.selected">remove</button>		--!>		
+		</ul>
+	</div>	
+</script>
+
+<script type="text/ng-template" id="Fitbit_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+			<!--// <li class="auth_req" ng-repeat="list in auth_array"> {{list}}</li>-->
+		</div>
+	</div>
+	<hr>  <!-- //分隔線  -->
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth.name)" ng-mousedown="auth.click = !auth.click" ng-class="{'auth_req': auth.click}">{{auth.name}}</li>
+			<!-- // <button ng-click="add_auth(per)" ng-disabled="per.selected">add</button>	
+			// <button ng-click="remove_auth(per)" ng-disabled="!per.selected">remove</button>		--!>		
+		</ul>
+	</div>	
+</script>
+
+<script type="text/ng-template" id="Jawbone_login_permission">
+	<div class="auth_info clearfix" >
+
+		<!-- //沒有授權要求 -->
+		<p class="user_auth no_req" ng-show="auth_array.length == 0">
+			There is no permission requests!
+		</p>
+
+		<!-- //授權要求清單 -->
+		<div ng-hide="auth_array.length == 0">
+			<p class="user_auth auth_reqs">There is {{auth_array.length}} permission requests!</p>
+			<!--// <li class="auth_req" ng-repeat="list in auth_array"> {{list}}</li>-->
+		</div>
+	</div>
+	<hr>  <!-- //分隔線  -->
+
+	<div class="allPermission" >
+		<ul class="auth_option clearfix">
+			<li class="auth_item " ng-repeat="auth in auth_category" ng-click="isAuth(auth.name)" ng-mousedown="auth.click = !auth.click" ng-class="{'auth_req': auth.click}">{{auth.name}}</li>
+			<!-- // <button ng-click="add_auth(per)" ng-disabled="per.selected">add</button>	
+			// <button ng-click="remove_auth(per)" ng-disabled="!per.selected">remove</button>		--!>		
+		</ul>
+	</div>	
+</script>
+
+
+
+	 <!-- {{per.selected}} -->
+<!-- 
+		<input type="button" ng-repeat="per in pers" ng-value="per.name" ng-click="checkAuth(per.name)">
+<div class="ngdialog-message">
+	<h3>ngDialog template</h3>
+	<p ng-show="theme">Test content for <code>{{theme}}</code></p>
+	<p ng-show="ngDialogData.foo">Data passed through: <code>{{ngDialogData.foo}}</code></p>
+	<p ng-show="dialogModel.message">Scope passed through: <code>{{dialogModel.message}}</code></p>
+</div> 
+-->
+<!-- <div>
+		<input type="checkbox" ng-model="public_profile">public_profile
+		<input type="checkbox" ng-model="user_friends">user_friends
+		<input type="checkbox" ng-model="email">email
+		<input type="checkbox" ng-model="user_about_me">user_about_me
+		<input type="checkbox" ng-model="user_actions.books">user_actions.books
+		<input type="checkbox" ng-model="user_actions.fitness">user_actions.fitness
+		<input type="checkbox" ng-model="user_actions.music">user_actions.music
+		<input type="checkbox" ng-model="user_actions.news">user_actions.news
+		<input type="checkbox" ng-model="user_actions.video">user_actions.video
+		<input type="checkbox" ng-model="user_actions">user_actions
+		<input type="checkbox" ng-model="user_activities">user_activities
+		<input type="checkbox" ng-model="user_birthday">user_birthday
+		<input type="checkbox" ng-model="user_education_history">user_education_history
+		<input type="checkbox" ng-model="user_events">user_events
+		<input type="checkbox" ng-model="user_games_activity">user_games_activity
+		<input type="checkbox" ng-model="user_groups">user_groups
+		<input type="checkbox" ng-model="user_hometown">user_hometown
+		<input type="checkbox" ng-model="user_interests">user_interests
+		<input type="checkbox" ng-model="user_likes">user_likes
+		<input type="checkbox" ng-model="user_location">user_location
+		<input type="checkbox" ng-model="user_photos">user_photos
+</div> -->

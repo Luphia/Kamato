@@ -1,0 +1,435 @@
+.ng-scope.platform {
+/*  margin: auto;
+  height: 100%;
+  background: #888; 
+  overflow: auto;
+  color: #666666;
+  min-width: 800px;
+  padding: 50px; */
+  /*font-family: Microsoft Yahei, sans-serif;*/
+}
+.ng-scope.platform .clearfix {
+  overflow: auto;
+}
+.ng-scope.platform .header {
+  margin: 0;
+  border-color: transparent;
+}
+.ng-scope.platform .brand {
+  font-size: xx-large;
+  color: white;
+  margin: 5px 10px;
+}
+.ng-scope.platform li {
+  list-style: none;
+  vertical-align: middle;
+  text-decoration: none;
+}
+.ng-scope.platform .currentItem {
+  background: #6dcea4;
+  color: white !important;
+}
+.ng-scope.platform .container-fluid {
+  padding: 0;
+}
+.ng-scope.platform .sidebar {
+  float: left;
+  padding: 0;
+}
+.ng-scope.platform .sidebar ul {
+  padding: 0;
+}
+.ng-scope.platform .sidebar ul li {
+  color: 140, 140, 140, 1;
+  font-size: medium;
+  cursor: pointer;
+}
+.ng-scope.platform .sidebar ul li div {
+  padding: 10px 25px;
+}
+.ng-scope.platform .sidebar ul li div:hover {
+  background: #6dcea4;
+  color: white;
+}
+.ng-scope.platform .sidebar ul li li div {
+  padding: 10px 45px;
+}
+.ng-scope.platform .sidebar ul a {
+  color: #8c8c8c;
+  text-decoration: none;
+}
+
+/*=================================auth top=================================*/
+
+.ng-scope.platform .title {
+  margin: 30px 0px 30px 0px;
+  border-bottom: 3px solid #eeeeee;
+}
+.ng-scope.platform .resource {
+  border-radius: 50%;
+  margin: 20px 0px 20px 100px;
+  float: left;
+  position: relative;
+  cursor: pointer;
+  height: 250px;
+  width: 250px;
+}
+.ng-scope.platform .resource:hover .name {
+  display: none;
+}
+.ng-scope.platform .resource .logo {
+  border: 3px solid #c6c6c6;
+  border-radius: 50% !important;
+  opacity: 0.2;
+  -webkit-transition: background-color 0.5s;
+  -o-transition: background-color 0.5s;
+  transition: background-color 0.5s;
+  height: 250px;
+  width: 250px;
+}
+.ng-scope.platform .resource .name {
+  position: absolute;
+  font-size: 36px;
+  text-align: center;
+  width: 200px;
+  height: 40px;
+  margin: -20px 0px 0px -100px;
+  top: 50%;
+  left: 50%;
+}
+.ng-scope.platform .resource .Facebook {
+  background: url(../../img/simple/auth/facebook.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .Facebook:hover {
+  opacity: 1;
+  background-color: #4a6eaa;
+}
+.ng-scope.platform .resource .GooglePlus {
+  background: url(../../img/simple/auth/G+.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .GooglePlus:hover {
+  opacity: 1;
+  background-color: #d94e37;
+}
+.ng-scope.platform .resource .NikePlus {
+  background: url(../../img/simple/auth/Nike+.png) no-repeat 50% 50%;
+}
+.ng-scope.platform .resource .NikePlus:hover {
+  opacity: 1;
+  background-color: #d02b09;
+}
+.ng-scope.platform .resource .RunKeeper {
+  background: url(../../img/simple/auth/runkeeper.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .RunKeeper:hover {
+  opacity: 1;
+  background-color: #26b7fa;
+}
+.ng-scope.platform .resource .Fitbit {
+  background: url(../../img/simple/auth/fitbit.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .Fitbit:hover {
+  -webkit-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+  opacity: 1;
+}
+.ng-scope.platform .resource .Jawbone {
+  background: url(../../img/simple/auth/jawbon.png) no-repeat 50% 50%;
+}
+.ng-scope.platform .resource .Jawbone:hover {
+  opacity: 1;
+  background-color: black;
+}
+
+.ng-scope.platform .bold_col{
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  text-decoration: underline;
+}
+/*=================================auth bottom=================================*/
+
+/*=================================resource top=================================*/
+
+.ng-scope.platform .capacity_wrapper{
+  height: 30px;
+}
+
+.ng-scope.platform .capacity_bar{
+  width: 70%;
+  margin: 0px auto;
+  float: none;
+}
+
+.ng-scope.platform .container-fluid{
+  padding-left: 30px;
+}
+
+.ng-scope.platform .container-fluid .accountTable {
+  margin-top: 20px;
+}  
+
+/*=================================resource bottom=================================*/
+/*=================================channel top=================================*/
+
+.ng-scope.platform .container-fluid .channel_table a{
+  cursor: pointer;
+  text-decoration: underline;
+  margin-bottom: 10px;
+}
+/*=================================channel bottom=================================*/
+
+/*=================================APP top=================================*/
+.ng-scope.platform .listview-header .col-md-10{
+  position: static;
+}
+
+.ng-scope.platform .list-mass-actions  li{
+  margin-right: 15px;
+  width: 100px;
+  cursor: pointer;
+} 
+
+.ng-scope.platform .list-mass-actions li a{
+  background-position: 0% 50%;
+  font-size: 14px;
+}
+    
+.ng-scope.platform .list-mass-actions li .sa-list-back{
+  background-position: 15% 50%;
+}
+
+
+.ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
+  width: 100%;
+  margin: 12px;
+  border: 1px solid rgba(256,256,256,0.5);
+  background-color: transparent;
+}
+
+.ng-scope.platform .clear{
+  width: 20px;
+  height: 20px;
+  background: url(../../img/simple/APP/clear.png) 50% 50% no-repeat;
+  position: relative;
+  top: 15px;
+  /*left: 10px;*/
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.ng-scope.platform .search{
+  width: 25px;
+  height: 25px;
+  background: url(../../img/simple/APP/search.png) 50% 50% no-repeat;
+  position: relative;
+  top: 15px;
+  /*left: 10px;*/
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.ng-scope.platform .appList, .ng-scope.platform .apiList{
+  /*line-height: 100%;*/
+  display: block;
+  height: 50px;
+  cursor: pointer;
+}
+
+.ng-scope.platform .appList .appName, .ng-scope.platform .apiList .apiName{
+  float: left;
+  font-size: 16px;
+  margin-left: 30px;
+  line-height: 30px;
+}
+
+.ng-scope.platform .appIcon{
+  float: left;
+  width: 30px;
+  background: url(../../img/simple/APP/app.png) 50% 50% no-repeat;
+  display: inline-block;
+  height: 30px;
+}
+
+.ng-scope.platform .sa-list-add{
+  margin: 15px;
+  cursor: pointer;
+}
+
+.ng-scope.platform .file_warpper{
+  margin: 10px 0px;
+}
+
+.ng-scope.platform .clicked{
+  text-decoration: none;
+  outline: 0;
+  background-color: rgba(0,0,0,0.3);
+  color: #FFD600;
+}
+
+.ng-scope.platform .file_warpper .tile-title{
+  font-size: 14px
+}
+
+.ng-scope.platform .file_warpper ul{
+  padding: 0px;
+  /*margin-left: 40px;*/
+}
+
+.ng-scope.platform .file_warpper a{
+  background-position: 0 0;
+}
+
+.ng-scope.platform .file_warpper a span{
+  padding: 30px;
+}
+
+.ng-scope.platform activitychart{                       /*++ activitychart的X軸尚未RWD */
+    height: 400px;
+    display: block;
+    width: 100% ; 
+}
+
+.ng-scope.platform .tile{
+  margin-top: 40px;
+  padding-top: 15px;
+}
+
+.ng-scope.platform .tab-container{
+  padding: 10px;
+}
+
+.ng-scope.platform .form-group{
+  margin-right: 0px;
+}
+
+.ng-scope.platform textarea{
+  resize: vertical;
+}
+
+@media screen and (max-width: 1024px){
+  .ng-scope.platform activitychart {
+    width: 100% !important; 
+  }
+
+  .ng-scope.platform activitychart canvas {
+    width: 100% !important; 
+  }
+}
+
+@media screen and (max-width: 991px){
+  .ng-scope.platform .search{
+    float: left;
+  }
+
+  .ng-scope.platform .app_search, .ng-scope.platform .api_search, .sql_input{
+    width: 80%;
+  }
+
+  .ng-scope.platform .sa-list-add{
+    float: left;
+  }
+}
+
+@media screen and (max-width: 570px){
+  .ng-scope.platform .app_search, .ng-scope.platform .api_search, .sql_input{
+    width: 50%;
+  }
+}
+
+/*=================================APP bottom=================================*/
+/*=================================easydb top=================================*/
+.ng-scope.platform .easydb_container .table_clicked{
+  color: yellow;
+}
+
+.ng-scope.platform .easydb_container .tile{
+  margin: 0;
+}
+
+.ng-scope.platform .easydb_container .sql_command{
+  font-size: 16px;
+}
+
+.ng-scope.platform .easydb_container .sql_input{
+  margin: 10px 0px; 
+  padding-left: 5px;
+  width: 80%;
+}
+
+.ng-scope.platform .easydb_container .sql_keyword{
+  position: absolute;
+  top: 18%;
+  z-index: 999;
+  max-height: 350px;
+  width: 700px;
+  overflow: auto;
+  margin-left: 220px;
+  font-size: 16px;
+  background-color: rgba(0,0,0,0.7);
+} 
+
+.ng-scope.platform .easydb_container .sql_manipulate{
+  margin-bottom: 10px;
+}
+
+
+.ng-scope.platform .easydb_container .table_list h3{
+  font-weight: bold;
+}
+
+.ng-scope.platform .easydb_container .table_list li{
+  margin: 10px 0px;
+  font-size: 16px;
+}
+
+.ng-scope.platform .easydb_container .sql_keyword div{
+  margin: 9px 0px;
+  cursor: default;
+}
+
+.ng-scope.platform .easydb_container .table_content{
+  position: relative;
+}
+
+.ng-scope.platform .easydb_container .json_text{
+  position: absolute;
+  z-index: 1;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.ng-scope.platform .easydb_container .json_text pre{
+  background-color: rgba(0,0,0,0);
+  color: rgba(256,256,256,1);
+  border: none;
+}
+
+.ng-scope.platform .easydb_container .close_json{
+  width: 20px;
+  height: 20px;
+  float: right;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid red;
+  text-align: center;
+  line-height: 100%;
+  background-color: rgba(215, 40, 40, 0.9);
+}
+
+/*.ng-scope.platform .easydb_container .table_row a{
+  
+}*/
+/*=================================easydb bottom=================================*/
+/*=================================sidebar top=================================*/
+
+ .menu_icon{
+  background-position: 5% 50%;
+}
+/*=================================sidebar bottom=================================*/

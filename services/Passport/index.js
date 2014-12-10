@@ -1,15 +1,8 @@
-var fs = require('fs')
-,	sub = 'js'
-,	modules = {}
-,	reg = new RegExp('\.' + sub + '$')
-,	files = fs.readdirSync(__dirname)
-;
-
-for(var key in files) {
-	if(reg.test(files[key]) && files[key] != 'index.js') {
-		var name = files[key].substr(0, files[key].length - sub.length - 1);
-		modules[name] = require('./' + files[key]);
-	}
-}
-
-module.exports = modules;
+module.exports = {
+	Google: require('./Passport.google.js'),
+	Facebook: require('./Passport.facebook.js'),
+	Fitbit: require('./Passport.fitbit.js'),
+	Jawbone: require('./Passport.jawbone.js'),
+	Runkeeper: require('./Passport.runkeeper.js'),
+	Nikeplus: require('./Passport.nikeplus.js')
+};
