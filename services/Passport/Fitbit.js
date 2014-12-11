@@ -290,6 +290,7 @@ module.exports = function(_config) {
 	// {執行步驟 D}
 	// 組出 url
 	var getAuthLink = function() {
+		var temporaryOauthData = this.getTemporaryTokenAndSecret();
 		var link = this.config.url.authClientAccessPath + "?oauth_token=" + temporaryOauthData.oauth_token;
 		//console.log("stepD link:\n"+link);
 		return link;
