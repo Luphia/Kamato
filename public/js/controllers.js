@@ -532,15 +532,18 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		var t = document.getElementById(id);
 		var j_text = document.getElementsByClassName("json_text");
 		var style = document.createAttribute('style');
+		var box_width = j_text[0];
 
-		if((event.layerX + j_text.clientWidth) > 1583){
-			style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- j_text.clientWidth)+"px";
+		if((event.pageX + j_text[0].offsetWidth) > 1583){
+			var overside = event.pageX + j_text[0].offsetWidth-1583;
+			style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- overside)+"px";
 		}
 		else{
 			style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- event.offsetX)+"px";			
 		}
 		j_text[0].setAttributeNode(style);
-		console.log(j_text[0]);
+		console.log(j_text);
+		console.log(box_width.offsetWidth);
 	}
 
 	$scope.close = function(){
@@ -646,7 +649,7 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		$scope.channel_info.splice($scope.channel_info.indexOf(channel),1)
 	}
 // ====================== Channel bottom======================
-// ====================== Auth top======================
+// ====================== api top======================
 	$scope.resources = [
 		{"name": "Facebook"},
 		{"name": "GooglePlus"},
@@ -767,7 +770,7 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		$scope.apiSearch = [];
 	}
 
-// ====================== Auth bottom======================
+// ====================== api bottom======================
 // ====================== Resource top======================
 	$scope.newAccountDialog = function(){
 		$scope.account = {
