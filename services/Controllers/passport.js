@@ -53,8 +53,8 @@ var auth = function (req, res, next) {
         var token = platform.getToken(data);
         var user = platform.getProfile(token);
 
-        logger.info.info(platform)
-        logger.info.info(platform)
+        logger.info.info(token)
+        logger.info.info(user)
 
 
         res.result.response(next, 1, 'login successful', user);
