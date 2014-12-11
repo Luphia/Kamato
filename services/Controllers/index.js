@@ -5,7 +5,6 @@ var index = function(req, res){
 var filters = require('./filters.js')
 ,	passport = require('./passport.js')
 ,	oauth2 = require('./oauth2.js')
-,	user = require('./user.js')
 ,	easyDB = require('./easyDB.js')
 ,	manage = require('./manage.js')
 ,	demo = require('./demo.js')
@@ -29,7 +28,6 @@ module.exports = function(_config, _log4js, route) {
 	passport.init(_config, logger, route);
 	filters.init(_config, logger, route);
 	easyDB.init(easyDBConfig, logger, route);
-	user.init(userConfig, logger, route);
 	manage.init(easyDBConfig, logger, route);
 	demo.init({}, logger, route);
 
@@ -38,7 +36,6 @@ module.exports = function(_config, _log4js, route) {
 		filters: filters,
 		passport: passport,
 		oauth2: oauth2,
-		user: user,
 		easyDB: easyDB,
 		demo: demo
 	}
