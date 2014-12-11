@@ -32,7 +32,7 @@ var Schema = function(table) {
 	}
 ,	dataSize = function(data) {
 		var size = 0;
-		for(var key in data) { size++; }
+		for(var key in data) { if(key.indexOf('_') != 0) size++; }
 		return size;
 	}
 ,	checkTable = function(table) {
