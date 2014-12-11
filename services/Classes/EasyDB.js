@@ -30,6 +30,11 @@ db.postData('user', [{name: 'D', birth: '1982-05-01'}, {name: 'E', birth: '1982-
 var Schema = function(table) {
 		return { "name": table, "max_serial_num": 0, "columns": {} };
 	}
+,	dataSize = function(data) {
+		var size = 0;
+		for(var key in data) { size++; }
+		return size;
+	}
 ,	checkTable = function(table) {
 		!table && (table = '');
 		table = table.trim();
@@ -75,10 +80,19 @@ var Schema = function(table) {
 }
 ,	valueType = function(value) {
 	var rs;
-	if( !isNaN(Date.parse(value)) ) { rs = dataType("Date"); }
-	else if( /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(value) ) { rs = dataType("Number"); }
+	if( /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(value) ) { rs = dataType("Number"); }
+	else if( !isNaN(Date.parse(value)) ) { rs = dataType("Date"); }
 	else { rs = dataType(typeof value); }
 	return rs;
+}
+,	getValueSchema = function(data) {
+	var schema = {};
+	if(!data || typeof data != 'object') { data = {}; }
+	for(var key in data) {
+		schema[key] = valueType(data[key]);
+	}
+
+	return schema;
 }
 ,	dataTransfer = function(value, type) {
 	if(typeof type != "string") { return checkValue(value); }
@@ -635,6 +649,9 @@ module.exports = function(conf) {
 		if(!table) { return false; }
 
 		schema = this.getSchema(table);
+		if(dataSize(schema.columns) == 0) {
+			this.setSchema(table, getValueSchema(data));
+		}
 
 		if(data.length > 1) {
 			for(var key in data) {
