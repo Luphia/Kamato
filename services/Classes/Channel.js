@@ -14,11 +14,10 @@ var fs = require('fs');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 
-module.exports = function (opt) {
+module.exports = function (opt, Mailconfig) {
     var Fileconfig = {
         folder: './files/'
     };
-    var Mailconfig = require('../../config/Mail.json');
     // setup MailBOT SMTP transport
     var transporter = nodemailer.createTransport(Mailconfig);
 
