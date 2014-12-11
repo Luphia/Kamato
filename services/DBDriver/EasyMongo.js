@@ -73,6 +73,7 @@ var parseCondition = function(ast) {
 			cond.push(parseCondition(ast.terms[key]));
 		}
 
+		ast.logic = ast.logic.toLowerCase();
 		switch(ast.logic) {
 			case "and":
 				rs = {"$and": cond};
