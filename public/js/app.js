@@ -44,6 +44,16 @@ angular.module('luegg.directives', []).directive('scrollGlue', function() {
 	};
 });
 
+function loadCss(url) {
+	if(document.getElementById(url)) { console.log(url); return false; }
+	var link = document.createElement("link");
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	link.href = url;
+	link.id = url;
+	document.getElementsByTagName("head")[0].appendChild(link);
+}
+
 /* App Module */
 var Kamato = angular.module('Kamato', [
 	'ngRoute',
@@ -53,22 +63,37 @@ var Kamato = angular.module('Kamato', [
 	'luegg.directives'
 ]);
 
-Kamato.config(['$routeProvider', function($routeProvider) {
-	$routeProvider.when('/', {
-		templateUrl: 'widgets/summary/template.html',
-		controller: 'SummaryCtrl'
-	}).
-	when('/map', {
-		templateUrl: 'widgets/map/template.html',
-		controller: 'MapCtrl'
-	}).
-	when('/chat/:chatID', {
-		templateUrl: 'widgets/chat/template.html',
-		controller: 'ChatCtrl'
-	}).
-	when('/media', {
-		templateUrl: 'widgets/media/template.html',
-		controller: 'MediaCtrl'
+Kamato.config(function($controllerProvider, $compileProvider, $filterProvider, $routeProvider, $provide) {
+	Kamato.register = {
+		controller: $controllerProvider.register,
+		directive: $compileProvider.directive,
+		filter: $filterProvider.register,
+		route: $routeProvider,
+		factory: $provide.factory,
+		service: $provide.service
+	};
+
+	$routeProvider.when('/:widget', {
+		templateUrl: function(path) {
+			return './widgets/' + path.widget + '/template.html';
+		},
+
+		resolve: {
+			load: function($q, $route, $rootScope) {
+				var deferred = $q.defer();
+				var dependencies = ['./widgets/' + $route.current.params.widget + '/controller.js'];
+
+				loadCss('./widgets/' + $route.current.params.widget + '/style.css');
+
+				$script(dependencies, function () {
+					$rootScope.$apply(function() {
+						deferred.resolve();
+					});
+				});
+
+				return deferred.promise;
+			}
+		}
 	}).
 	when('/platform/APP', {
 		templateUrl: 'widgets/platform/template_APP.html',
@@ -108,9 +133,8 @@ Kamato.config(['$routeProvider', function($routeProvider) {
 	}).	
 	otherwise({
 		redirectTo: '/'
-	});
-}]);
-
+	});;
+});
 
 Kamato.controller('TemplateCtrl',  function($scope){
 	
@@ -131,22 +155,6 @@ Kamato.controller('TemplateCtrl',  function($scope){
 	$scope.selected = undefined;
 	$scope.active = function(menu) {
 		$scope.selected = menu.name;
-	}
-})
-
-Kamato.directive('message', function($compile) {
-	return {
-		restrict: 'E',
-		replace: true,
-		templateUrl: 'widgets/chat/template-message.html'
-	}
-});
-
-Kamato.directive('pin', function($compile) {
-	return {
-		restrict: 'E',
-		replace: true,
-		templateUrl: 'widgets/chat/template-pin.html'
 	}
 });
 

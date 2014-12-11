@@ -1,4 +1,4 @@
-<div class="media">
+<div class="media" ng-controller="MediaCtrl">
 	<div class="menu">
 		<div ng-repeat="media in medias" ng-click="choose(media)" ng-class="{true:'selected', false:''}[play.title==media.title]">{{media.title}}</div>
 	</div>
