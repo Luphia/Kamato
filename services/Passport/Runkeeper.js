@@ -3,7 +3,8 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Passport/runkeeperPassport.js')();
+	var deviceJson = require('./config.private/runkeeper.json');
+	var oauth = new require('./services/Passport/Runkeeper.js')(deviceJson);
 	oauth.getAuthLink();
 
 	var token = oauth.getToken({"code":"5ce5c113413144d8beb8abcc90eefa47"});
@@ -16,7 +17,7 @@
 	var sleep = oauth.getSleep(token);
 
 	oauth.getPhysiological(token);
- */
+*/
 
 var url = require('url'),
 	Rest = require('node-rest-client'),
@@ -106,7 +107,7 @@ module.exports = function(_config) {
 	// 取得用戶好友清單
 	var getFriends = function(token) {
 		if(!this.config.url.getFriends) { return false; }
-		var rs = this.getAnyData(token, this.config.header.getActivitiesAccept, this.config.url.getActivities);
+		var rs = this.getAnyData(token, this.config.header.getFriendAccept, this.config.url.getFriends);
 		return rs;
 	};
 

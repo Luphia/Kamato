@@ -3,7 +3,8 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Passport/Passport.fitbit.js')();
+	var deviceJson = require('./config.private/fitbit.json');
+	var oauth = new require('./services/Passport/Fitbit.js')(deviceJson);
 	oauth.getPreAuthLink();
 	var temporaryOauthData = oauth.getTemporaryTokenAndSecret();
 	oauth.getAuthLink();
@@ -13,11 +14,11 @@
 	var accessApiOauthData = oauth.getAccessToken();
 
 	// 取各個想要的資料
-	var sleepJson = oauth.getSleep("1", "2014-03-16", ".json");
+	var sleepJson = oauth.getSleep("1", "2014-11-21", ".json");
 	var profile = oauth.getProfile("1", ".json");
-	var activities = oauth.getActivities("1", "2014-03-16", ".json");
-	var nutrition = oauth.getNutrition("1", "2014-03-16", ".json");
-	var friends = oauth.getProfile("1", ".json");
+	var activities = oauth.getActivities("1", "2014-11-21", ".json");
+	var nutrition = oauth.getNutrition("1", "2014-11-21", ".json");
+	var friends = oauth.getFriends("1", ".json");
 	
 	oauth.getPhysiological(token);
  */
@@ -26,7 +27,7 @@ var url = require('url'),
 	Rest = require('node-rest-client'),
 	request = require('request'),
 	crypto = require('crypto');
-
+var accessApiOauthData;
 /*
 	options = {
 		oauth_consumer_key
@@ -185,7 +186,8 @@ module.exports = function(_config) {
 
 	// 更新授權 token
 	var renewToken = function(token) {
-
+		accessApiOauthData = token;			// 將token設定給全域變數accessApiOauthData，以利該支程式使用。
+		return accessApiOauthData;
 	};
 
 	// 取得用戶資訊
@@ -202,7 +204,7 @@ module.exports = function(_config) {
 	// 參考網址: https://wiki.fitbit.com/display/API/API-Get-Friends
 	// param apiVersion : (String) The API version. Currently 1.
 	// param resFormat : (String)  輸出格式，有json和xml兩種。（如：.json或.xml）
-	var getFriends = function(token) {
+	var getFriends = function(apiVersion, resFormat) {
 		if(!this.config.url.getFriends) { return false; }
 		var rs = this.getAnyData("getFriends", apiVersion, "", "/friends", resFormat);
 		return rs;
@@ -274,7 +276,7 @@ module.exports = function(_config) {
 		};
 
 		request(options, function(err, response, body) {
-			rs = body;
+			rs = JSON.parse(body);
 		});
 
 		while(rs === undefined) {

@@ -3,7 +3,8 @@
 	cd ~/Kamato
 	node
 
-	var oauth = new require('./services/Passport/jawbonePassport.js')();
+	var deviceJson = require('./config.private/jawbone.json');
+	var oauth = new require('./services/Passport/Jawbone.js')(deviceJson);
 	oauth.getAuthLink();
 
 	var token = oauth.getToken({"code":"W3AjaI7_iOV5d9yyEQhHckLsustPIqURZcydp94F-AzbYPZq2li5cjDuWmnec0mgNDtv3sbXTWQBJ9ZshZjnXGnsJP0LaG7m9eAlsF4YQ0Gpsod0ctBiYrcEWeky2T-__WIduvNTO8rTCxGULsWO8Uu-9BxDohRVEk8-KWMwV7BRgiwMc06L-ypEIwFltv7s1el8M-Bg2Nrk8lNHm2EhXf13coH8-zAh"});
@@ -17,11 +18,12 @@
 	var sleep = oauth.getSleep(token);
 
 	var physiological = oauth.getPhysiological(token);
- */
+*/
 
 var url = require('url'),
 	Rest = require('node-rest-client'),
 	request = require('request');
+
 
 var parseQuery = function(data) {
 	var tmp = [];
@@ -85,24 +87,32 @@ module.exports = function(_config) {
 		return rs;
 	};
 
-	// 更新授權 token
-	var renewToken = function(token) {
-		var rs;
+	/**
+	 * 更新授權 token
+	 * param {refreshToken} 原refresh token
+	 * return [json] access_token, refresh_token...等
+	 */
+	var renewToken = function(refreshToken) {
+		var rs, postData = {};
 
-		postData = { "code": data.code };
-		postData.redirect_uri = this.config.redirect_uri;
 		postData.client_id = this.config.client_id;
-		postData.scope = this.config.scope;
+		//postData.scope = this.config.scope;
 		postData.client_secret = this.config.client_secret;
-		postData.grant_type = this.config.refresh_grant_type;
+		postData.grant_type = "refresh_token";
+		postData.refresh_token = refreshToken;
 
+		var headers = {
+			'Content-Type': "application/x-www-form-urlencoded"
+		};
 		var options = {
 			"url": this.config.url.getToken,
+			"headers": headers,
 			"form": postData
 		};
 
 		request.post(options, function(err, response, body) {
 			rs = JSON.parse(body);
+
 		});
 
 		while(rs === undefined) {
@@ -191,6 +201,8 @@ module.exports = function(_config) {
 		request(options, function(err, response, body) {
 			if (!err && response.statusCode == 200) {
 				rs = JSON.parse(body);
+			} else {
+				rs = false;
 			}
 			if(err) {
 				console.log(err);

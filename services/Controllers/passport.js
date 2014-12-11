@@ -1,8 +1,15 @@
-var config, logger,
-	passport = {};
+var config
+,	logger
+,	passport = {}
+,	easyDB
+,	userManager
+;
 
-var Result = require('../Classes/Result.js'),
-	AuthModule = require('../Passport');
+var Result = require('../Classes/Result.js')
+,	AuthModule = require('../Passport')
+,	UserManager = require('../Classes/UserManager.js')
+,	EasyDB = require('../Classes/EasyDB.js')
+;
 
 var auth = function(req, res, next) {
 		res.result = new Result();
@@ -35,6 +42,10 @@ module.exports = {
 	init: function(_config, _logger, route) {
 		config = _config;
 		logger = _logger;
+		userConfig = config.get('userConfig');
+        easyDB = new EasyDB(userConfig);
+        easyDB.connect(userConfig.option);
+        userManager = new UserManager(easyDB);
 
 		var serverConfig = _config.get('server') || {};
 
