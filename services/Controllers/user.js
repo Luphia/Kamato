@@ -26,8 +26,7 @@ module.exports = {
         logger = _logger;
         easyDB = new EasyDB(config);
         easyDB.connect(config.option);
-        userManager = new UserManager(easyDB);
-
+        userManager = new UserManager(easyDB, config.Mail);
         _route.get('/me', module.exports.data);
 
         //master
