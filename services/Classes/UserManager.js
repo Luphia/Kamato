@@ -42,6 +42,7 @@ module.exports = function (EasyDB, MailConfig) {
 
  	    var account = data.account;
  	    var password = data.password;
+
  	    password = crypto.createHash('sha1').update(password).digest('hex');
  	    var dbt = db.listData('members', "account='" + account + "'").list[0];
  	    if (dbt) {
@@ -123,6 +124,24 @@ module.exports = function (EasyDB, MailConfig) {
 	        return { _id: id };
 	    };
 	}
+    , uaddByPlatform = function (data) {
+        var db = this.DB;
+
+        var platform = data.platform;
+        var userData = data.userData;
+
+        var dbt = db.listData('members', platform).list[0];
+        if (dbt) {
+            return false; // 'platform userData exist';
+        } else {
+
+            var dbj = { name: userData.data[0].name, picture: userData.data[0].picture };
+            dbj[platform] = userData;
+            var id = db.postData('members', dbj);
+
+            return { _id: id };
+        };
+    }
 
 	// data = { platform, userData }
 	// return = { _id, name, picture } || false (not found)
