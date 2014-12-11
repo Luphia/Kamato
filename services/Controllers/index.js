@@ -15,7 +15,7 @@ var log4js, db;
 
 module.exports = function(_config, _log4js, route) {
 	var easyDBConfig = _config.get('mongo') || {}
-	,	userConfig = {"userTable": "users", "driver": "EasyMongo", "option": {"url": easyDBConfig.uri}, "Mail": config.get('Mail')};
+	, userConfig = { "userTable": "users", "driver": "EasyMongo", "option": { "url": easyDBConfig.uri }, "Mail": _config.get('Mail') };
 
 	_config.set("userConfig", userConfig);
 	log4js = _log4js;
