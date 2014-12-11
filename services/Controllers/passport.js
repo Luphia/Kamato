@@ -14,8 +14,6 @@ var Result = require('../Classes/Result.js')
 var auth = function (req, res, next) {
     res.result = new Result();
     var platform = req.params.platform;
-    console.log(platform)
-
     res.result.response(next, 3, '', {
         "path": passport[platform].getAuthLink()
     });
@@ -27,13 +25,38 @@ var auth = function (req, res, next) {
     var db = easyDB;
     //check session login status
 
+    //console.log(logger)
+    logger.info.info(platform)
+
     if (platform) {
 
         var s = req.session;
-        console.log('123')
+
+        //if (s == 1) {
+        //    var x = userManager.uaddToken(data);
+        //    var s = req.session;
+        //    if (x == false) {
+        //        res.result.response(next, 0, 'UaddToken Fail');
+        //    } else {
+        //        s._id = x._id;
+        //        s.name = x.name;
+        //        s.picture = x.picture;
+        //        s.ulogin = 1;
+        //        res.result.response(next, 1, 'UaddToken Success', x);
+        //    };
+
+        //} else {
+
+        //};
+
 
         var token = platform.getToken(data);
         var user = platform.getProfile(token);
+
+        logger.info.info(platform)
+        logger.info.info(platform)
+
+
         res.result.response(next, 1, 'login successful', user);
     } else {
         res.write("params:");
