@@ -1,9 +1,9 @@
 ﻿{
-    "service": "Gmail",
+    "service": null,
     "auth": {
-        "user": "playshowiiii@gmail.com",
-        "pass": "qazwsxqazwsx",
-        "from": "資策會測試 ✔ <'playshowiiii@gmail.com'>"
+        "user": null,
+        "pass": null,
+        "from": null
     },
-    "overtime": 1
+    "overtime": null
 }
