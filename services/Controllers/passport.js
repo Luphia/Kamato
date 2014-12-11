@@ -24,10 +24,14 @@ var auth = function (req, res, next) {
     res.result = new Result();
     var platform = passport[req.params.platform];
     var data = req.query;
-
-    console.log('123')
+    var db = easyDB;
+    //check session login status
 
     if (platform) {
+
+        var s = req.session;
+        console.log('123')
+
         var token = platform.getToken(data);
         var user = platform.getProfile(token);
         res.result.response(next, 1, 'login successful', user);
@@ -126,7 +130,7 @@ var auth = function (req, res, next) {
         s._id = x._id;
         s.name = x.name;
         s.picture = x.picture;
-        s.login = 1;
+        s.ulogin = 1;
         res.result.response(next, 1, 'Login Success', x);
     };
 }
