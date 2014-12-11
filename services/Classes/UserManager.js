@@ -5,13 +5,15 @@
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 
-module.exports = function (EasyDB) {
+module.exports = function (EasyDB, MailConfig) {
+    //random
     function random(max, min) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    var init = function (EasyDB) {
-        this.DB = EasyDB;
+    var init = function (_EasyDB, _MailConfig) {
+        this.DB = _EasyDB;
+        this.MailConfig = _MailConfig;
         return this;
     }
 	// data = { account, password }
@@ -201,7 +203,7 @@ module.exports = function (EasyDB) {
 
         //use random(max, min) random range
         var check = random(32767, 0);
-        var Mailconfig = require('../../config/Mail.json');
+        var Mailconfig = this.MailConfig;
 
         var faccount = crypto.createHash('md5').update(account + check).digest('hex');
         var dbt = db.listData('users', "account='" + account + "'").list[0];
@@ -247,7 +249,7 @@ module.exports = function (EasyDB) {
 
         //use random(max, min) random range
         var check = random(32767, 0);
-        var Mailconfig = require('../../config/Mail.json');
+        var Mailconfig = this.MailConfig;
 
         var faccount = crypto.createHash('md5').update(account + check).digest('hex');
         var dbt = db.listData('members', "account='" + account + "'").list[0];
@@ -356,5 +358,5 @@ module.exports = function (EasyDB) {
         urepassword: urepassword
     };
 
-    return um.init(EasyDB);
+    return um.init(EasyDB, MailConfig);
 }
