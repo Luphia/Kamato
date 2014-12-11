@@ -151,8 +151,25 @@ module.exports = function() {
 					}
 
 					// 取出各平台token，並取得各動作之值，將其值寫入table。
-					//console.log("dd=="+JSON.stringify(renewToken));
-					this.collectData(listKey, renewToken[listKey], userId);		// 寫入資料
+					//---------+++ [實驗用] 一次抓取大量fitbit資料，用以擷取大量fitbit資料做為測試用。
+					/*var strDate = "2014-12-";
+					for(var day_i=1; day_i<11; day_i++) {
+						var day = "";
+						if(day_i<10) {
+							day = "0" + day_i;
+						} else {
+							day = day_i;
+						}
+						var dataDate = strDate + day;
+						//console.log("取 "+dataDate+" 的資料");
+						if(platform=="fitbit") {
+							this.collectData(listKey, renewToken[listKey], userId, dataDate);		// 寫入資料
+						}
+					}*/
+					//+++--------- [實驗用] 一次抓取大量fitbit資料，用以擷取大量fitbit資料做為測試用。
+					
+					var dataDate = "2014-12-11";
+					this.collectData(listKey, renewToken[listKey], userId, dataDate);		// 寫入資料
 				}
 			}
 		}
@@ -245,11 +262,15 @@ module.exports = function() {
 	
 	/**
 	 * [新增] 新增資料到 xxx平台(platform table)
+	 * param {platform} 平台名稱
+	 * param {tokenObject} (Json Object)token
+	 * param {userId} 使用者id (_id)
+	 * param {dataDate} 欲取得資料的日期。該參數只用於取fitbit資料。
 	 */
-	var collectData = function(platform, token, userId) {
-		console.log("----[collectData param] ↓↓↓----");
-		console.log(token);
-		console.log("----[collectData param] ↑↑↑----");
+	var collectData = function(platform, token, userId, dataDate) {
+		//console.log("----[collectData param] ↓↓↓----");
+		//console.log(token);
+		//console.log("----[collectData param] ↑↑↑----");
 		var deviceJson = require('../../config.private/'+platform+'.json');
 		var library = '../Passport/' + platform + ".js";
 		var passport = new require(library)(deviceJson);
@@ -258,35 +279,23 @@ module.exports = function() {
 		switch(platform) {
 			case "fitbit":
 				var setAccessToken = passport.renewToken(token);		// 將token設定給accessApiOauthData以利 Passport.fitbit.js 進行以下動作
-				console.log("setAccessToken-->"+JSON.stringify(setAccessToken));
-				var strDate = "2014-11-";
-				for(var i=20; i<31; i++) {
-					var day = "";
-					if(i<10) {
-						day = "0" + i;
-					} else {
-						day = i;
-					}
-					var dataDate = strDate + day;
-					//console.log("取 "+dataDate+" 的資料");
-					profile = passport.getProfile("1", ".json");
-					activities = passport.getActivities("1", dataDate, ".json");
-					friends = passport.getFriends("1", ".json");
-					nutrition = passport.getNutrition("1", dataDate, ".json");
-					sleep = passport.getSleep("1", dataDate, ".json");
-					console.log("寫入" + platform + "，"+dataDate+" 的資料成功。");
-				}
-
+				//console.log("setAccessToken-->"+JSON.stringify(setAccessToken));
+				profile = passport.getProfile("1", ".json");
+				activities = passport.getActivities("1", dataDate, ".json");
+				friends = passport.getFriends("1", ".json");
+				nutrition = passport.getNutrition("1", dataDate, ".json");
+				sleep = passport.getSleep("1", dataDate, ".json");
+				console.log("寫入" + platform + "，"+dataDate+" 的資料成功。");
 				break;
 				
 			case "jawbone":
 			case "runkeeper":
-				/*profile = passport.getProfile(token);
+				profile = passport.getProfile(token);
 				activities = passport.getActivities(token);
 				friends = passport.getFriends(token);
 				nutrition = passport.getNutrition(token);
 				sleep = passport.getSleep(token);
-				console.log("寫入" + platform + "資料");*/
+				console.log("寫入" + platform + "資料");
 				break;
 				
 				
@@ -296,6 +305,7 @@ module.exports = function() {
 		//console.log("---[取出 " + platform + " 平台的值如下]---");
 		//console.log({'userId': userId, 'profile': profile, 'activities': activities, 'friends': friends, 'nutrition': nutrition, 'sleep': sleep});
 		this.db.postData(platform, {'userId': userId, 'profile': profile, 'activities': activities, 'friends': friends, 'nutrition': nutrition, 'sleep': sleep});
+		
 		console.log("--- collectData postData End ---");
 	};
 	
