@@ -108,6 +108,7 @@
 .sa-list-folder { background-image: url(../img/icon/folder.png);}
 .sa-list-back { background-image: url(../img/simple/APP/back.png); }
 .sa-list-file { background-image: url(../img/simple/APP/file.png); }
+.sa-list-edit { background-image: url(../img/simple/easydb/edit.png); }
 /* Others */
 #menu-toggle { background-image: url(../img/icon/menu.png); }
 
@@ -144,7 +145,6 @@ only screen and (                min-resolution: 1.25dppx) {
     .sa-side-photos { background-image: url(../img/icon/photos@2x.png); background-size: 23px 19px; }
     /*simple-auth*/
     .sa-side-auth { background-image: url(../img/icon/photos@2x.png); background-size: 19px 19px; }
-    
     /* Top Menu */
     .sa-top-message { background-image: url(../img/icon/message@2x.png); background-size: 25px 17px; }
     .sa-top-updates { background-image: url(../img/icon/updates@2x.png); background-size: 25px 25px; }

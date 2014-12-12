@@ -256,7 +256,7 @@
   height: 30px;
 }
 
-.ng-scope.platform .sa-list-add{
+.ng-scope.platform .sa-list-add, .sa-list-delete, .sa-list-edit{
   margin: 15px;
   cursor: pointer;
 }
@@ -331,7 +331,7 @@
     width: 80%;
   }
 
-  .ng-scope.platform .sa-list-add{
+  .ng-scope.platform .sa-list-add, .sa-list-delete, .sa-list-edit{
     float: left;
   }
 }
@@ -352,11 +352,12 @@
   margin: 0;
 }
 
-.ng-scope.platform .easydb_container .sql_command{
+.ng-scope.platform .easydb_container .sql_command span{
   font-size: 16px;
 }
 
 .ng-scope.platform .easydb_container .sql_input{
+  font-size: 14px;
   margin: 10px 0px; 
   padding-left: 5px;
   width: 80%;
@@ -378,14 +379,37 @@
   margin-bottom: 10px;
 }
 
+.ng-scope.platform .easydb_container .sql_manipulate .sql_operation{
+  position: static;
+  background-color: rgba(0,0,0,0.3);
+  margin-right: 20px;
+}
+
+.ng-scope.platform .easydb_container .sql_manipulate .sql_operation a{
+  background-size: 23px 23px;
+  margin: 10px;
+}
 
 .ng-scope.platform .easydb_container .table_list h3{
   font-weight: bold;
 }
 
+.ng-scope.platform .easydb_container .table_list ul{
+  padding: 0;
+}
+
 .ng-scope.platform .easydb_container .table_list li{
   margin: 10px 0px;
   font-size: 16px;
+  padding-left: 40px;
+  /*text-align: 40%;*/
+  cursor: pointer;
+  float: left;
+  width: 100%;
+}
+
+.ng-scope.platform .easydb_container .table_list li:hover{
+  border: 1px solid rgba(256,256,256,0.5);
 }
 
 .ng-scope.platform .easydb_container .sql_keyword div{
@@ -397,10 +421,12 @@
   position: relative;
 }
 
+.ng-scope.platform .easydb_container > .col-md-2{
+  min-height: 590px;
+}
+
 .ng-scope.platform .easydb_container .json_text{
-  position: absolute;
-  z-index: 1;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0,0,0,0);
 }
 
 .ng-scope.platform .easydb_container .json_text pre{
@@ -423,9 +449,6 @@
   background-color: rgba(215, 40, 40, 0.9);
 }
 
-/*.ng-scope.platform .easydb_container .table_row a{
-  
-}*/
 /*=================================easydb bottom=================================*/
 /*=================================sidebar top=================================*/
 

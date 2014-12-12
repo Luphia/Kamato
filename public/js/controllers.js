@@ -117,13 +117,22 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 
     $scope.t_d_more = [];
     var jsonTemp = {};
+    var viewing_table = "";
+
 	$scope.table_click =function(name){
+		viewing_table = name
+		$scope.is_show = false;
+		//要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
+		var j_text = document.getElementsByClassName("json_text");
+		var table = document.getElementsByClassName("table");
+		table[0].childNodes[1].appendChild(j_text[0]);
+
 		$scope.default_view_table = name;
 		$http.get(db_link+name+"/").
         success(function(schema) {
         	var t_d_temp = schema.data.list;
         	$scope.t_head = schema.data.list[0];
-        
+ 			$scope.colspan = Object.keys(schema.data.list[0]).length;
         	angular.forEach(t_d_temp, function(list_value, list_key){
         		angular.forEach(t_d_temp[list_key], function(value, key){
         			var value_id = t_d_temp[list_key]._id;
@@ -136,36 +145,43 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
         				t_d_temp[list_key][key] = "json file"
         			}
         			$scope.t_d = t_d_temp;
+
         		})
         	})
+		console.log($scope.t_d);
         });
-	}   
+	}
+
+    $scope.del_table = function(){
+    	$scope.viewing_table = viewing_table;
+    }
+
+	$scope.del_t_row = function(row){
+		$scope.t_d.splice($scope.t_d.indexOf(row),1);
+	}
+
 	var pre_id="";
 	$scope.is_show = false;
-	$scope.show_json_file = function(id, key){
-		$scope.is_show = true;
-		var id_key = id+key;
-		$scope.show_json= jsonTemp[id_key];
-		var t = document.getElementById(id);
-		var j_text = document.getElementsByClassName("json_text");
-		var style = document.createAttribute('style');
-		var box_width = j_text[0];
+	var pre_id_attr="";
 
-		if((event.pageX + j_text[0].offsetWidth) > 1583){
-			var overside = event.pageX + j_text[0].offsetWidth-1583;
-			style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- overside)+"px";
+
+	$scope.show_json_file = function(id, attr_name){ 
+		var id_attr_name = id+attr_name;
+		if(pre_id_attr == id_attr_name){
+			$scope.is_show = !$scope.is_show;
 		}
 		else{
-			style.value = "top:"+(event.offsetY+event.layerY)+"px; left:"+(event.layerX- event.offsetX)+"px";			
+			pre_id_attr = id_attr_name;
+			$scope.is_show = true;
+			var elem = document.getElementById(id);
+			var j_text = document.getElementsByClassName("json_text");
+			var table = document.getElementsByClassName("table");				
+			$scope.show_json= jsonTemp[id_attr_name];
+			$scope.t_json = id_attr_name;
+			table[0].childNodes[1].insertBefore(j_text[0], elem.nextSibling);	
 		}
-		j_text[0].setAttributeNode(style);
-		console.log(j_text);
-		console.log(box_width.offsetWidth);
 	}
 
-	$scope.close = function(){
-		$scope.is_show = false;
-	}
 
 	$scope.keyword = [
 		{'name': 'SELECT * FROM table_name'},
@@ -336,21 +352,6 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		$scope.req_chart = true;
 		$scope.api_list = false;
 	}
-
-	// $scope.daily_req = function(reqs){    //傳入一個陣列, 包含30內天的req值
-	// 	var d = Math.floor((new Date()).getTime()/1000)*1000;         //現在時間(毫秒)
-	// 	var temp  = [];
-	// 	for (var i = 0; i < 30; i++) {
-	// 			// var num = Math.floor((Math.random()*100));
-	// 			temp.push([d,reqs[i]]);            //e.g. [[x1,y1],[x2,y2]]
-	// 				d -= 86400000;             //毫秒
-	// 		}
-	// 	$scope.Request = temp;
-	// }
-
-
-	// var reqs=[324,324,255,466,523,43,43,23,123,43,24,359,345,45,543,43,234,755,234,74,77,231,324,34,653,853,63,61,86,245]
-	// $scope.daily_req(reqs);
 
 	$scope.del_api = function(api){
 		$scope.apiList.splice($scope.apiList.indexOf(api),1);

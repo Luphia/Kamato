@@ -10,14 +10,19 @@
 						<h3>Table List</h3>
 						<ul>
 							<li ng-repeat="table in tables">
-								<a ng-click="table_click(table)" ng-class="{'table_clicked': default_view_table == table}">- {{table}}</a>
+								<a ng-click="table_click(table)" ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
 							</li>
 						</ul>
 					</aside>
 				</div>
 				<div class="col-md-10">
 					<div class="sql_manipulate clearfix">
-						<div class="sql_command col-md-9 col-md-offset-1">
+						<div class="col-md-2 sql_operation">
+							<a tooltip="Create Table" class="sa-list-add"></a>
+							<a tooltip="Delete Table" class="sa-list-delete" ng-click="del_table()"></a>
+							<a tooltip="Edit Schema" class="sa-list-edit"></a>
+						</div>
+						<div class="sql_command col-md-8">
 							<span class="text-center">SQL Command: </span>
 							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list(command_sample)">
 						</div>
@@ -34,23 +39,23 @@
 								<th ng-repeat="(key,value) in t_head">
 									{{key}}
 								</th>
+								<th></th>
 							</tr>
 							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}">
 								<td ng-repeat="(key, value) in r">
 									<span ng-hide=" value =='json file'">{{value}}</span>
-									<a href="" ng-show= " value =='json file'" ng-click="show_json_file(r._id, key)">{{value}} </a>
+									<a href="" ng-show= " value =='json file'" ng-click="show_json_file(r._id, key)" ng-class="{'table_clicked': t_json == r._id+key}">{{value}} </a>
+								</td>
+								<td>
+									<button class="btn btn-alt btn-block" ng-click="del_t_row(r)">Delete</button>
 								</td>
 							</tr>
-							<div class="json_text" ng-show="is_show">
-								<div class="close_json" ng-click="close()">
-									 x
-								</div>
-								<pre>{{show_json | json}}</pre>
-							</div>
-						</table>
+							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre>{{show_json | json}}</pre></td></tr>
+						</table>				
 					</div>
 				</div>
 			</div>
 		</div>
+		<div ng-show=""></div>
 	</div>
 </div>
