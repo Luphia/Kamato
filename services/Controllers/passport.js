@@ -29,29 +29,24 @@ var auth = function (req, res, next) {
     logger.info.info(platform)
 
     if (platform) {
-
-        var s = req.session;
-
-        //if (s == 1) {
-        //    var x = userManager.uaddToken(data);
-        //    var s = req.session;
-        //    if (x == false) {
-        //        res.result.response(next, 0, 'UaddToken Fail');
-        //    } else {
-        //        s._id = x._id;
-        //        s.name = x.name;
-        //        s.picture = x.picture;
-        //        s.ulogin = 1;
-        //        res.result.response(next, 1, 'UaddToken Success', x);
-        //    };
-
-        //} else {
-
-        //};
-
-
         var token = platform.getToken(data);
         var user = platform.getProfile(token);
+
+        var s = req.session;
+        var id = s._id;
+        var uplatform = req.params.platform;
+        if (s.ulogin == 1) {
+            var x = userManager.uaddToken({ id: id, platform: uplatform, userData: token });
+            if (x == false) {
+                res.result.response(next, 0, 'UaddToken Fail');
+            } else {
+                res.result.response(next, 1, 'UaddToken Success', x);
+            };
+        } else {
+
+        };
+
+
 
         logger.info.info(token)
         logger.info.info(user)
