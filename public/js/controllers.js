@@ -132,13 +132,12 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
         success(function(schema) {
         	var t_d_temp = schema.data.list;
         	$scope.t_head = schema.data.list[0];
- 			$scope.colspan = Object.keys(schema.data.list[0]).length;
+ 			$scope.colspan = Object.keys(schema.data.list[0]).length +1; //+1是del button欄位
         	angular.forEach(t_d_temp, function(list_value, list_key){
         		angular.forEach(t_d_temp[list_key], function(value, key){
         			var value_id = t_d_temp[list_key]._id;
         			if(typeof(value) == "object" && value != null){
-        				//存json
-        				
+        				//存json			
         				jsonTemp[value_id+key] = value;
         				$scope.t_d_more.push(jsonTemp);
         				//json換註解
@@ -148,12 +147,24 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 
         		})
         	})
-		console.log($scope.t_d);
         });
 	}
 
+    $scope.del_warn = function(){
+    	$scope.warn_hint = true;
+    	$scope.warning_text =viewing_table;
+    }
+
     $scope.del_table = function(){
-    	$scope.viewing_table = viewing_table;
+    	var next_table_index = $scope.tables.indexOf(viewing_table)+1;
+    	var next_table = $scope.tables[next_table_index];
+    	$scope.tables.splice($scope.tables.indexOf(viewing_table),1);  //從table list移除
+    	$scope.table_click(next_table);   //畫面換到下一個table的內容
+    	$scope.warn_hint = false;
+    }
+
+    $scope.close_warn_hint = function(){
+    	$scope.warn_hint = false;
     }
 
 	$scope.del_t_row = function(row){
@@ -584,35 +595,6 @@ KamatoControllers.controller('PlatformGoogleDialogCtrl', function($scope, $http)
 		}
 	}
 })
-
-// KamatoControllers.controller('PlatformNikeDialogCtrl', function($scope, $http){
-// 	$scope.check = true;
-
-// 	$scope.auth_category=[
-// 		{"name": "Profile"},
-// 		{"name": "Friends"},
-// 		{"name": "Activities"},
-// 		{"name": "Nutrition"},
-// 		{"name": "Sleep"},
-// 		{"name": "Physiological"},
-// 	]
-
-	
-// 	$scope.auth_array = [];
-
-// 	$scope.isAuth = function(per){
-// 		this.click = !this.click;
-// 		$scope.isClicked = $scope.auth_array.indexOf(per.name);
-
-// 		if($scope.isClicked == -1){
-// 			$scope.auth_array.push(per.name);
-// 		}
-// 		else{
-// 			$scope.auth_array.splice($scope.auth_array.indexOf(per.name),1);
-			
-// 		}
-// 	}
-// })
 
 KamatoControllers.controller('PlatformRKDialogCtrl', function($scope, $http){
 	$scope.check = true;

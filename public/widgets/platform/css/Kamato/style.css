@@ -344,6 +344,37 @@
 
 /*=================================APP bottom=================================*/
 /*=================================easydb top=================================*/
+.ng-scope.platform .warnHint{
+  width: 400px;
+  height: 200px;
+  background-color: rgba(0,0,0,0.7);
+  position: absolute;
+  top: 20%;
+  left: 30%;
+}
+
+.ng-scope.platform .warnHint button{
+  position: relative;
+  top: 30px;
+  left: 45px;
+  margin: 0px 30px;
+}
+
+.ng-scope.platform .warnHint h3{
+  margin: 0px;
+  padding: 10px 0px;
+  background-color: rgba(211, 24, 44, 0.9);
+}
+
+.ng-scope.platform .warnHint h4{
+  margin-top: 30px;
+}
+
+.ng-scope.platform .warnHint strong{
+  font-size: 24px;
+  color: #FFD600;
+}
+
 .ng-scope.platform .easydb_container .table_clicked{
   color: yellow;
 }
@@ -362,6 +393,7 @@
   padding-left: 5px;
   width: 80%;
 }
+
 
 .ng-scope.platform .easydb_container .sql_keyword{
   position: absolute;

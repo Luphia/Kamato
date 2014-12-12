@@ -9,8 +9,8 @@
 					<aside class="table_list">
 						<h3>Table List</h3>
 						<ul>
-							<li ng-repeat="table in tables">
-								<a ng-click="table_click(table)" ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
+							<li  ng-click="table_click(table)" ng-repeat="table in tables">
+								<a ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
 							</li>
 						</ul>
 					</aside>
@@ -19,7 +19,7 @@
 					<div class="sql_manipulate clearfix">
 						<div class="col-md-2 sql_operation">
 							<a tooltip="Create Table" class="sa-list-add"></a>
-							<a tooltip="Delete Table" class="sa-list-delete" ng-click="del_table()"></a>
+							<a tooltip="Delete Table" class="sa-list-delete" ng-click="del_warn()"></a>
 							<a tooltip="Edit Schema" class="sa-list-edit"></a>
 						</div>
 						<div class="sql_command col-md-8">
@@ -56,6 +56,13 @@
 				</div>
 			</div>
 		</div>
-		<div ng-show=""></div>
+	</div>
+	<div ng-show="warn_hint" class="warnHint">
+		<h3 class="text-center">Waring</h3>
+		<h4 class="text-center">
+			You are deleting <strong>{{warning_text}} </strong>table
+		</h4>
+		<button class="btn btn-alt btn-lg btn-del" ng-click="del_table()">Delete</button>
+		<button class="btn btn-alt btn-lg btn-ca" ng-click="close_warn_hint()">Cancel</button>			
 	</div>
 </div>
