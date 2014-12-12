@@ -162,6 +162,23 @@ module.exports = function (EasyDB, MailConfig) {
 	        return false; //'not found';
 	    };
 	}
+	, ufindByPlatform = function (data) {
+	    var db = this.DB;
+
+	    var platform = data.platform;
+	    var userData = data.userData;
+
+	    var dbj = {};
+	    dbj[platform] = userData;
+
+	    var dbt = listData('members', dbj).list[0];
+
+	    if (dbt) {
+	        return { _id: dbt._id, name: dbt.name, picture: dbt.picture };
+	    } else {
+	        return false; //'not found';
+	    };
+	}
 
 	// data = _id
 	// return = { _id, name, picture } || false (not found)
@@ -203,13 +220,19 @@ module.exports = function (EasyDB, MailConfig) {
 	    var _id = data._id;
 	    var platform = data.platform;
 	    var userData = data.userData;
+	    //logger.info.info(userData)
+	    //logger.info.info(db.setSchema('member_token', 'JSON'))
 
 	    var dbt = db.listData('members', "_id='" + _id + "'").list[0];
 	    if (dbt) {
 	        var dbj = {};
 	        dbj[platform] = userData;
-	        db.postData('member_token', dbj, 'userid=' + _id);
-	        return true;
+	        var ans = db.putData('member_token', _id, dbj);
+	        logger.info.info(db.listData('member_token'))
+	        logger.info.info(db.listData('member_token').list[0].google)
+	        logger.info.info(db.listData('member_token').list[0].runkeeper)
+
+	        return ans;
 	    } else {
 	        return false; // 'not found';
 	    };

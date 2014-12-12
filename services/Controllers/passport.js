@@ -26,7 +26,7 @@ var auth = function (req, res, next) {
     //check session login status
 
     //console.log(logger)
-    logger.info.info(platform)
+    //logger.info.info(platform)
 
     if (platform) {
         var token = platform.getToken(data);
@@ -36,23 +36,29 @@ var auth = function (req, res, next) {
         var id = s._id;
         var uplatform = req.params.platform;
         if (s.ulogin == 1) {
-            var x = userManager.uaddToken({ id: id, platform: uplatform, userData: token });
+            //logger.info.info({ _id: id, platform: uplatform, userData: token });
+            var x = userManager.uaddToken({ _id: id, platform: uplatform, userData: token });
+            //logger.info.info(x)
+            //logger.info.info(user)
             if (x == false) {
                 res.result.response(next, 0, 'UaddToken Fail');
             } else {
-                res.result.response(next, 1, 'UaddToken Success', x);
+                res.result.response(next, 1, 'UaddToken Success', user);
             };
         } else {
-
+            s.ulogin = 1;
+            s._id = x._id;
+            s.name = x.name;
+            s.picture = x.picture;
         };
 
 
 
-        logger.info.info(token)
-        logger.info.info(user)
+        //logger.info.info(token)
+        //logger.info.info(user)
 
 
-        res.result.response(next, 1, 'login successful', user);
+        //res.result.response(next, 1, 'login successful', user);
     } else {
         res.write("params:");
         res.write(JSON.stringify(req.params));
