@@ -168,10 +168,9 @@ module.exports = function (EasyDB, MailConfig) {
 	    var platform = data.platform;
 	    var userData = data.userData;
 
-	    var dbj = {};
-	    dbj[platform] = userData;
-
-	    var dbt = listData('members', dbj).list[0];
+	    var dbj = platform + "=" + userData;
+	    logger.info.info(userData)
+	    var dbt = db.listData('members', dbj).list[0];
 
 	    if (dbt) {
 	        return { _id: dbt._id, name: dbt.name, picture: dbt.picture };
@@ -406,6 +405,7 @@ module.exports = function (EasyDB, MailConfig) {
         add: add,
         addByPlatform: addByPlatform,
         findByPlatform: findByPlatform,
+        ufindByPlatform: ufindByPlatform,
         findByID: findByID,
         addToken: addToken,
         uaddToken: uaddToken,
