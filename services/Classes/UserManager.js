@@ -191,7 +191,24 @@ module.exports = function (EasyDB, MailConfig) {
 	    if (dbt) {
 	        var dbj = {};
 	        dbj[platform] = userData;
-	        db.postData('tokens', dbj);
+	        db.postData('tokens', dbj, 'userid=' + _id);
+	        return true;
+	    } else {
+	        return false; // 'not found';
+	    };
+	}
+	, uaddToken = function (data) {
+	    var db = this.DB;
+
+	    var _id = data._id;
+	    var platform = data.platform;
+	    var userData = data.userData;
+
+	    var dbt = db.listData('members', "_id='" + _id + "'").list[0];
+	    if (dbt) {
+	        var dbj = {};
+	        dbj[platform] = userData;
+	        db.postData('member_token', dbj, 'userid=' + _id);
 	        return true;
 	    } else {
 	        return false; // 'not found';
@@ -368,6 +385,7 @@ module.exports = function (EasyDB, MailConfig) {
         findByPlatform: findByPlatform,
         findByID: findByID,
         addToken: addToken,
+        uaddToken: uaddToken,
         getData: getData,
         forgot: forgot,
         repassword: repassword,
