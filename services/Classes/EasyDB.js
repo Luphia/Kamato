@@ -10,6 +10,8 @@ var driverPath = '../DBDriver/'
 		driverPath,
 		driver
 	}
+
+	var test = {a: 1, b: { "b1": 2 }}
  */
 
  /*
@@ -80,7 +82,8 @@ var Schema = function(table) {
 }
 ,	valueType = function(value) {
 	var rs;
-	if( /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(value) ) { rs = dataType("Number"); }
+	if(typeof value == "object") { rs = "JSON"; }
+	else if( /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(value) ) { rs = dataType("Number"); }
 	else if( !isNaN(Date.parse(value)) ) { rs = dataType("Date"); }
 	else { rs = dataType(typeof value); }
 	return rs;
@@ -692,7 +695,7 @@ module.exports = function(conf) {
 			id.push(data._id);
 		}
 
-		this.DB.postData(table, data, function(err, data) {
+		this.DB.postData(table, data, function(err, _data) {
 			rs = err? false: id.join(', ');
 		});
 
@@ -712,8 +715,8 @@ module.exports = function(conf) {
 		query.WHERE = preCondiction( query.WHERE, schema );
 		data = compareSchema(data, schema);
 
-		this.DB.checkID(table, id, function(err, data) {
-			check = err? false: data;
+		this.DB.checkID(table, id, function(err, _data) {
+			check = err? false: _data;
 		});
 
 		while(check === undefined) {
@@ -721,7 +724,7 @@ module.exports = function(conf) {
 		}
 
 		data._id = id;
-		this.DB.replaceData(table, query, data, function(err, data) {
+		this.DB.replaceData(table, query, data, function(err, _data) {
 			rs = err? false: true;
 		});
 
@@ -741,8 +744,8 @@ module.exports = function(conf) {
 		query.WHERE = preCondiction( query.WHERE, schema );
 		data = compareSchema(data, schema);
 
-		this.DB.checkID(table, id, function(err, data) {
-			check = err? false: data;
+		this.DB.checkID(table, id, function(err, _data) {
+			check = err? false: _data;
 		});
 
 		while(check === undefined) {
@@ -750,7 +753,7 @@ module.exports = function(conf) {
 		}
 
 		newData = {$set: data};
-		this.DB.putData(table, query, newData, function(err, data) {
+		this.DB.putData(table, query, newData, function(err, _data) {
 			rs = err? false: true;
 		});
 
@@ -784,7 +787,7 @@ module.exports = function(conf) {
 		}
 		if(x == 0) { return false; }
 
-		this.DB.deleteData(table, cond, function(err, data) {
+		this.DB.deleteData(table, cond, function(err, _data) {
 			rs = err? false: true;
 		});
 
