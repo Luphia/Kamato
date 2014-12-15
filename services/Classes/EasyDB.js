@@ -653,13 +653,14 @@ module.exports = function(conf) {
 		table = checkTable(table);
 		if(!table) { return false; }
 
-		var rs = []
+		var rs
 		,	schema = this.getSchema(table)
 		;
 
-		this.DB.getData(table, data, function(err, _data) {
+		this.DB.find(table, data, function(err, _data) {
 			if(err) { rs = false; }
 			else {
+				rs = [];
 				for(var key in _data) {
 					rs.push(compareSchema(_data[key], schema));
 				}
