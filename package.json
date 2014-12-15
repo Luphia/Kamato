@@ -52,7 +52,8 @@
     "node-rest-client": ">=1.4.1",
     "request": ">=2.47.0",
     "debug": "*",
-    "nodemailer": "*"
+    "nodemailer": "*",
+    "csv-parser": ">=1.5.0"
   },
   "devDependencies": {
     "grunt": ">=0.4.5",

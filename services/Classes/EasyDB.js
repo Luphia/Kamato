@@ -188,6 +188,9 @@ var Schema = function(table) {
 		if(type) {
 			rs = dataTransfer(value, type);
 		}
+		if(typeof(value) == 'object') {
+			rs = value;
+		}
 		else if(value == 'true') {
 			rs = true;
 		}
