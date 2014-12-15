@@ -11,7 +11,7 @@
 	// 於瀏覽器, 瀏覽oauth.getAuthLink();回傳的網址，取得body的json，copy貼。
 
 	var oauthData = oauth.getOauthDataObj({"oauth_token":"8f9e9844838540ea47a7d14863e0b707","oauth_verifier":"8glg5g43orqd1kd0vjqqbuurpa"});
-	var accessApiOauthData = oauth.getAccessToken();
+	var varAccessApiOauthData = oauth.getAccessToken();
 
 	// 取各個想要的資料
 	var sleepJson = oauth.getSleep("1", "2014-11-21", ".json");
@@ -260,7 +260,8 @@ module.exports = function(_config) {
 	var getAnyData = function(debugName, apiVersion, strUri, dataDate, resFormat) {
 
 		var rs;
-		var link = this.config.url.apiPath + "/" + apiVersion + "/user/" + accessApiOauthData.encoded_user_id + strUri + dataDate + resFormat;
+		var acsApiOauthData = typeof(accessApiOauthData)=='object'?accessApiOauthData : this.getAccessToken();
+		var link = this.config.url.apiPath + "/" + apiVersion + "/user/" + acsApiOauthData.encoded_user_id + strUri + dataDate + resFormat;
 		//console.log("[debug] "+debugName+" link:\n"+link);
 
 		var headerOptions = {

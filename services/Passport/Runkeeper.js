@@ -157,6 +157,12 @@ module.exports = function(_config) {
 		request(options, function(err, response, body) {
 			if (!err && response.statusCode == 200) {
 				rs = JSON.parse(body);
+			} else {
+				rs = false;
+			}
+			if(err) {
+				console.log(err);
+				rs = false;
 			}
 		});
 
