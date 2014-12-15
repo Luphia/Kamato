@@ -349,6 +349,13 @@ module.exports = function() {
 			else { callback(err, false); }
 		});
 	}
+	,	find = function(table, data, callback) {
+		DB.collection(table).find(data).toArray(function(err, _data) {
+			if(err) { callback(err); }
+			else if(_data.length > 0) { callback(err, _data); }
+			else { callback(err, false); }
+		});
+	}
 	,	postData = function(table, data, callback) {
 		DB.collection(table).insert(data, function(err, _data) {
 			if(err) { callback(err); }
@@ -406,6 +413,7 @@ module.exports = function() {
 		pageData: pageData,
 		flowData: flowData,
 		getData: getData,
+		find: find,
 		postData: postData,
 		updateData: updateData,
 		putData: putData,

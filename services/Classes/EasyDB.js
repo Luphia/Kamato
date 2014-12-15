@@ -643,6 +643,29 @@ module.exports = function(conf) {
 
 		return rs;
 	}
+	,	find = function(table, data) {
+		table = checkTable(table);
+		if(!table) { return false; }
+
+		var rs = []
+		,	schema = this.getSchema(table)
+		;
+
+		this.DB.getData(table, data, function(err, _data) {
+			if(err) { rs = false; }
+			else {
+				for(var key in _data) {
+					rs.push(compareSchema(_data[key], schema));
+				}
+			}
+		});
+
+		while(rs === undefined) {
+			require('deasync').runLoopOnce();
+		}
+
+		return rs;
+	}
 	,	postData = function(table, data) {
 		var check, rs, schema, id = [];
 		table = checkTable(table);
@@ -792,6 +815,7 @@ module.exports = function(conf) {
 		pageData: pageData,
 		flowData: flowData,
 		getData: getData,
+		find: find,
 		postData: postData,
 		putData: putData,
 		deleteData: deleteData
