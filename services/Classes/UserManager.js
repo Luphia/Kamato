@@ -129,16 +129,23 @@ module.exports = function (EasyDB, MailConfig) {
 
         var platform = data.platform;
         var userData = data.userData;
+        var str = {};
+        str[platform] = userData;
+        var dbt = db.find('members', str);
+        //logger.info.info(db.listData('members'))
+        //logger.info.info(dbt)
 
-        var dbt = db.listData('members', platform).list[0];
-        if (dbt) {
+        if (dbt.length > 0) {
             return false; // 'platform userData exist';
         } else {
 
-            var dbj = { name: userData.data[0].name, picture: userData.data[0].picture };
+            var dbj = { name: userData.name, picture: userData.picture };
             dbj[platform] = userData;
+
             var id = db.postData('members', dbj);
 
+            //logger.info.info(db.listData('members'))
+            //logger.info.info(db.listData('members'))
             return { _id: id };
         };
     }
@@ -167,13 +174,23 @@ module.exports = function (EasyDB, MailConfig) {
 
 	    var platform = data.platform;
 	    var userData = data.userData;
+	    var str = {};
+	    str[platform] = userData;
 
-	    var dbj = platform + "=" + userData;
-	    logger.info.info(userData)
-	    var dbt = db.listData('members', dbj).list[0];
+	    var dbt = db.find('members', str);
+	    //logger.info.info(str)
+	    //logger.info.info(db.find('members', str))
+	    //logger.info.info(db.listData('members'))
+	    //logger.info.info(db.listData('members').list[0].google)
+	    logger.info.info(dbt)
 
-	    if (dbt) {
-	        return { _id: dbt._id, name: dbt.name, picture: dbt.picture };
+	    //logger.info.info(db.listData('members').list[0].facebook)
+	    //logger.info.info(db.find('members', str))
+	    //logger.info.info(dbt)
+	    //logger.info.info(dbt.length)
+
+	    if (dbt.length > 0) {
+	        return { _id: dbt[0]._id, name: dbt[0].name, picture: dbt[0].picture };
 	    } else {
 	        return false; //'not found';
 	    };
@@ -221,15 +238,15 @@ module.exports = function (EasyDB, MailConfig) {
 	    var userData = data.userData;
 	    //logger.info.info(userData)
 	    //logger.info.info(db.setSchema('member_token', 'JSON'))
-
 	    var dbt = db.listData('members', "_id='" + _id + "'").list[0];
+	    logger.info.info(dbt)
 	    if (dbt) {
 	        var dbj = {};
 	        dbj[platform] = userData;
 	        var ans = db.putData('member_token', _id, dbj);
 	        logger.info.info(db.listData('member_token'))
-	        logger.info.info(db.listData('member_token').list[0].google)
-	        logger.info.info(db.listData('member_token').list[0].runkeeper)
+	        //logger.info.info(db.listData('member_token').list[0].google)
+	        //logger.info.info(db.listData('member_token').list[0].runkeeper)
 
 	        return ans;
 	    } else {
@@ -404,6 +421,7 @@ module.exports = function (EasyDB, MailConfig) {
         login: login,
         add: add,
         addByPlatform: addByPlatform,
+        uaddByPlatform: uaddByPlatform,
         findByPlatform: findByPlatform,
         ufindByPlatform: ufindByPlatform,
         findByID: findByID,

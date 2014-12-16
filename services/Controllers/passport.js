@@ -28,13 +28,25 @@ var auth = function (req, res, next) {
     //console.log(logger)
     //logger.info.info(platform)
 
+    if (typeof data.error != 'undefined') {
+        res.result.response(next, 0, 'authReturn Fail');
+    };
+    logger.info.info('88888')
+
     if (platform) {
+        logger.info.info(data)
+
         var token = platform.getToken(data);
+        logger.info.info(token)
+
         var user = platform.getProfile(token);
+        logger.info.info('9999')
+        //logger.info.info(user)
 
         var s = req.session;
         var id = s._id;
         var uplatform = req.params.platform;
+
         if (s.ulogin == 1) {
             var x = userManager.uaddToken({ _id: id, platform: uplatform, userData: token });
             if (x == false) {
@@ -43,25 +55,24 @@ var auth = function (req, res, next) {
                 res.result.response(next, 1, 'UaddToken Success', user);
             };
         } else {
-            //logger.info.info(user)
             var x = userManager.ufindByPlatform({ platform: uplatform, userData: user });
             if (x == false) {
-                res.result.response(next, 0, 'uaddByPlatform Fail');
+                var y = userManager.uaddByPlatform({ platform: uplatform, userData: user });
+                if (y == false) {
+                    res.result.response(next, 0, 'uaddByPlatform Fail', user);
+                } else {
+                    s._id = y._id;
+                    s.ulogin = 1;
+                    res.result.response(next, 1, 'uaddByPlatform Success');
+                };
             } else {
-                res.result.response(next, 1, 'uaddByPlatform Success', user);
+                s._id = x._id;
+                s.name = x.name;
+                s.picture = x.picture;
+                s.ulogin = 1;
+                res.result.response(next, 1, 'ufindByPlatform Success', user);
             };
-            logger.info.info(x)
-            //s.ulogin = 1;
-            //s._id = x._id;
-            //s.name = x.name;
-            //s.picture = x.picture;
         };
-
-
-
-        //logger.info.info(token)
-        //logger.info.info(user)
-
 
         //res.result.response(next, 1, 'login successful', user);
     } else {
