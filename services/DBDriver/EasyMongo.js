@@ -350,15 +350,11 @@ module.exports = function(logger) {
 		});
 	}
 	,	find = function(table, data, callback) {
-		var now = new Date();
 		DB.collection(table).find(data).toArray(function(err, _data) {
 			if(err) { callback(err); }
 			else if(_data.length > 0) { callback(err, _data); }
 			else { callback(err, false); }
 		});
-
-		var pass = new Date() - now;
-		this.logger.info("cost: " + pass);
 	}
 	,	postData = function(table, data, callback) {
 		DB.collection(table).insert(data, function(err, _data) {
