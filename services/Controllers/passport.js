@@ -20,7 +20,8 @@ var auth = function (req, res, next) {
 }
 , authReturn = function (req, res, next) {
     res.result = new Result();
-    var platform = passport[req.params.platform];
+    var uplatform = req.params.platform;
+    var platform = passport[uplatform];
     var data = req.query;
     var db = easyDB;
     //check session login status
@@ -37,6 +38,13 @@ var auth = function (req, res, next) {
         logger.info.info(data)
 
         var token = platform.getToken(data);
+
+        //if (uplatform == 'fitbit') {
+        //    token = platform.getAccessToken(data);
+        //} else {
+        //    token = platform.getToken(data);
+        //};
+
         logger.info.info(token)
 
         var user = platform.getProfile(token);
@@ -45,7 +53,6 @@ var auth = function (req, res, next) {
 
         var s = req.session;
         var id = s._id;
-        var uplatform = req.params.platform;
 
         if (s.ulogin == 1) {
             var x = userManager.uaddToken({ _id: id, platform: uplatform, userData: token });
