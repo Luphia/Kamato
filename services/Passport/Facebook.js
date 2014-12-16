@@ -46,11 +46,18 @@ module.exports = function(_config) {
 	// 取得認證連結網址
 	var getAuthLink = function() {
 		var link = this.config.url.authPath;
+		/*
 		var params = {
 			"response_type": this.config.response_type,
 			"redirect_uri": this.config.redirect_uri,
 			"scope": this.config.scope,
 			"client_id": this.config.client_id
+		};
+		*/
+		var params = {
+			"client_id": this.config.client_id,
+			"client_secret": this.config.client_secret,
+			"grant_type": this.config.grant_type
 		};
 		return link + "?" + parseQuery(params);
 	};
