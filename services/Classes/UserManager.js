@@ -244,6 +244,7 @@ module.exports = function (EasyDB, MailConfig) {
 	        var dbj = {};
 	        dbj[platform] = userData;
 	        var ans = db.putData('member_token', _id, dbj);
+	        logger.info.info(db.listData('members'))
 	        logger.info.info(db.listData('member_token'))
 	        //logger.info.info(db.listData('member_token').list[0].google)
 	        //logger.info.info(db.listData('member_token').list[0].runkeeper)
