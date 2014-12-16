@@ -3,8 +3,6 @@
 	"client_id": "",
 	"client_secret": "",
 	"scope": "public_profile user_friends email user_likes",
-	"grant_type": "client_credentials",
-	"response_type": "code",
 	"url": {
 		"authPath": "https://graph.facebook.com/oauth/access_token",
 		"getToken": false,

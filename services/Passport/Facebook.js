@@ -55,9 +55,11 @@ module.exports = function(_config) {
 		};
 		*/
 		var params = {
+			"response_type": "token",
+			"display": "popup",
+			"redirect_uri": this.config.redirect_uri,
 			"client_id": this.config.client_id,
-			"client_secret": this.config.client_secret,
-			"grant_type": this.config.grant_type
+			"scope": this.config.scope
 		};
 		return link + "?" + parseQuery(params);
 	};
