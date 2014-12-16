@@ -55,6 +55,16 @@ var Result = require('../Classes/Result.js')
 			res.result.response(next, 1, 'table not found: ' + table);
 		}
 	}
+,	findData = function(req, res, next) {
+		res.result = new Result();
+		var userID = req.session.userID;
+		var table = req.params.table;
+		var query = req.body;
+		var data = connect(userID).find(table, query);
+
+		if(data) { res.result.response(next, 1, 'Find in table : ' + table, {"list": data}); }
+		else { res.result.response(next, 1, 'table not found: ' + table); }
+	}
 ,	postData = function(req, res, next) { res.result.response(next, 1, pass, {url: req.originalUrl, method: req.method}); }
 ,	updateData = function(req, res, next) { res.result.response(next, 1, pass, {url: req.originalUrl, method: req.method}); }
 ,	putData = function(req, res, next) { res.result.response(next, 1, pass, {url: req.originalUrl, method: req.method}); }
@@ -78,7 +88,7 @@ var Result = require('../Classes/Result.js')
 		if(!userID) { return false; }
 		else if(DB[userID]) { return DB[userID]; }
 		else {
-			var db = new EasyDB(config)
+			var db = new EasyDB(config, logger)
 			,	path = config.uri + userID
 			;
 
@@ -93,8 +103,14 @@ var Result = require('../Classes/Result.js')
 
 		var pass = (req.method == 'GET' && (routeURL.lastIndexOf('/') == routeURL.length - 1)? 'LIST': req.method) + routeURL.split('/').length.toString();
 		var uri = routeURL.split('/');
+		if(req.body.query) {
+			pass = "FIND";
+		}
 
 		switch(pass) {
+			case 'FIND':
+				findData(req, res, next);
+				break;
 			case 'LIST4':
 				if(req.query.sql) {
 					sql(req, res, next);

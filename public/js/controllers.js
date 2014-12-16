@@ -122,6 +122,37 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
     var jsonTemp = {};
     var viewing_table = "";
 
+    $scope.findData = function() {
+    	var link = db_link + $scope.default_view_table;
+    	var searchQuery;
+    	try {
+    		searchQuery = {"query": JSON.parse($scope.command_sample)};
+    	}
+    	catch(e) {
+    		searchQuery = {"query": {}};
+    	}
+    	$http.post(link, searchQuery).success(function(schema) {
+        	var t_d_temp = schema.data.list;
+        	$scope.t_head = schema.data.list[0];
+ 			$scope.colspan = Object.keys(schema.data.list[0]).length +1; //+1是del button欄位
+        	angular.forEach(t_d_temp, function(list_value, list_key){
+        		angular.forEach(t_d_temp[list_key], function(value, key){
+        			var value_id = t_d_temp[list_key]._id;
+        			if(typeof(value) == "object" && value != null){
+        				//存json			
+        				jsonTemp[value_id+key] = value;
+        				$scope.t_d_more.push(jsonTemp);
+        				//json換註解
+        				t_d_temp[list_key][key] = "json file"
+        			}
+        			$scope.t_d = t_d_temp;
+
+        		})
+        	});
+    	});
+    	console.log($scope.command_sample);
+    }
+
 	$scope.table_click =function(name){
 		viewing_table = name
 		$scope.is_show = false;

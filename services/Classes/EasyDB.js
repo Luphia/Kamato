@@ -255,7 +255,7 @@ var preCondiction = function(ast, schema) {
 	return rs;
 };
 
-module.exports = function(conf) {
+module.exports = function(conf, logger) {
 	!conf && (conf = {});
 
 	var init = function(config) {
@@ -313,7 +313,7 @@ module.exports = function(conf) {
 					rowData = compareSchema( parseSet(query.SET), schema );
 				db.collection(table).update(cond, {$set: rowData}, {multi: true, upsert: true}, function(_err, _data) {
 					if(_err) {
-						logger.exception.error(_err);
+						this.logger.exception.error(_err);
 						return setResult(res.result, next, 0, 'update failed');
 					}
 					setResult(res.result, next, 1, 'number of affected rows: ' + _data);
@@ -327,7 +327,7 @@ module.exports = function(conf) {
 					limit = query.LIMIT;
 				db.collection(table).remove(cond, {justOne: limit && (limit.nb == 1)}, function(_err, _data) {
 					if(_err) {
-						logger.exception.error(_err);
+						this.logger.exception.error(_err);
 						return setResult(res.result, next, 0, 'delete failed');
 					}
 					setResult(res.result, next, 1, 'number of affected rows: ' + _data);
@@ -825,7 +825,8 @@ module.exports = function(conf) {
 		find: find,
 		postData: postData,
 		putData: putData,
-		deleteData: deleteData
+		deleteData: deleteData,
+		logger: logger
 	};
 	return db.init(conf);
 }

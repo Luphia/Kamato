@@ -24,7 +24,7 @@
 						</div>
 						<div class="sql_command col-md-8">
 							<span class="text-center">SQL Command: </span>
-							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list(command_sample)">
+							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list(command_sample)" ng-enter=" findData()">
 						</div>
 						<div class="sql_keyword col-md-7 col-md-offset-2" ng-show="show_sample" ng-mouseenter="cant_close = true" ng-mouseleave="cant_close = false">
 							<div ng-repeat="w in keyword | filter:command_sample">
