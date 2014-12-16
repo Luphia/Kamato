@@ -61,7 +61,7 @@ var auth = function (req, res, next) {
                     if (z == false) {
                         res.result.response(next, 0, 'UaddToken Fail');
                     } else {
-                        s._id = z._id;
+                        s._id = y._id;
                         s.ulogin = 1;
                         res.result.response(next, 1, 'UaddToken & uaddByPlatform Success', user);
                     };
