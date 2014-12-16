@@ -59,7 +59,7 @@
   text-decoration: none;
 }
 
-/*=================================auth top=================================*/
+/*=================================api top=================================*/
 
 .ng-scope.platform .title {
   margin: 30px 0px 30px 0px;
@@ -150,9 +150,71 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
-  text-decoration: underline;
+  text-decoration: underline;  
 }
-/*=================================auth bottom=================================*/
+
+.ng-scope.platform .create_api {
+  position: relative;
+  min-height: 500px;  
+}
+
+.ng-scope.platform  .create_api .sql_input{
+  margin: 0px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+.ng-scope.platform .sql_keyword{
+  position: absolute;
+  z-index: 999;
+  max-height: 350px;
+  width: 400px;
+  overflow: auto;
+  margin-left: 210px;
+  font-size: 16px;
+  background-color: rgba(0,0,0,0.7);
+  top: 170px;
+  left: 10px;
+} 
+
+.ng-scope.platform  .api_methods{
+  margin: 10px;
+  float: left;
+}
+
+.ng-scope.platform  .api_methods span{
+  font-size: 14px;
+}
+
+.ng-scope.platform  .api_methods input[type="checkbox"]{
+  position: relative;
+  top: 2px;
+  opacity: 1;
+  border-radius: 0;
+  border: 0px;
+  margin: 5px 10px 0px 5px;
+  width: 16px;
+  height: 16px;
+  background-color: transparent;
+}
+
+.ng-scope.platform .create_api .privacy_btn{
+  background: rgba(174, 44, 44, 0.9);
+  border: 1px solid rgba(0,0,0,0.3);
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.ng-scope.platform .create_api .public_btn{
+  background: rgba(38, 182, 44, 0.7);
+  border: 1px solid rgba(256,256,256,0.4);
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+
+/*=================================api bottom=================================*/
 
 /*=================================resource top=================================*/
 
@@ -396,15 +458,8 @@
 
 
 .ng-scope.platform .easydb_container .sql_keyword{
-  position: absolute;
-  z-index: 999;
-  max-height: 350px;
-  width: 700px;
-  overflow: auto;
-  margin-left: 220px;
-  font-size: 16px;
-  background-color: rgba(0,0,0,0.7);
-  top: 40px;;
+  top: 40px;
+  left: 110px;
 } 
 
 .ng-scope.platform .easydb_container .sql_manipulate{

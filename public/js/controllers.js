@@ -3,8 +3,11 @@
 /* Controllers */
 var KamatoControllers = angular.module('KamatoControllers', ['ngDialog', 'ui.bootstrap']);
 
-KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ngDialog, $rootScope) {
+// Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDialog, $rootScope){
 
+// });
+
+KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ngDialog, $rootScope) {
 
 // ====================== APP管理 top======================
 	$scope.app_oper = [
@@ -124,7 +127,7 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		$scope.is_show = false;
 		//要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
 		var j_text = document.getElementsByClassName("json_text");
-		var table = document.getElementsByClassName("table");
+		var table = document.getElementsByClassName("db_table");
 		table[0].childNodes[1].appendChild(j_text[0]);
 
 		$scope.default_view_table = name;
@@ -186,7 +189,7 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 			$scope.is_show = true;
 			var elem = document.getElementById(id);
 			var j_text = document.getElementsByClassName("json_text");
-			var table = document.getElementsByClassName("table");				
+			var table = document.getElementsByClassName("db_table");				
 			$scope.show_json= jsonTemp[id_attr_name];
 			$scope.t_json = id_attr_name;
 			table[0].childNodes[1].insertBefore(j_text[0], elem.nextSibling);	
@@ -195,34 +198,11 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 
 
 	$scope.keyword = [
-		{'name': 'SELECT * FROM table_name'},
-		{'name': 'SELECT DISTINCT column_name,column_name FROM table_name'},
-		{'name': 'SELECT column_name,column_name FROM table_name WHERE column_name operator value'},
-		{'name': 'SELECT column_name FROM table_name WHERE column_name operator value AND column_name operator value'},
-		{'name': 'SELECT column_name FROM table_name WHERE column_name operator value OR column_name operator value'},
-		{'name': 'SELECT column_name,column_name FROM table_name ORDER BY column_name,column_name ASC|DESC'},
-		{'name': 'SELECT column_name(s) FROM table_name WHERE column_name LIKE pattern'},
-		{'name': 'SELECT column_name(s) FROM table_name WHERE column_name IN (value1,value2,...)'},
-		{'name': 'SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2'},
-		{'name': 'SELECT AVG(column_name)  FROM  table_name'},
-		{'name': 'SELECT COUNT(column_name)  FROM  table_name'},
-		{'name': 'SELECT MAX(column_name)  FROM  table_name'},
-		{'name': 'SELECT MIN(column_name)  FROM  table_name'},
-		{'name': 'SELECT SUM(column_name)  FROM  table_name'},
-		{'name': 'SELECT column_name  FROM  table_name GROUP BY column_name'},
-		{'name': 'SELECT column_name  FROM  table_name GROUP BY column_name HAVING function(column_name)'},
-		{'name': 'SELECT column_name AS alias_name FROM table_name'},
-		{'name': 'SELECT column_name(s) FROM table_name AS alias_name'},
-		{'name': 'SELECT column_name(s) FROM table1 INNER JOIN table2 ON table1.column_name = table2.column_name'},
-		{'name': 'SELECT column_name(s) FROM table1 LEFT JOIN table2 ON table1.column_name=table2.column_name'},
-		{'name': 'SELECT column_name(s) FROM table1 RIGHT JOIN table2 ON table1.column_name=table2.column_name'},
-		{'name': 'SELECT column_name(s) FROM table1 FULL OUTER JOIN table2 ON table1.column_name=table2.column_name'},
-		{'name': 'SELECT column_name(s) FROM table1 UNION SELECT column_name(s) FROM table2'},
-		{'name': 'SELECT TOP number|percent column_name(s) FROM table_name'},
-		{'name': 'INSERT INTO table_name VALUES (value1,value2,value3,...)'},
-		{'name': 'UPDATE table_name SET column1=value1,column2=value2,... WHERE some_column=some_value'},
-		{'name': 'DELETE FROM table_name WHERE some_column=some_value'},
-		{'name': 'INSERT INTO table_name VALUES (value1,value2,value3,...)'},
+		{'name': 'SELECT * FROM '},
+		{'name': 'SELECT FROM  WHERE '},
+		{'name': 'INSERT INTO '},
+		{'name': 'UPDATE SET  WHER '},
+		{'name': 'DELETE FROM  WHERE '},
 	]
 
 	$scope.show_sample = false;
@@ -297,7 +277,6 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 	$scope.resources = [
 		{"name": "Facebook"},
 		{"name": "GooglePlus"},
-		// {"name": "NikePlus"},
 		{"name": "RunKeeper"},
 		{"name": "Fitbit"},
 		{"name": "Jawbone"},
@@ -350,13 +329,25 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 	$scope.create_api_page = function(){
 		$scope.api_list = false;
 		$scope.create_api = true;
+		$scope.new_api_required = true;
 	}
 
 	$scope.return_api_page = function(){
+		$scope.new_api_name = "";
 		$scope.new_api_required = false;
 		$scope.api_list = true;
 		$scope.create_api = false;
 		$scope.req_chart = false;
+		$scope.rest_methods = [
+			{'name': 'GET', 'checked': false},
+			{'name': 'POST', 'checked': false},
+			{'name': 'PUT', 'checked': false},
+			{'name': 'DELETE', 'checked': false}
+		]
+		$scope.GET = false;
+		$scope.POST = false;
+		$scope.PUT = false;
+		$scope.DELETE = false;
 	}
 
 	$scope.show_apiReq_chart = function(){
@@ -382,23 +373,64 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 		{'name': 'Facebook', 'cate': [{'property': 'Profile'}, {'property': 'Activity'}, {'property': 'Friend'}], 'field': 'Social Network'},
 	]
 
-	$scope.new_api = function(){
-		if(this.new_api_name != null){		
-			$scope.apiList.push({'name': this.new_api_name});
-			$scope.create_api = false;
-			$scope.api_list = true;
-		}
-		else{
-			$scope.new_api_required = true;
-		}
-	}
-
 	$scope.apiSearch = [];
 
 	$scope.cleanSearch = function(){
 		$scope.apiSearch = [];
 	}
 
+	$scope.rest_methods = [
+		{'name': 'GET', 'checked': false},
+		{'name': 'POST', 'checked': false},
+		{'name': 'PUT', 'checked': false},
+		{'name': 'DELETE', 'checked': false}
+	]
+
+	$scope.click_rest_mt = function(methods, r_m){
+
+		switch(methods.name){
+			case "GET":
+				$scope.GET = !$scope.GET;
+				break;
+			case "POST":
+				$scope.POST = !$scope.POST;
+				break;
+			case "PUT":
+				$scope.PUT = !$scope.PUT;
+				break;
+			case "DELETE":
+				$scope.DELETE = !$scope.DELETE;
+				break;
+		} 
+	}
+
+
+	$scope.rest_command=[
+		{'name': 'Get SQL','method': 'GET'},
+		{'name': 'Post SQL','method': 'POST'},
+		{'name': 'PUT SQL','method': 'PUT'},
+		{'name': 'DELETE SQL','method': 'DELETE'},
+	]
+
+	$scope.is_public = "Public";
+	$scope.api_public = function(name){
+		$scope.is_public = name;
+	}
+
+	$scope.api_submit = function() {
+		// 確認REST方法是否勾選
+		console.log($scope.select_rest_mt);
+		var is_click = false;
+		for (var r in $scope.rest_methods){
+			if ($scope.rest_methods[r].checked == true){
+				is_click = true;
+				$scope.select_rest_mt = false;
+			}
+		}
+		if(is_click == false){
+			$scope.select_rest_mt = true;
+		}
+	}
 // ====================== api bottom======================
 // ====================== Resource top======================
 	$scope.newAccountDialog = function(){

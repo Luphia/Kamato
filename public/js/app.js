@@ -124,7 +124,7 @@ Kamato.config(function($controllerProvider, $compileProvider, $filterProvider, $
 		controller: 'PlatformCtrl'
 	}).
 	when('/platform/oauth', {
-		templateUrl: 'widgets/platform/template_auth.html',
+		templateUrl: 'widgets/platform/template_api.html',
 		controller: 'PlatformCtrl'
 	}).
 	when('/artmatch', {
