@@ -5,9 +5,9 @@
 	"scope": "public_profile user_friends email user_likes",
 	"response_type": "code",
 	"url": {
-		"authPath": "https://www.facebook.com/dialog/oauth",
-		"getToken": "https://accounts.google.com/o/oauth2/token",
-		"getProfile": "https://www.googleapis.com/userinfo/v2/me",
+		"authPath": "https://graph.facebook.com/oauth/access_token",
+		"getToken": false,
+		"getProfile": "https://graph.facebook.com/me",
 		"getFriends": false,
 		"getActivities": false,
 		"getSleep": false,
