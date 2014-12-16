@@ -68,9 +68,15 @@ var auth = function (req, res, next) {
                 if (y == false) {
                     res.result.response(next, 0, 'uaddByPlatform Fail', user);
                 } else {
-                    s._id = y._id;
-                    s.ulogin = 1;
-                    res.result.response(next, 1, 'uaddByPlatform Success');
+                    var z = userManager.uaddToken({ _id: y._id, platform: uplatform, userData: token });
+                    if (z == false) {
+                        res.result.response(next, 0, 'UaddToken Fail');
+                    } else {
+                        s._id = z._id;
+                        s.ulogin = 1;
+                        res.result.response(next, 1, 'UaddToken & uaddByPlatform Success', user);
+                    };
+                    //res.result.response(next, 1, 'uaddByPlatform Success');
                 };
             } else {
                 s._id = x._id;
