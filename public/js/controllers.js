@@ -423,7 +423,7 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 	$scope.apiList = [
 		{'name': 'NikePlus', 'cate': ['sport','running','Nike'], 'visible': 'Public'},
 		{'name': 'Runkeeper', 'cate': ['sport','running','Runkeeper'], 'visible': 'Public'},
-		{'name': 'GooglePlus', 'cate': ['sn','google+'], 'visible': 'Public'},
+		{'name': 'GooglePlus', 'cate': ['scocial network','google+'], 'visible': 'Public'},
 		{'name': 'Facebook', 'cate': ['sn','fb'], 'visible': 'Public'},
 	]
 
@@ -489,6 +489,13 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
 			$scope.api_list = true;
 		}
 	}
+
+// 	$scope.formA = {};
+// $scope.tags = [{"name":"a"},{"name":"b"}];	
+// $scope.addTag = function(tag) {
+// 	$scope.tags.push({"name":tag});
+// 	$scope.new_tag = '';
+// };//--
 // ====================== api bottom======================
 // ====================== Resource top======================
 	$scope.newAccountDialog = function(){

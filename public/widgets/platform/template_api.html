@@ -71,7 +71,11 @@
 				<div class="form-group">
 					<h3 class="col-md-2 control-label">Category Tag</h3>
 					<div class="col-md-8">
-						<input type="text" class="form-control create_api_input" ng-keyup="ca_tag_keyup($event)" ng-model="new_tag" ng-focus="typing_tag= true " ng-blur="typing_tag= false">
+						<input type="text" class="form-control create_api_input" ng-keyup="ca_tag_keyup($event)" ng-model="new_tag" ng-focus="typing_tag= true " ng-blur="typing_tag= false" ng-enter="addTag(new_tag)">
+
+						<div>
+							<div class="tag" ng-repeat="(key, value) in tags">{{value.name}}</div>
+						</div>
 					</div>
 				</div>
 				<div class="form-group">

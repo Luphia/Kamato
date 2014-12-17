@@ -160,9 +160,10 @@
 .ng-scope.platform .api_table span{
   padding: 5px 10px;
   border-radius: 3px !important;
-  background-color: rgba(47, 111, 95, 0.9);
+  background-color: rgba(42, 91, 132, 0.9);
   margin: 10px 10px 0px 0px;
-
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .ng-scope.platform .create_api {
@@ -421,10 +422,11 @@
 .ng-scope.platform .warnHint{
   width: 400px;
   height: 200px;
-  background-color: rgba(0,0,0,0.7);
   position: absolute;
   top: 20%;
   left: 30%;
+  background-color: rgba(0,0,0,0.7);
+  border: 5px solid rgba(0,0,0,0.6);
 }
 
 .ng-scope.platform .warnHint button{
