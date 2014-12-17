@@ -1,0 +1,45 @@
+<div id="login" class="login" ng-controller="loginCtrl" data-ng-init="init()">
+    <!-- Login -->
+    <header>
+        <h1>SUPER ADMIN</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eu risus. Curabitur commodo lorem fringilla enim feugiat commodo sed ac lacus.</p>
+    </header>
+
+    <form class="box tile animated active" id="box-login">
+        <h2 class="m-t-0 m-b-15">Login</h2>
+        <input type="text" class="login-control m-b-10 laccount" placeholder="account">
+        <input type="password" class="login-control lpassword" placeholder="password">
+        <div class="checkbox m-b-20">
+            <label>
+                <input type="checkbox">
+                Remember Me
+            </label>
+        </div>
+        <button class="btn btn-sm m-r-5 login" ng-click="login();">Sign In</button>
+
+        <small>
+            <a class="box-switcher" data-switch="box-register" href="">Don't have an Account?</a> or
+            <a class="box-switcher" data-switch="box-reset" href="">Forgot Password?</a>
+        </small>
+    </form>
+
+    <!-- Register -->
+    <form class="box animated tile" id="box-register">
+        <h2 class="m-t-0 m-b-15">Register</h2>
+        <input type="text" class="login-control m-b-10 raccount" placeholder="account">
+        <input type="password" class="login-control m-b-10 rpassword" placeholder="Password">
+        <input type="password" class="login-control m-b-20 rpassword2" placeholder="Confirm Password">
+        <button class="btn btn-sm m-r-5 register" ng-click="active();">Register</button>
+        <small><a class="box-switcher" data-switch="box-login" href="">Already have an Account?</a></small>
+    </form>
+
+    <!-- Forgot Password -->
+    <form class="box animated tile" id="box-reset">
+        <h2 class="m-t-0 m-b-15">Reset Password</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eu risus. Curabitur commodo lorem fringilla enim feugiat commodo sed ac lacus.</p>
+        <input type="email" class="login-control m-b-20 faccount" placeholder="account">
+        <button class="btn btn-sm m-r-5 forgot" ng-click="forgot();">Reset Password</button>
+        <small><a class="box-switcher" data-switch="box-login" href="">Already have an Account?</a></small>
+    </form>
+
+</div>

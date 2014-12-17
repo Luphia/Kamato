@@ -159,7 +159,11 @@ module.exports = function (EasyDB, MailConfig) {
         str[platform] = userData;
         //var dbj = { name: userData.name, picture: userData.picture }; /--
         //dbj[platform] = userData;/--
+
         var id = db.putData('members', _id, str);
+        logger.info.info(db.listData('members'))
+        logger.info.info(db.listData('member_token'))
+
         if (id) {
             return { _id: id };
         } else {
@@ -302,7 +306,7 @@ module.exports = function (EasyDB, MailConfig) {
             if (ans == true) {
                 var transporter = nodemailer.createTransport(Mailconfig);
 
-                var content = "<a href=http://localhost/widgets/platform/superAdmin_template/login.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
+                var content = "<a href=http://simple.tanpopo.cc/#/login?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
 
                 var Mailopt = {
                     from: Mailconfig.auth.from, // sender address
@@ -385,6 +389,10 @@ module.exports = function (EasyDB, MailConfig) {
         var RightNow = new Date();
         var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + RightNow.getHours() + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
         var dbta = db.listData('users', "authtime >= '" + time + "'").list[0];
+
+        logger.info.info(db.listData('users'))
+        logger.info.info(dbta)
+        logger.info.info(db.setSchema('users', { authtime: 'Date' }))
 
         if (dbta) {
             var dbt = db.listData('users', "password='" + oldpass + "'").list[0];
