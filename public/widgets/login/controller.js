@@ -22,7 +22,9 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
         });
         request.done(function (data) {
             console.log(data.result);
-            $location.path('/platform/APP');
+            if (data.result == 1) {
+                $location.path('/platform/APP');
+            };
         });
         request.fail(function (data) {
             console.log(data);
@@ -40,7 +42,9 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
                 });
                 request.done(function (data) {
                     console.log(data.result);
-                    $location.path('/platform/APP');
+                    if (data.result == 1) {
+                        $location.path('/platform/APP');
+                    };
                 });
                 request.fail(function (data) {
                     console.log(data);
@@ -58,7 +62,9 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
             });
             request.done(function (data) {
                 console.log(data.result);
-                $location.path('/platform/login');
+                if (data.result == 1) {
+                    $location.path('/platform/login');
+                };
             });
             request.fail(function (data) {
                 console.log(data);
