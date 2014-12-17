@@ -55,7 +55,7 @@ module.exports = function(_config) {
 		};
 		*/
 		var params = {
-			"type": "user_agent",
+			"type": "client_cred",
 			"redirect_uri": this.config.redirect_uri,
 			"client_id": this.config.client_id,
 			"scope": this.config.scope
