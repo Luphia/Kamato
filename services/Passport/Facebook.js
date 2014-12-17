@@ -46,38 +46,26 @@ module.exports = function(_config) {
 	// 取得認證連結網址
 	var getAuthLink = function() {
 		var link = this.config.url.authPath;
+		/*
 		var params = {
 			"response_type": this.config.response_type,
 			"redirect_uri": this.config.redirect_uri,
 			"scope": this.config.scope,
 			"client_id": this.config.client_id
 		};
+		*/
+		var params = {
+			"type": "user_agent",
+			"redirect_uri": this.config.redirect_uri,
+			"client_id": this.config.client_id,
+			"scope": this.config.scope
+		};
 		return link + "?" + parseQuery(params);
 	};
 
 	// 取得授權 token
 	var getToken = function(data) {
-		var rs;
-
-		postData = { "code": data.code };
-		postData.redirect_uri = this.config.redirect_uri;
-		postData.client_id = this.config.client_id;
-		postData.scope = this.config.scope;
-		postData.client_secret = this.config.client_secret;
-		postData.grant_type = this.config.grant_type;
-
-		var options = {
-			"url": this.config.url.getToken,
-			"form": postData
-		};
-
-		request.post(options, function(err, response, body) {
-			rs = JSON.parse(body);
-		});
-
-		while(rs === undefined) {
-			require('deasync').runLoopOnce();
-		}
+		var rs = data;
 
 		return rs;
 	};
@@ -92,17 +80,19 @@ module.exports = function(_config) {
 		if(!this.config.url.getProfile) { return false; }
 
 		var rs,
-			headers = {
-				"Authorization": token.token_type + " " + token.access_token
+			params = {
+				"access_token": token
 			},
 			options = {
-				"url": this.config.url.getProfile,
-				"headers": headers
+				"url": this.config.url.getProfile + "?" + parseQuery(params)
 			};
 
 		request(options, function(err, response, body) {
 			if (!err && response.statusCode == 200) {
 				rs = JSON.parse(body);
+			}
+			else if(response.statusCode > 200) {
+				rs = false;
 			}
 		});
 

@@ -149,6 +149,23 @@ module.exports = function (EasyDB, MailConfig) {
             return { _id: id };
         };
     }
+    // data = { _id, platform, userData }
+    , uidaddByPlatform = function (data) {
+        var db = this.DB;
+        var _id = data._id;
+        var platform = data.platform;
+        var userData = data.userData;
+        var str = {};
+        str[platform] = userData;
+        //var dbj = { name: userData.name, picture: userData.picture }; /--
+        //dbj[platform] = userData;/--
+        var id = db.putData('members', _id, str);
+        if (id) {
+            return { _id: id };
+        } else {
+            return false;
+        };
+    }
 
 	// data = { platform, userData }
 	// return = { _id, name, picture } || false (not found)
@@ -236,18 +253,11 @@ module.exports = function (EasyDB, MailConfig) {
 	    var _id = data._id;
 	    var platform = data.platform;
 	    var userData = data.userData;
-	    //logger.info.info(userData)
-	    //logger.info.info(db.setSchema('member_token', 'JSON'))
 	    var dbt = db.listData('members', "_id='" + _id + "'").list[0];
-	    logger.info.info(dbt)
 	    if (dbt) {
 	        var dbj = {};
 	        dbj[platform] = userData;
 	        var ans = db.putData('member_token', _id, dbj);
-	        logger.info.info(db.listData('member_token'))
-	        //logger.info.info(db.listData('member_token').list[0].google)
-	        //logger.info.info(db.listData('member_token').list[0].runkeeper)
-
 	        return ans;
 	    } else {
 	        return false; // 'not found';
@@ -422,6 +432,7 @@ module.exports = function (EasyDB, MailConfig) {
         add: add,
         addByPlatform: addByPlatform,
         uaddByPlatform: uaddByPlatform,
+        uidaddByPlatform: uidaddByPlatform,
         findByPlatform: findByPlatform,
         ufindByPlatform: ufindByPlatform,
         findByID: findByID,

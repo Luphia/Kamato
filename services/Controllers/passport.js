@@ -20,39 +20,35 @@ var auth = function (req, res, next) {
 }
 , authReturn = function (req, res, next) {
     res.result = new Result();
-    var platform = passport[req.params.platform];
+    var uplatform = req.params.platform;
+    var platform = passport[uplatform];
     var data = req.query;
     var db = easyDB;
-    //check session login status
-
-    //console.log(logger)
-    //logger.info.info(platform)
 
     if (typeof data.error != 'undefined') {
         res.result.response(next, 0, 'authReturn Fail');
     };
-    logger.info.info('88888')
 
     if (platform) {
-        logger.info.info(data)
 
         var token = platform.getToken(data);
-        logger.info.info(token)
-
         var user = platform.getProfile(token);
-        logger.info.info('9999')
-        //logger.info.info(user)
 
         var s = req.session;
         var id = s._id;
-        var uplatform = req.params.platform;
 
         if (s.ulogin == 1) {
             var x = userManager.uaddToken({ _id: id, platform: uplatform, userData: token });
             if (x == false) {
-                res.result.response(next, 0, 'UaddToken Fail');
+                res.result.response(next, 0, 'UaddToken Fail#');
             } else {
-                res.result.response(next, 1, 'UaddToken Success', user);
+                var y = userManager.uidaddByPlatform({ _id: id, platform: uplatform, userData: user });
+                if (y == false) {
+                    res.result.response(next, 0, 'uidaddByPlatform Fail');
+                } else {
+                    res.result.response(next, 1, 'uidaddByPlatform Success', user);
+                };
+                //res.result.response(next, 1, 'UaddToken Success#', user); /--
             };
         } else {
             var x = userManager.ufindByPlatform({ platform: uplatform, userData: user });
@@ -61,9 +57,15 @@ var auth = function (req, res, next) {
                 if (y == false) {
                     res.result.response(next, 0, 'uaddByPlatform Fail', user);
                 } else {
-                    s._id = y._id;
-                    s.ulogin = 1;
-                    res.result.response(next, 1, 'uaddByPlatform Success');
+                    var z = userManager.uaddToken({ _id: y._id, platform: uplatform, userData: token });
+                    if (z == false) {
+                        res.result.response(next, 0, 'UaddToken Fail');
+                    } else {
+                        s._id = y._id;
+                        s.ulogin = 1;
+                        res.result.response(next, 1, 'UaddToken & uaddByPlatform Success', user);
+                    };
+                    //res.result.response(next, 1, 'uaddByPlatform Success'); /--
                 };
             } else {
                 s._id = x._id;
@@ -73,8 +75,7 @@ var auth = function (req, res, next) {
                 res.result.response(next, 1, 'ufindByPlatform Success', user);
             };
         };
-
-        //res.result.response(next, 1, 'login successful', user);
+        //res.result.response(next, 1, 'login successful', user); /--
     } else {
         res.write("params:");
         res.write(JSON.stringify(req.params));

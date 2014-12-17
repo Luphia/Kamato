@@ -150,7 +150,6 @@ KamatoControllers.controller('PlatformCtrl', function ($scope, $http, $modal, ng
         		})
         	});
     	});
-    	console.log($scope.command_sample);
     }
 
 	$scope.table_click =function(name){
