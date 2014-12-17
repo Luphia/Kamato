@@ -13,7 +13,7 @@
 				</div>
 			</header>
 			<div class="table-responsive block-area" >
-				<table class="table table-bordered tile">
+				<table class="table table-bordered tile api_table">
 					<tr>
 						<th ng-repeat="h in api_table_head">{{h.name}}</th>
 					</tr>
@@ -22,10 +22,10 @@
 							<a class="bold_col" ng-click="show_apiReq_chart()">{{item.name}}</a>
 						</td>
 						<td>
-							<span ng-repeat="c in item.cate">{{c.property}} </span>
+							<span ng-repeat= "c in item.cate">{{c}}</span>
 						</td>
 						<td>
-							{{item.field}}
+							{{item.visible}}
 						</td>
 						<td>
 							<button class="btn btn-alt btn-block" ng-click="del_api(item)">Delete</button>
@@ -40,37 +40,44 @@
 				<div class="form-group">
 					<h3 class="col-md-2 control-label">API Name</h3>
 					<div class="col-md-8">
-						<input type="text" class="form-control create_api_input" ng-model="new_api_name" ng-required="new_api_required">						
+						<input type="text" class="form-control create_api_input" ng-model="new_api_name" ng-required="new_api_required">	
 					</div>
 				</div>
 				<!-- API Methods -->
 				<div class="form-group">
 					<h3 class="col-md-2 control-label">REST Methods</h3>
 					<div class="col-md-8">
-						<div ng-repeat="m in rest_methods" class="api_methods">
+						<div ng-repeat="m in rest_methods" class="api_checkboxes">
 							<span>{{m.name}}</span>
-							<input type="checkbox" ng-model="m.checked" ng-change="click_rest_mt(m, rest_methods)" ng-required="select_rest_mt">
+							<input type="checkbox" ng-model="m.checked" ng-change="click_checkbox(rest_methods)" ng-required="m.required">
 						</div>
 					</div>
 				</div>
 				<!-- 下SQL指令 從Easy_DB取得API-->
-				<div class="form-group rest_sql_group" ng-repeat="c in rest_command" ng-show="{{c.method}}">
-					<h4 class="col-md-2 control-label">{{c.name}}</h4>
+				<div class="form-group rest_sql_group" ng-repeat="m in rest_methods" ng-show="m.checked">
+					<h4 class="col-md-2 control-label">{{m.name}} SQL</h4>
 					<div class="col-md-8">
-						<input type="text" class="form-control sql_input " ng-model="command_sample" ng-mousedown="rest_sql_sample_list(c.method)" ng-blur="close_sample_list(command_sample)" placeholder="Typing the SQL Command ...">
+						<input type="text" class="form-control sql_input " ng-model="m.sql" placeholder="Typing the SQL Command ..." ng-required="m.checked">
 					</div>
 				</div>
 				<div class="form-group">
 					<h3 class="col-md-2 control-label">Public API</h3>
 					<div class="col-md-8">
-						<div ng-click="api_public('Public')" class="btn" ng-class="{'public_btn': is_public == 'Public'}">Public</div>
-						<div ng-click="api_public('Private')"class="btn" ng-class="{'privacy_btn': is_public == 'Private'}">Privacy</div>
+						<div ng-click="api_public('Public')" class="btn" ng-class="{'public_btn': visible_clicked == 'Public'}">Public</div>
+						<div ng-click="api_public('Private')"class="btn" ng-class="{'privacy_btn': visible_clicked == 'Private'}">Privacy</div>
 					</div>
-				</div>		
+				</div>
+				<!-- API Category Tag -->
+				<div class="form-group">
+					<h3 class="col-md-2 control-label">Category Tag</h3>
+					<div class="col-md-8">
+						<input type="text" class="form-control create_api_input" ng-keyup="ca_tag_keyup($event)" ng-model="new_tag" ng-focus="typing_tag= true " ng-blur="typing_tag= false">
+					</div>
+				</div>
 				<div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-						<input type="submit" class="btn m-t-10" value="Create">
-						<button class="btn m-t-10" ng-click="return_api_page()">Cancel</button>				
+						<input type="submit" class="btn m-t-10" value="Create" >
+						<div class="btn m-t-10" ng-click="return_api_page()">Cancel</div>
 					</div>
 				</div>		
 			</form>

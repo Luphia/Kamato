@@ -153,6 +153,18 @@
   text-decoration: underline;  
 }
 
+.ng-scope.platform .api_table td{
+  vertical-align: middle;
+}
+
+.ng-scope.platform .api_table span{
+  padding: 5px 10px;
+  border-radius: 3px !important;
+  background-color: rgba(47, 111, 95, 0.9);
+  margin: 10px 10px 0px 0px;
+
+}
+
 .ng-scope.platform .create_api {
   position: relative;
   min-height: 500px;  
@@ -178,16 +190,16 @@
   left: 10px;
 } 
 
-.ng-scope.platform  .api_methods{
+.ng-scope.platform .api_checkboxes{
   margin: 10px;
   float: left;
 }
 
-.ng-scope.platform  .api_methods span{
+.ng-scope.platform  .api_checkboxes span{
   font-size: 14px;
 }
 
-.ng-scope.platform  .api_methods input[type="checkbox"]{
+.ng-scope.platform  .api_checkboxes input[type="checkbox"]{
   position: relative;
   top: 2px;
   opacity: 1;
