@@ -29,7 +29,7 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
         });
     };
     $scope.active = function () {
-        if ($(this).hasClass('register')) {
+        if (angular.element('.register').hasClass('register')) {
             if ($('.rpassword').val() == $('.rpassword2').val()) {
                 var request = $.ajax({
                     url: "/regist",
