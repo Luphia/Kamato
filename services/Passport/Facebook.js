@@ -55,8 +55,7 @@ module.exports = function(_config) {
 		};
 		*/
 		var params = {
-			"response_type": "token",
-			"display": "popup",
+			"type": "user_agent",
 			"redirect_uri": this.config.redirect_uri,
 			"client_id": this.config.client_id,
 			"scope": this.config.scope

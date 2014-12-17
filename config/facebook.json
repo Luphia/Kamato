@@ -4,7 +4,7 @@
 	"client_secret": "",
 	"scope": "public_profile user_friends email user_likes",
 	"url": {
-		"authPath": "https://graph.facebook.com/oauth/access_token",
+		"authPath": "https://graph.facebook.com/oauth/authorize",
 		"getToken": false,
 		"getProfile": "https://graph.facebook.com/me",
 		"getFriends": false,
