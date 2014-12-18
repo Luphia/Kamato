@@ -24,6 +24,8 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
             console.log(data.result);
             if (data.result == 1) {
                 $location.path('/platform/APP');
+            } else {
+                alert('account or password wrong');
             };
         });
         request.fail(function (data) {
@@ -44,6 +46,8 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
                     console.log(data.result);
                     if (data.result == 1) {
                         $location.path('/platform/APP');
+                    } else {
+                        alert('wrong');
                     };
                 });
                 request.fail(function (data) {
@@ -64,6 +68,8 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
                 console.log(data.result);
                 if (data.result == 1) {
                     $location.path('/platform/login');
+                } else {
+                    alert('wrong');
                 };
             });
             request.fail(function (data) {
