@@ -11,6 +11,55 @@ Kamato.register.controller('loginCtrl', function ($scope, $http, $location) {
             $('.register').addClass('newpassword');
             $('.register').removeClass('register');
         };
+
+        if ($('input:checkbox, input:radio')[0]) {
+
+            //Checkbox + Radio skin
+            $('input:checkbox:not([data-toggle="buttons"] input, .make-switch input), input:radio:not([data-toggle="buttons"] input)').iCheck({
+                checkboxClass: 'icheckbox_minimal',
+                radioClass: 'iradio_minimal',
+                increaseArea: '20%' // optional
+            });
+
+            //Checkbox listing
+            var parentCheck = $('.list-parent-check');
+            var listCheck = $('.list-check');
+
+            parentCheck.on('ifChecked', function () {
+                $(this).closest('.list-container').find('.list-check').iCheck('check');
+            });
+
+            parentCheck.on('ifClicked', function () {
+                $(this).closest('.list-container').find('.list-check').iCheck('uncheck');
+            });
+
+            listCheck.on('ifChecked', function () {
+                var parent = $(this).closest('.list-container').find('.list-parent-check');
+                var thisCheck = $(this).closest('.list-container').find('.list-check');
+                var thisChecked = $(this).closest('.list-container').find('.list-check:checked');
+
+                if (thisCheck.length == thisChecked.length) {
+                    parent.iCheck('check');
+                }
+            });
+
+            listCheck.on('ifUnchecked', function () {
+                var parent = $(this).closest('.list-container').find('.list-parent-check');
+                parent.iCheck('uncheck');
+            });
+
+            listCheck.on('ifChanged', function () {
+                var thisChecked = $(this).closest('.list-container').find('.list-check:checked');
+                var showon = $(this).closest('.list-container').find('.show-on');
+                if (thisChecked.length > 0) {
+                    showon.show();
+                }
+                else {
+                    showon.hide();
+                }
+            });
+        };
+
     };
     $scope.login = function () {
         var request = $.ajax({
