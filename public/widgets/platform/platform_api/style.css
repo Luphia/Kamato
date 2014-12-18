@@ -1,0 +1,196 @@
+/*=================================api top=================================*/
+
+.ng-scope.platform .resource {
+  border-radius: 50%;
+  margin: 20px 0px 20px 100px;
+  float: left;
+  position: relative;
+  cursor: pointer;
+  height: 250px;
+  width: 250px;
+}
+.ng-scope.platform .resource:hover .name {
+  display: none;
+}
+.ng-scope.platform .resource .logo {
+  border: 3px solid #c6c6c6;
+  border-radius: 50% !important;
+  opacity: 0.2;
+  -webkit-transition: background-color 0.5s;
+  -o-transition: background-color 0.5s;
+  transition: background-color 0.5s;
+  height: 250px;
+  width: 250px;
+}
+.ng-scope.platform .resource .name {
+  position: absolute;
+  font-size: 36px;
+  text-align: center;
+  width: 200px;
+  height: 40px;
+  margin: -20px 0px 0px -100px;
+  top: 50%;
+  left: 50%;
+}
+/*.ng-scope.platform .resource .Facebook {
+  background: url(../img/simple/auth/facebook.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .Facebook:hover {
+  opacity: 1;
+  background-color: #4a6eaa;
+}
+.ng-scope.platform .resource .GooglePlus {
+  background: url(../img/simple/auth/G+.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .GooglePlus:hover {
+  opacity: 1;
+  background-color: #d94e37;
+}
+.ng-scope.platform .resource .NikePlus {
+  background: url(../img/simple/auth/Nike+.png) no-repeat 50% 50%;
+}
+.ng-scope.platform .resource .NikePlus:hover {
+  opacity: 1;
+  background-color: #d02b09;
+}
+.ng-scope.platform .resource .RunKeeper {
+  background: url(../img/simple/auth/runkeeper.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .RunKeeper:hover {
+  opacity: 1;
+  background-color: #26b7fa;
+}
+.ng-scope.platform .resource .Fitbit {
+  background: url(../img/simple/auth/fitbit.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .Fitbit:hover {
+  -webkit-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+  opacity: 1;
+}
+.ng-scope.platform .resource .Jawbone {
+  background: url(../img/simple/auth/jawbon.png) no-repeat 50% 50%;
+}*/
+.ng-scope.platform .resource .Jawbone:hover {
+  opacity: 1;
+  background-color: black;
+}
+
+.ng-scope.platform .api_table td{
+  vertical-align: middle;
+}
+
+.ng-scope.platform .api_table span{
+  padding: 5px 10px;
+  border-radius: 3px !important;
+  background-color: rgba(42, 91, 132, 0.9);
+  margin: 10px 10px 0px 0px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.ng-scope.platform .create_api {
+  position: relative;
+  min-height: 500px;  
+}
+
+.ng-scope.platform .create_api .form-group {
+  margin: 20px 0px;
+}
+
+.ng-scope.platform  .create_api .sql_input{
+  margin: 0px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+.ng-scope.platform .api_checkboxes{
+  margin: 10px;
+  float: left;
+}
+
+.ng-scope.platform  .api_checkboxes span{
+  font-size: 14px;
+}
+
+.ng-scope.platform  .api_checkboxes input[type="checkbox"]{
+  position: relative;
+  top: 2px;
+  opacity: 1;
+  border-radius: 0;
+  border: 0px;
+  margin: 5px 10px 0px 5px;
+  width: 16px;
+  height: 16px;
+  background-color: transparent;
+}
+
+.ng-scope.platform .create_api .privacy_btn{
+  background: rgba(174, 44, 44, 0.9);
+  border: 1px solid rgba(0,0,0,0.3);
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.ng-scope.platform .create_api .public_btn{
+  background: rgba(38, 182, 44, 0.7);
+  border: 1px solid rgba(256,256,256,0.4);
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
+  width: 100%;
+  margin: 12px;
+  border: 1px solid rgba(256,256,256,0.5);
+  background-color: transparent;
+}
+
+.ng-scope.platform .appList, .ng-scope.platform .apiList{
+  /*line-height: 100%;*/
+  display: block;
+  height: 50px;
+  cursor: pointer;
+}
+.ng-scope.platform .appList .appName, .ng-scope.platform .apiList .apiName{
+  float: left;
+  font-size: 16px;
+  margin-left: 30px;
+  line-height: 30px;
+}
+
+.ng-scope.platform activitychart{                       /*++ activitychart的X軸尚未RWD */
+    height: 400px;
+    display: block;
+    width: 100% ; 
+}
+@media screen and (max-width: 1024px){
+  .ng-scope.platform activitychart {
+    width: 100% !important; 
+  }
+
+  .ng-scope.platform activitychart canvas {
+    width: 100% !important; 
+  }
+}
+
+
+@media screen and (max-width: 991px){
+
+  .ng-scope.platform .app_search, .ng-scope.platform .api_search, .sql_input{
+    width: 80%;
+  }
+
+}
+@media screen and (max-width: 570px){
+  .ng-scope.platform .app_search, .ng-scope.platform .api_search, .sql_input{
+    width: 50%;
+  }
+}
+/*=================================api bottom=================================*/

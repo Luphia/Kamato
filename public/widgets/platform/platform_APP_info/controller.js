@@ -1,12 +1,11 @@
-Kamato.register.controller('appCtrl', function ($scope, $http, $modal, ngDialog, $rootScope){
+Kamato.register.controller('appInfoCtrl', function ($scope, $http, $modal, ngDialog, $rootScope){
 // ====================== APP管理 top======================
 	$scope.app_oper = [
 		// {'tip': 'Home', 'icon': 'sa-list-home'},
 		{'tip': 'Back', 'icon': 'sa-list-back', 'link': '#/platform/APP'},
-		{'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP/folder'},
-		{'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP/activity'},
-		{'tip': 'Info.', 'icon': 'sa-list-info','link': '#/platform/APP/info'},
-		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
+		{'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder'},
+		{'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP_activity'},
+		{'tip': 'Info.', 'icon': 'sa-list-info','link': '#/platform/APP_info'},		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
 	];
 
 	$scope.create_app = false;

@@ -74,7 +74,6 @@ Kamato.register.controller('ChannelDetailCrtl', function($scope, $modalInstance,
 		else if(chart_cate == "msgs"){
 			$scope.msgs= temp;   //傳到channel.html:45, ng-model="data"		
 		}
-		 console.log(temp);
 	}
 
 	for(var i in $scope.chart_info){
