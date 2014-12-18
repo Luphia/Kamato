@@ -14,8 +14,14 @@ var Result = require('../Classes/Result.js')
 var auth = function (req, res, next) {
     res.result = new Result();
     var platform = req.params.platform;
+    var preAuth = passport[platform].getAuthLink();
+    var authPath = typeof(preAuth) == 'object'? preAuth.url : preAuth;
+
+    !req.session.passport && (req.session.passport = {});
+    req.session.passport[platform] = preAuth;
+
     res.result.response(next, 3, '', {
-        "path": passport[platform].getAuthLink()
+        "path": authPath
     });
 }
 , authReturn = function (req, res, next) {
@@ -33,8 +39,8 @@ var auth = function (req, res, next) {
     };
 
     if (platform) {
-
-        var token = platform.getToken(data);
+        var preData = req.session.passport[platform];
+        var token = platform.getToken(data, preData);
         logger.info.info(token)
 
         var user = platform.getProfile(token);
