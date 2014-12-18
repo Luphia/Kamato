@@ -25,6 +25,9 @@ var auth = function (req, res, next) {
     var data = req.query;
     var db = easyDB;
 
+    logger.info.info(data)
+
+
     if (typeof data.error != 'undefined') {
         res.result.response(next, 0, 'authReturn Fail');
     };
@@ -32,6 +35,8 @@ var auth = function (req, res, next) {
     if (platform) {
 
         var token = platform.getToken(data);
+        logger.info.info(token)
+
         var user = platform.getProfile(token);
 
         var s = req.session;
@@ -124,6 +129,12 @@ var auth = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
     var x = userManager.add(data);
+    var s = req.session;
+    s._id = x._id;
+    s.name = x.name;
+    s.picture = x.picture;
+    s.login = 1;
+
     if (x == false) {
         res.result.response(next, 0, 'Regist Fail');
     } else {
