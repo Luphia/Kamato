@@ -3,22 +3,20 @@
 	cd ~/Kamato
 	node
 
-	var deviceJson = require('./config.private/fitbit.json');
-	var oauth = new require('./services/Passport/Fitbit.js')(deviceJson);
-	oauth.getPreAuthLink();
-	var temporaryOauthData = oauth.getTemporaryTokenAndSecret();
-	oauth.getAuthLink();
-	// 於瀏覽器, 瀏覽oauth.getAuthLink();回傳的網址，取得body的json，copy貼。
+var deviceJson = require('./config.private/fitbit.json');
+var oauth = new require('./services/Passport/Fitbit.js')(deviceJson);
 
-	var oauthData = oauth.getOauthDataObj({"oauth_token":"8f9e9844838540ea47a7d14863e0b707","oauth_verifier":"8glg5g43orqd1kd0vjqqbuurpa"});
-	var varAccessApiOauthData = oauth.getAccessToken();
+var x = oauth.getAuthLink();
+	// 於瀏覽器, 瀏覽oauth.getAuthLink();回傳的網址，取得body的json，copy貼。
+	
+	var token = oauth.getToken({"oauth_token":"5c5ee81e14f0d86923a8b54e272e0bd8","oauth_verifier":"35qjqhi2hcn9jfa6prdpprfc0p"}, x);
 
 	// 取各個想要的資料
-	var sleepJson = oauth.getSleep("1", "2014-11-21", ".json");
-	var profile = oauth.getProfile("1", ".json");
-	var activities = oauth.getActivities("1", "2014-11-21", ".json");
-	var nutrition = oauth.getNutrition("1", "2014-11-21", ".json");
-	var friends = oauth.getFriends("1", ".json");
+	var sleepJson = oauth.getSleep(token, "2014-11-21");
+	var profile = oauth.getProfile(token);
+	var activities = oauth.getActivities(token, "2014-11-21");
+	var nutrition = oauth.getNutrition(token, "2014-11-21");
+	var friends = oauth.getFriends(token);
 	
 	oauth.getPhysiological(token);
  */
@@ -37,7 +35,7 @@ var accessApiOauthData;
 		oauth_version
 	}
  */
-var createSignature = function(method, path, clientSecretKey, options, signatureMode) {
+var createSignature = function(method, path, clientSecretKey, options, signatureMode, temporaryOauthData, token) {
 	var rs = [],
 		baseString;
 	
@@ -49,7 +47,7 @@ var createSignature = function(method, path, clientSecretKey, options, signature
 
 		//步驟G, 重設oauth_signature.
 		case "mode_G":
-			 key = clientSecretKey + "&" + accessApiOauthData.oauth_token_secret;
+			 key = clientSecretKey + "&" + token.oauth_token_secret;
 			 options
 			 break;
 			 
@@ -186,60 +184,50 @@ module.exports = function(_config) {
 
 	// 更新授權 token
 	var renewToken = function(token) {
-		accessApiOauthData = token;			// 將token設定給全域變數accessApiOauthData，以利該支程式使用。
+		accessApiOauthData = token;
 		return accessApiOauthData;
 	};
 
 	// 取得用戶資訊
 	// 參考網址: https://wiki.fitbit.com/display/API/API-Get-User-Info
-	// param apiVersion : (String) The API version. Currently 1.
-	// param resFormat : (String)  輸出格式，有json和xml兩種。（如：.json或.xml）
-	var getProfile = function(apiVersion, resFormat) {
+	var getProfile = function(token) {
 		if(!this.config.url.getProfile) { return false; }
-		var rs = this.getAnyData("getProfile", apiVersion, "", "/profile", resFormat);
+		var rs = this.getAnyData("getProfile", "/profile", token);
 		return rs;
 	};
 
 	// 取得用戶好友清單
 	// 參考網址: https://wiki.fitbit.com/display/API/API-Get-Friends
-	// param apiVersion : (String) The API version. Currently 1.
-	// param resFormat : (String)  輸出格式，有json和xml兩種。（如：.json或.xml）
-	var getFriends = function(apiVersion, resFormat) {
+	var getFriends = function(token) {
 		if(!this.config.url.getFriends) { return false; }
-		var rs = this.getAnyData("getFriends", apiVersion, "", "/friends", resFormat);
+		var rs = this.getAnyData("getFriends", "/friends", token);
 		return rs;
 	};
 
 	// 取得用戶活動紀錄
 	// 參考網址: https://wiki.fitbit.com/display/API/API-Get-Activities
-	// param apiVersion : The API version. Currently 1.
 	// param date : 格式YYYY-mm-dd, 如:2010-02-25.
-	// param resFormat : 輸出格式，有json和xml兩種。（如：.json或.xml）
-	var getActivities = function(apiVersion, dataDate, resFormat) {
+	var getActivities = function(token, date) {
 		if(!this.config.url.getActivities) { return false; }
-		var rs = this.getAnyData("getActivities", apiVersion, "/activities/date/", dataDate, resFormat);
+		var rs = this.getAnyData("getActivities", "/activities/date/", token, date);
 		return rs;
 	};
 
 	// 取得用戶飲食記錄
 	// 參考網址: https://wiki.fitbit.com/display/API/API-Get-Food-Logs
-	// param apiVersion : The API version. Currently 1.
 	// param date : 格式YYYY-mm-dd, 如:2010-02-25.
-	// param resFormat : 輸出格式，有json和xml兩種。（如：.json或.xml）
-	var getNutrition = function(apiVersion, dataDate, resFormat) {
+	var getNutrition = function(token, date) {
 		if(!this.config.url.getNutrition) { return false; }
-		var rs = this.getAnyData("getNutrition", apiVersion, "/foods/log/date/", dataDate, resFormat);
+		var rs = this.getAnyData("getNutrition", "/foods/log/date/", token, date);
 		return rs;
 	};
 
 	// 取得用戶睡眠資訊
 	// 參考網址: https://wiki.fitbit.com/display/API/API-Get-Sleep
-	// param apiVersion : The API version. Currently 1.
 	// param date : 格式YYYY-mm-dd, 如:2010-02-25.
-	// param resFormat : 輸出格式，有json和xml兩種。（如：.json或.xml）
-	var getSleep = function(apiVersion, dataDate, resFormat) {
+	var getSleep = function(token, date) {
 		if(!this.config.url.getSleep) { return false; }
-		var rs = this.getAnyData("getSleep", apiVersion, "/sleep/date/", dataDate, resFormat);
+		var rs = this.getAnyData("getSleep", "/sleep/date/", token, date);
 		return rs;
 	};
 
@@ -253,16 +241,17 @@ module.exports = function(_config) {
 	// 取得資訊
 	// 參考網址: https://wiki.fitbit.com/display/API/API-Get-Food-Logs
 	// param debugName : (String) 除錯字之顯示文字
-	// param apiVersion : (String) The API version. Currently 1.
 	// param strUri : (String) 欲取得的資料的uri，即組url用的中間字串。
 	// param dataDate : 格式YYYY-mm-dd, 如:2010-02-25.
-	// param resFormat : (String)  輸出格式，有json和xml兩種。（如：.json或.xml）
-	var getAnyData = function(debugName, apiVersion, strUri, dataDate, resFormat) {
+	var getAnyData = function(debugName, strUri, combindToken, dataDate) {
 
-		var rs;
-		var acsApiOauthData = typeof(accessApiOauthData)=='object'?accessApiOauthData : this.getAccessToken();
-		var link = this.config.url.apiPath + "/" + apiVersion + "/user/" + acsApiOauthData.encoded_user_id + strUri + dataDate + resFormat;
-		//console.log("[debug] "+debugName+" link:\n"+link);
+		var rs,
+		token = combindToken.token,
+		oauthData = combindToken.oauthData;
+		console.log(combindToken);
+
+		var link = this.config.url.apiPath + "/" + this.config.apiVersion + "/user/" + token.encoded_user_id + strUri + (dataDate? dataDate: '') + this.config.resFormat;
+		console.log("[debug] "+debugName+" link:\n"+link);
 
 		var headerOptions = {
 			"method": "GET",
@@ -273,11 +262,19 @@ module.exports = function(_config) {
 
 		var options = {
 			"url": link,
-			"headers": createHeaderStepEFG(headerOptions, "stepG")
+			"headers": createHeaderStepEFG(headerOptions, "stepG", false, oauthData, token)
 		};
 
 		request(options, function(err, response, body) {
-			rs = JSON.parse(body);
+			rs = {};
+			try {
+				rs = JSON.parse(body);
+			} catch(exp) {
+				//console.log(body);
+				//console.log(exp);
+				//console.log("aaaaaaaaerr:"+err);
+			}
+			
 		});
 
 		while(rs === undefined) {
@@ -294,15 +291,26 @@ module.exports = function(_config) {
 		var temporaryOauthData = this.getTemporaryTokenAndSecret();
 		var link = this.config.url.authClientAccessPath + "?oauth_token=" + temporaryOauthData.oauth_token;
 		//console.log("stepD link:\n"+link);
-		return link;
+
+		var json = {"url": link, "data": temporaryOauthData};
+		return json;
 	};
 	
+	
+
+	var getToken = function(data, predata) {
+		
+		var oauthData = this.getOauthDataObj(data);
+		var token = this.getAccessToken(predata.data, oauthData);
+		var combindToken = {"token": token, "oauthData": oauthData};
+		return combindToken;
+	};
 
 	// {執行步驟 E-F}
 	// 有了暫時token後, 之後再以此產生真實token(E-F)
 	// 取得存取Token及Secret
 	// Get Fitbit User's permanent Access Token and Access Token Secret(E-F).
-	var getAccessToken = function() {
+	var getAccessToken = function(temporaryOauthData, oauthData) {
 		var rs;
 		var link = this.config.url.authorizeAccessAppPath;
 		var headerOptions = {
@@ -314,7 +322,7 @@ module.exports = function(_config) {
 
 		var options = {
 			"url": link,
-			"headers": createHeaderStepEFG(headerOptions, "stepEF")
+			"headers": createHeaderStepEFG(headerOptions, "stepEF", temporaryOauthData, oauthData)
 		};
 
 		request.post(options, function(err, response, body) {
@@ -348,6 +356,7 @@ module.exports = function(_config) {
 		"init": init,
 		"getPreAuthLink": getPreAuthLink,
 		"renewToken": renewToken,
+		"getToken": getToken,
 		"getProfile": getProfile,
 		"getFriends": getFriends,
 		"getActivities": getActivities,
@@ -383,7 +392,7 @@ module.exports = function(_config) {
 		oauth_version
 	}
 */
-var createHeaderStepEFG = function(options, step) {
+var createHeaderStepEFG = function(options, step, temporaryOauthData, oauthData, token) {
 
 	options.oauth_nonce = "";
 	options.oauth_signature_method = "HMAC-SHA1";
@@ -397,7 +406,7 @@ var createHeaderStepEFG = function(options, step) {
 		options.oauth_token = oauthData.oauth_token;
 	} else if(step=="stepG") {
 		strMode = "mode_G";
-		options.oauth_token = accessApiOauthData.oauth_token;
+		options.oauth_token = token.oauth_token;
 	}
 
 
@@ -427,7 +436,7 @@ var createHeaderStepEFG = function(options, step) {
 	}
 //console.log("[debug] , 0001. ----------- signatureOptions:\n"+ JSON.stringify(signatureOptions));
 //console.log("[debug] , 0001. ----------- options.clientSecretKey:\n"+ options.clientSecretKey);
-	var signature = createSignature(options.method, options.path, options.clientSecretKey, signatureOptions, strMode);
+	var signature = createSignature(options.method, options.path, options.clientSecretKey, signatureOptions, strMode, temporaryOauthData, token);
 //console.log("[debug] , 0002. -----------");
 	var authHeaders = [];
 	signatureOptions.oauth_signature = signature;
