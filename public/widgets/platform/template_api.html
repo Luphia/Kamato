@@ -43,6 +43,95 @@
 						<input type="text" class="form-control create_api_input" ng-model="new_api_name" ng-required="new_api_required">	
 					</div>
 				</div>
+
+
+<!-- For DEMO //-->
+<style>
+	h5 {
+		margin-top: 10px;
+		text-align: center;
+	}
+	.table {
+		margin-bottom: 50px;
+		overflow: auto;
+	}
+	.table > div {
+		float: left;
+		margin: 5px;
+		padding: 10px;
+		background: rgba(0, 0, 0, .3);
+		width: 200px;
+		text-align: center;
+	}
+	.table > div label {
+		font-size: 1.8em;
+	}
+	.table > div ul {
+		text-align: left;
+		font-size: 1.2em;
+		padding: 0px;
+	}
+	.table > div ul li {
+		cursor: pointer;
+		padding: 2px;
+	}
+	.table > div ul li:hover {
+		background: rgba(255, 255, 255, .5);
+	}
+</style>
+<h5>外部API</h5>
+<hr>
+<div class="table">
+	<div>
+		<label>social network</label>
+		<ul>
+			<li ng-click="return_api_page()">facebook.profile</li>
+			<li ng-click="return_api_page()">facebook.friends</li>
+			<li ng-click="return_api_page()">facebook.activities</li>
+			<li ng-click="return_api_page()">googleplus.profile</li>
+			<li ng-click="return_api_page()">googleplus.friends</li>
+			<li ng-click="return_api_page()">googleplus.activities</li>
+		</ul>
+	</div>
+	<div>
+		<label>healthy</label>
+		<ul>
+			<li ng-click="return_api_page()">fitbit.physiological</li>
+			<li ng-click="return_api_page()">fitbit.sleep</li>
+			<li ng-click="return_api_page()">iiiFitness.physiological</li>
+			<li ng-click="return_api_page()">iiiFitness.sleep</li>
+			<li ng-click="return_api_page()">jawbone.physiological</li>
+			<li ng-click="return_api_page()">jawbone.sleep</li>
+		</ul>
+	</div>
+	<div>
+		<label>traffic</label>
+		<ul>
+			<li ng-click="return_api_page()">google.map</li>
+			<li ng-click="return_api_page()">taipei.bus</li>
+			<li ng-click="return_api_page()">taipei.mrt</li>
+		</ul>
+	</div>
+	<div>
+		<label>sport</label>
+		<ul>
+			<li ng-click="return_api_page()">fitbit.profile</li>
+			<li ng-click="return_api_page()">fitbit.friends</li>
+			<li ng-click="return_api_page()">fitbit.activities</li>
+			<li ng-click="return_api_page()">jawbone.profile</li>
+			<li ng-click="return_api_page()">jawbone.friends</li>
+			<li ng-click="return_api_page()">jawbone.activities</li>
+			<li ng-click="return_api_page()">runkeeper.profile</li>
+			<li ng-click="return_api_page()">runkeeper.friends</li>
+			<li ng-click="return_api_page()">runkeeper.activities</li>
+		</ul>
+	</div>
+</div>
+
+<h5>自訂API</h5>
+<hr>
+<!-- For DEMO //-->
+
 				<!-- API Methods -->
 				<div class="form-group">
 					<h3 class="col-md-2 control-label">REST Methods</h3>
