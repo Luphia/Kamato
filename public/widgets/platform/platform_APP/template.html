@@ -1,4 +1,4 @@
-<div class="platform" ng-controller="appCtrl">
+<div class="platform">
 	<div class="container-fluid  clearfix">
 		<div class="content">
 			<div class="title">
@@ -14,7 +14,7 @@
 					</div>
 				</header>
 				<div >
-					<a href="#/platform/APP_folder" class="media appList" ng-repeat="item in appList | filter:appSearch" >
+					<a href="#/platform/APP/folder" class="media appList" ng-repeat="item in appList | filter:appSearch" >
 						<div class="appIcon"></div>
 						<div class="appName">{{item.name}}</div>
 					</a>
