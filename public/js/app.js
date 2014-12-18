@@ -73,7 +73,26 @@ Kamato.config(function($controllerProvider, $compileProvider, $filterProvider, $
 		service: $provide.service
 	};
 
-	$routeProvider.when('/:widget', {
+	$routeProvider.when('/', {
+		templateUrl: './widgets/login/template.html',
+		resolve: {
+			load: function($q, $route, $rootScope) {
+				var deferred = $q.defer();
+				var dependencies = ['./widgets/login/controller.js'];
+
+				loadCss('./widgets/login/style.css');
+
+				$script(dependencies, function () {
+					$rootScope.$apply(function() {
+						deferred.resolve();
+					});
+				});
+
+				return deferred.promise;
+			}
+		}
+	}).
+	when('/:widget', {
 		templateUrl: function(path) {
 			return './widgets/' + path.widget + '/template.html';
 		},
@@ -95,42 +114,28 @@ Kamato.config(function($controllerProvider, $compileProvider, $filterProvider, $
 			}
 		}
 	}).
-	when('/platform/APP', {
-		templateUrl: 'widgets/platform/template_APP.html',
-		controller: 'PlatformCtrl'
+	when('/platform/:widget', {
+		templateUrl: function(path) {
+			return './widgets/paltform/' + path.widget + '/template.html';
+		},
+
+		resolve: {
+			load: function($q, $route, $rootScope) {
+				var deferred = $q.defer();
+				var dependencies = ['./widgets/paltform/' + $route.current.params.widget + '/controller.js'];
+
+				loadCss('./widgets/paltform/' + $route.current.params.widget + '/style.css');
+
+				$script(dependencies, function () {
+					$rootScope.$apply(function() {
+						deferred.resolve();
+					});
+				});
+
+				return deferred.promise;
+			}
+		}
 	}).
-	when('/platform/APP/folder', {
-		templateUrl: 'widgets/platform/template_APP_folder.html',
-		controller: 'PlatformCtrl'
-	}).
-	when('/platform/APP/info', {
-		templateUrl: 'widgets/platform/template_APP_info.html',
-		controller: 'PlatformCtrl'
-	}).
-	when('/platform/APP/activity', {
-		templateUrl: 'widgets/platform/template_APP_activity.html',
-		controller: 'PlatformCtrl'
-	}).
-	when('/platform/easydb', {
-		templateUrl: 'widgets/platform/template_easydb.html',
-		controller: 'PlatformCtrl'
-	}).
-	when('/platform/channel', {
-		templateUrl: 'widgets/platform/template_channel.html',
-		controller: 'PlatformCtrl'
-	}).
-	when('/platform/resources', {
-		templateUrl: 'widgets/platform/template_resource.html',
-		controller: 'PlatformCtrl'
-	}).
-	when('/platform/oauth', {
-		templateUrl: 'widgets/platform/template_api.html',
-		controller: 'PlatformCtrl'
-	}).
-	when('/artmatch', {
-		templateUrl: 'widgets/artmatch/template.html',
-		controller: 'ArtmatchCtrl'
-	}).	
 	otherwise({
 		redirectTo: '/'
 	});;

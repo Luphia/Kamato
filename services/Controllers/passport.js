@@ -110,7 +110,7 @@ var auth = function (req, res, next) {
         res.result.response(next, 1, 'Login Success', x);
     };
 }
-, loginout = function (req, res, next) {
+, logout = function (req, res, next) {
     res.result = new Result();
     req.session.destroy();
     res.result.response(next, 1, 'Session Destroy');
@@ -186,7 +186,7 @@ var auth = function (req, res, next) {
         res.result.response(next, 1, 'Login Success', x);
     };
 }
-, uloginout = function (req, res, next) {
+, ulogout = function (req, res, next) {
     res.result = new Result();
     req.session.destroy();
     res.result.response(next, 1, 'Session Destroy');
@@ -279,7 +279,7 @@ module.exports = {
 
         //master
         route.post('/login', login);
-        route.get('/loginout', loginout);
+        route.get('/logout', logout);
         route.get('/addtoken', addtoken);
         route.post('/regist', regist);
         route.get('/check', check);
@@ -288,7 +288,7 @@ module.exports = {
 
         //user
         route.post('/ulogin', ulogin);
-        route.get('/uloginout', uloginout);
+        route.get('/ulogout', ulogout);
         route.get('/uaddtoken', uaddtoken);
         route.post('/uregist', uregist);
         route.get('/ucheck', ucheck);
