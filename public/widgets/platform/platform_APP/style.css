@@ -1,0 +1,92 @@
+/*=================================APP top=================================*/
+.ng-scope.platform .listview-header .col-md-10{
+  position: static;
+}
+
+    
+.ng-scope.platform .list-mass-actions li .sa-list-back{
+  background-position: 15% 50%;
+}
+
+
+.ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
+  width: 100%;
+  margin: 12px;
+  border: 1px solid rgba(256,256,256,0.5);
+  background-color: transparent;
+}
+
+.ng-scope.platform .appList, .ng-scope.platform .apiList{
+  /*line-height: 100%;*/
+  display: block;
+  height: 50px;
+  cursor: pointer;
+}
+
+.ng-scope.platform .appList .appName, .ng-scope.platform .apiList .apiName{
+  float: left;
+  font-size: 16px;
+  margin-left: 30px;
+  line-height: 30px;
+}
+
+.ng-scope.platform .file_warpper{
+  margin: 10px 0px;
+}
+
+.ng-scope.platform .file_warpper .tile-title{
+  font-size: 14px
+}
+
+.ng-scope.platform .file_warpper ul{
+  padding: 0px;
+  /*margin-left: 40px;*/
+}
+
+.ng-scope.platform .file_warpper a{
+  background-position: 0 0;
+}
+
+.ng-scope.platform .file_warpper a span{
+  padding: 30px;
+}
+
+.ng-scope.platform activitychart{                      
+ /*++ activitychart的X軸尚未RWD */
+    height: 400px;
+    display: block;
+    width: 100% ; 
+}
+
+.ng-scope.platform .tab-container{
+  padding: 10px;
+}
+
+.ng-scope.platform textarea{
+  resize: vertical;
+}
+
+@media screen and (max-width: 1024px){
+  .ng-scope.platform activitychart {
+    width: 100% !important; 
+  }
+
+  .ng-scope.platform activitychart canvas {
+    width: 100% !important; 
+  }
+}
+
+@media screen and (max-width: 991px){
+
+  .ng-scope.platform .app_search, .ng-scope.platform .api_search, .sql_input{
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 570px){
+  .ng-scope.platform .app_search, .ng-scope.platform .api_search, .sql_input{
+    width: 50%;
+  }
+}
+
+/*=================================APP bottom=================================*/

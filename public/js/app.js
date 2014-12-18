@@ -154,8 +154,8 @@ Kamato.controller('TemplateCtrl',  function($scope){
 		{'name': 'APP管理', 'link': '#/platform/APP', 'icon': 'sa-side-app'},
 		{'name': 'EasyDB Manager', 'link': '#/platform/easydb', 'icon': 'sa-side-db'},
 		{'name': 'Channel Manager', 'link': '#/platform/channel', 'icon': 'sa-side-channel'},
-		{'name': 'API Manager', 'link': '#/platform/oauth', 'icon': 'sa-side-auth'},
-		{'name': '外部資源託管', 'link': '#/platform/resources', 'icon': 'sa-side-resource'}
+		{'name': 'API Manager', 'link': '#/platform/api', 'icon': 'sa-side-auth'},
+		{'name': '外部資源託管', 'link': '#/platform/resource', 'icon': 'sa-side-resource'}
 	];
 	$scope.selected = undefined;
 	$scope.active = function(menu) {
@@ -237,7 +237,6 @@ Kamato.directive('chart', function() {
             }
 
             var label;
-            console.log(attrs.id);
             if( attrs.id == "connectors"){
             	label = 'Connectors';
             }
@@ -254,7 +253,6 @@ Kamato.directive('chart', function() {
     		var pre_point = null;
             elem.bind("plothover", function(event, pos, item){
 				if(item){
-					console.log(item);	
 					if(pre_point != item.dataIndex){
 						pre_point = item.dataIndex;   //檢查滑鼠是否停留在同一點
 						var x = item.datapoint[0];
@@ -376,7 +374,6 @@ Kamato.directive('activitychart', function() {
     		var pre_point = null;
             elem.bind("plothover", function(event, pos, item){
 				if(item){
-					console.log(item);	
 					if(pre_point != item.dataIndex){
 						pre_point = item.dataIndex;   //檢查滑鼠是否停留在同一點
 						var x = item.datapoint[0];
