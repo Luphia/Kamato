@@ -9,7 +9,7 @@
 					<aside class="table_list">
 						<h3>Table List</h3>
 						<ul>
-							<li  ng-click="table_click(table)" ng-repeat="table in tables">
+							<li  ng-click="table_click(table, 15,1)" ng-repeat="table in tables">
 								<a ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
 							</li>
 						</ul>
@@ -32,7 +32,14 @@
 							</div>
 						</div>
 						<div class="sql_result"></div>
-					</div>					
+					</div>	
+					<div class="page_wrapper">
+						<div class="page_block">
+							<div class="indiv_page_block" ng-repeat="p in total_pages track by $index">
+								<a ng-click="show_table(default_view_table, 15, $index+1)">{{$index+1}}</a>
+							</div>
+						</div>
+					</div>				
 					<div class="table_content table-responsive">
 						<table class="table db_table tile table-bordered">
 							<tr>
