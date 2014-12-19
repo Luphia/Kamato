@@ -47,7 +47,8 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     // $scope.default_table_rows = 15;
 
 	$scope.table_click =function(name, default_table_rows, page_num){
-		viewing_table = name
+        pre_id_attr="";
+		viewing_table = name;
 		$scope.is_show = false;
 		//要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
 		var j_text = document.getElementsByClassName("json_text");
@@ -74,6 +75,13 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 
 
     $scope.show_table = function(table_name, custom_table_rows, page_num){
+        //要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
+        j_text = document.getElementsByClassName("json_text");
+        table = document.getElementsByClassName("db_table");
+        console.log(table);
+        table[0].childNodes[1].appendChild(j_text[0]);
+
+
         var total_data = custom_table_rows;
         var new_page_first_id = first_row_id;
         //無法直接得到第N頁的第一筆資料ID, 故先找出前N-1頁的資料總數
@@ -142,10 +150,12 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 	var pre_id="";
 	$scope.is_show = false;
 	var pre_id_attr="";
+    
 
 
-	$scope.show_json_file = function(id, attr_name){ 
-		var id_attr_name = id+attr_name;
+	$scope.show_json_file = function(id, attr_name, table_name){ 
+        var id_attr_name = id+attr_name;
+
 		if(pre_id_attr == id_attr_name){
 			$scope.is_show = !$scope.is_show;
 		}
@@ -157,6 +167,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 			var table = document.getElementsByClassName("db_table");				
 			$scope.show_json= jsonTemp[id_attr_name];
 			$scope.t_json = id_attr_name;
+
 			table[0].childNodes[1].insertBefore(j_text[0], elem.nextSibling);	
 		}
 	}
