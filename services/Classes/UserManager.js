@@ -132,8 +132,6 @@ module.exports = function (EasyDB, MailConfig) {
         var str = {};
         str[platform] = userData;
         var dbt = db.find('members', str);
-        //logger.info.info(db.listData('members'))
-        //logger.info.info(dbt)
 
         if (dbt.length > 0) {
             return false; // 'platform userData exist';
@@ -144,8 +142,6 @@ module.exports = function (EasyDB, MailConfig) {
 
             var id = db.postData('members', dbj);
 
-            //logger.info.info(db.listData('members'))
-            //logger.info.info(db.listData('members'))
             return { _id: id };
         };
     }
@@ -161,8 +157,6 @@ module.exports = function (EasyDB, MailConfig) {
         //dbj[platform] = userData;/--
 
         var id = db.putData('members', _id, str);
-        logger.info.info(db.listData('members'))
-        logger.info.info(db.listData('member_token'))
 
         if (id) {
             return { _id: id };
@@ -199,16 +193,6 @@ module.exports = function (EasyDB, MailConfig) {
 	    str[platform] = userData;
 
 	    var dbt = db.find('members', str);
-	    //logger.info.info(str)
-	    //logger.info.info(db.find('members', str))
-	    //logger.info.info(db.listData('members'))
-	    //logger.info.info(db.listData('members').list[0].google)
-	    logger.info.info(dbt)
-
-	    //logger.info.info(db.listData('members').list[0].facebook)
-	    //logger.info.info(db.find('members', str))
-	    //logger.info.info(dbt)
-	    //logger.info.info(dbt.length)
 
 	    if (dbt.length > 0) {
 	        return { _id: dbt[0]._id, name: dbt[0].name, picture: dbt[0].picture };
@@ -389,10 +373,6 @@ module.exports = function (EasyDB, MailConfig) {
         var RightNow = new Date();
         var time = RightNow.getFullYear() + "-" + parseInt(RightNow.getMonth() + 1, 10) + "-" + RightNow.getDate() + " " + RightNow.getHours() + ":" + RightNow.getMinutes() + ":" + RightNow.getSeconds();
         var dbta = db.listData('users', "authtime >= '" + time + "'").list[0];
-
-        logger.info.info(db.listData('users'))
-        logger.info.info(dbta)
-        logger.info.info(db.setSchema('users', { authtime: 'Date' }))
 
         if (dbta) {
             var dbt = db.listData('users', "password='" + oldpass + "'").list[0];
