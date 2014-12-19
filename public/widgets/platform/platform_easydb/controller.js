@@ -47,7 +47,10 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     // $scope.default_table_rows = 15;
 
 	$scope.table_click =function(name, default_table_rows, page_num){
+        //清除上一次在其他table點擊json的事件
         pre_id_attr="";
+        //清除在其他table點擊的刪除警告標語
+        $scope.warn_hint = false;
 		viewing_table = name;
 		$scope.is_show = false;
 		//要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
@@ -80,7 +83,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         table = document.getElementsByClassName("db_table");
         console.log(table);
         table[0].childNodes[1].appendChild(j_text[0]);
-
 
         var total_data = custom_table_rows;
         var new_page_first_id = first_row_id;
@@ -126,16 +128,20 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         });      
     }
 
-    $scope.del_warn = function(){
+    var delete_table_name="";
+    $scope.del_warn = function(table_name){
+        delete_table_name = table_name;
     	$scope.warn_hint = true;
-    	$scope.warning_text =viewing_table;
+    	$scope.warning_text = table_name;
     }
 
     $scope.del_table = function(){
-    	var next_table_index = $scope.tables.indexOf(viewing_table)+1;
+    	var next_table_index = $scope.tables.indexOf(delete_table_name)+1;
     	var next_table = $scope.tables[next_table_index];
-    	$scope.tables.splice($scope.tables.indexOf(viewing_table),1);  //從table list移除
-    	$scope.table_click(next_table, 15, 1);   //畫面換到下一個table的內容
+    	$scope.tables.splice($scope.tables.indexOf(delete_table_name),1);  //從table list移除
+        if (delete_table_name == viewing_table){
+        	$scope.table_click(next_table, 15, 1);   //畫面換到下一個table的內容    
+        }
     	$scope.warn_hint = false;
     }
 

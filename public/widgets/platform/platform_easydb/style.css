@@ -1,10 +1,10 @@
 /*=================================easydb top=================================*/
 .ng-scope.platform .warnHint{
   width: 400px;
-  height: 200px;
-  position: absolute;
-  top: 20%;
-  left: 30%;
+  height: 220px;
+  position: fixed;
+  top: 30%;
+  left:40%;
   background-color: rgba(0,0,0,0.7);
   border: 5px solid rgba(0,0,0,0.6);
 }
@@ -29,6 +29,51 @@
 .ng-scope.platform .warnHint strong{
   font-size: 24px;
   color: #FFD600;
+}
+
+.ng-scope.platform .easydb_container .page_wrapper .indiv_page_block{
+  float: left;
+  margin: 10px;
+  font-size: 14px;
+}
+
+.ng-scope.platform .easydb_container .table_list h3{
+  font-weight: bold;
+}
+
+.ng-scope.platform .easydb_container .table_list ul{
+  padding: 0;
+}
+
+.ng-scope.platform .easydb_container .table_list li{
+  margin: 10px 0px;
+  font-size: 16px;
+  padding-left: 40px;
+  /*text-align: 40%;*/
+  cursor: pointer;
+  width: 100%;
+  position: relative;
+  float: left;
+}
+
+.ng-scope.platform .easydb_container .table_list .table_name:hover{
+  border: 1px solid rgba(256,256,256,0.5);
+}
+
+
+
+.ng-scope.platform .easydb_container .del_table{
+  width: 22px;
+  height: 22px;
+  background: url(../img/simple/easydb/delete.png) no-repeat 50% 50%;
+  float: left;
+  position: absolute;
+  top: 0px;
+  left: 2px;
+}
+
+.ng-scope.platform .easydb_container .del_table:hover{
+    background: url(../img/simple/easydb/delete_hover.png) no-repeat 50% 50%;
 }
 
 .ng-scope.platform .easydb_container .table_clicked{
@@ -59,38 +104,6 @@
   margin-bottom: 10px;
 }
 
-.ng-scope.platform .easydb_container .sql_manipulate .sql_operation{
-  position: static;
-  background-color: rgba(0,0,0,0.3);
-  margin-right: 20px;
-}
-
-.ng-scope.platform .easydb_container .sql_manipulate .sql_operation a{
-  background-size: 23px 23px;
-  margin: 10px;
-}
-
-.ng-scope.platform .easydb_container .table_list h3{
-  font-weight: bold;
-}
-
-.ng-scope.platform .easydb_container .table_list ul{
-  padding: 0;
-}
-
-.ng-scope.platform .easydb_container .table_list li{
-  margin: 10px 0px;
-  font-size: 16px;
-  padding-left: 40px;
-  /*text-align: 40%;*/
-  cursor: pointer;
-  float: left;
-  width: 100%;
-}
-
-.ng-scope.platform .easydb_container .table_list li:hover{
-  border: 1px solid rgba(256,256,256,0.5);
-}
 
 .ng-scope.platform .easydb_container .sql_keyword div{
   margin: 9px 0px;
@@ -140,12 +153,6 @@
   background-color: transparent;
 }
 
-@media screen and (max-width: 1520px){
-  .ng-scope.platform .easydb_container .sql_manipulate .sql_operation a{
-    margin: 10px 7px;
-  }  
-}
-
 @media screen and (max-width: 1410px){
   .ng-scope.platform .easydb_container > .col-md-9{
      margin-left: 40px;
@@ -153,4 +160,10 @@
 
 }
 
+@media screen and (max-width: 1010px){
+  .ng-scope.platform .easydb_container > .col-md-2{
+
+  }
+
+}
 /*=================================easydb bottom=================================*/

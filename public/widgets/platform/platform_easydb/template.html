@@ -9,19 +9,22 @@
 					<aside class="table_list">
 						<h3>Table List</h3>
 						<ul>
-							<li  ng-click="table_click(table, 15,1)" ng-repeat="table in tables">
-								<a ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
+							<li ng-repeat="table in tables">
+								<div class="del_table" ng-click="del_warn(table)"></div>
+								<div ng-click="table_click(table, 15,1)" class="table_name">
+									<a ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
+								</div>
 							</li>
 						</ul>
 					</aside>
 				</div>
 				<div class="col-md-9">
 					<div class="sql_manipulate clearfix">
-						<div class="col-md-2 sql_operation">
+						<!-- <div class="col-md-2 sql_operation">
 							<a tooltip="Create Table" class="sa-list-add"></a>
 							<a tooltip="Delete Table" class="sa-list-delete" ng-click="del_warn()"></a>
 							<a tooltip="Edit Schema" class="sa-list-edit"></a>
-						</div>
+						</div> -->
 						<div class="sql_command col-md-8">
 							<span class="text-center">SQL Command: </span>
 							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list(command_sample)" ng-enter="findData()">
@@ -34,7 +37,7 @@
 						<div class="sql_result"></div>
 					</div>	
 					<div class="page_wrapper">
-						<div class="page_block">
+						<div class="page_block clearfix">
 							<div class="indiv_page_block" ng-repeat="p in total_pages track by $index">
 								<a ng-click="show_table(default_view_table, 15, $index+1)">{{$index+1}}</a>
 							</div>
