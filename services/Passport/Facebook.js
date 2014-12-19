@@ -20,7 +20,7 @@
 var url = require('url'),
 	Rest = require('node-rest-client'),
 	request = require('request');
-var https = require('https');
+
 var parseQuery = function (data) {
     var tmp = [];
     if (typeof data != 'object') { data = {}; }
