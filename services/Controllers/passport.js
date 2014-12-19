@@ -1,8 +1,9 @@
 var config
 , logger
 , passport = {}
-, easyDB
-, userManager
+, easyDB = []
+, userManager = []
+, userConfig
 ;
 
 var Result = require('../Classes/Result.js')
@@ -96,6 +97,22 @@ var auth = function (req, res, next) {
     userData.ip = req.connection.remoteAddress;
     res.send(userData);
 }
+, checkAPP = function (app) {
+    if (!easyDB[app]) {
+        var rs;
+
+        easyDB[app] = new EasyDB(userConfig);
+        easyDB[app].DB.connect({ "url": userConfig.option.url + app }, function () { });
+
+        userManager[app] = new UserManager(easyDB[app], config.get('Mail'));
+        console.log('initial userManager: ' + app);
+
+
+        console.log('555')
+        console.log('initial easyDB: ' + easyDB[app].listTable());
+    }
+    return true;
+}
 	//master
 , login = function (req, res, next) {
     res.result = new Result();
@@ -173,10 +190,15 @@ var auth = function (req, res, next) {
     };
 }
 	//user
+    // app data = > req.params.app
 , ulogin = function (req, res, next) {
     res.result = new Result();
+
+    var app = req.params.app;
+    checkAPP(app);
+
     var data = req.body;
-    var x = userManager.ulogin(data);
+    var x = userManager[app].ulogin(data);
     var s = req.session;
     if (x == false) {
         res.result.response(next, 0, 'Login Fail');
@@ -189,14 +211,22 @@ var auth = function (req, res, next) {
     };
 }
 , ulogout = function (req, res, next) {
+
+    var app = req.params.app;
+    checkAPP(app);
+
     res.result = new Result();
     req.session.destroy();
     res.result.response(next, 1, 'Session Destroy');
 }
 , uaddtoken = function (req, res, next) {
     res.result = new Result();
+
+    var app = req.params.app;
+    checkAPP(app);
+
     var data = req.body;
-    var x = userManager.addToken(data);
+    var x = userManager[app].addToken(data);
     if (x == false) {
         res.result.response(next, 0, 'Addtoken Fail');
     } else {
@@ -205,8 +235,12 @@ var auth = function (req, res, next) {
 }
 , uregist = function (req, res, next) {
     res.result = new Result();
+
+    var app = req.params.app;
+    checkAPP(app);
+
     var data = req.body;
-    var x = userManager.uadd(data);
+    var x = userManager[app].uadd(data);
     if (x == false) {
         res.result.response(next, 0, 'Regist Fail');
     } else {
@@ -224,8 +258,12 @@ var auth = function (req, res, next) {
 }
 , uforgot = function (req, res, next) {
     res.result = new Result();
+
+    var app = req.params.app;
+    checkAPP(app);
+
     var data = req.body;
-    var x = userManager.uforgot(data);
+    var x = userManager[app].uforgot(data);
     if (x == false) {
         res.result.response(next, 0, 'Forgot Fail');
     } else {
@@ -234,6 +272,10 @@ var auth = function (req, res, next) {
 }
 , urepassword = function (req, res, next) {
     res.result = new Result();
+
+    var app = req.params.app;
+    checkAPP(app);
+
     var data = req.body;
     var x = userManager.urepassword(data);
     if (x == false) {
@@ -263,9 +305,12 @@ module.exports = {
         config = _config;
         logger = _logger;
         userConfig = config.get('userConfig');
-        easyDB = new EasyDB(userConfig);
-        easyDB.connect(userConfig.option);
-        userManager = new UserManager(easyDB, config.get('Mail'));
+        //console.log(userConfig);
+        //checkAPP('simple');
+
+        easyDB['simple'] = new EasyDB(userConfig);
+        easyDB['simple'].connect(userConfig.option);
+        userManager['simple'] = new UserManager(easyDB['simple'], config.get('Mail'));
 
         var serverConfig = _config.get('server') || {};
 
@@ -289,13 +334,13 @@ module.exports = {
         route.post('/repassword', repassword);
 
         //user
-        route.post('/ulogin', ulogin);
-        route.get('/ulogout', ulogout);
-        route.get('/uaddtoken', uaddtoken);
-        route.post('/uregist', uregist);
-        route.get('/ucheck', ucheck);
-        route.post('/uforgot', uforgot);
-        route.post('/urepassword', urepassword);
+        route.post('/API/:app/ulogin', ulogin);
+        route.get('/API/:app/ulogout', ulogout);
+        route.get('/API/:app/uaddtoken', uaddtoken);
+        route.post('/API/:app/uregist', uregist);
+        route.get('/API/:app/ucheck', ucheck);
+        route.post('/API/:app/uforgot', uforgot);
+        route.post('/API/:app/urepassword', urepassword);
 
         route.get('/oauth/:platform', auth);
         route.get('/oauth/:platform/return', authReturn);
