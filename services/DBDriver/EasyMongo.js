@@ -326,10 +326,10 @@ module.exports = function(logger) {
 		});
 	}
 	,	pageData = function(table, query, callback) {
-		var limit = query.Limit;
-callback(JSON.stringify(query));
-		pick = limit.nb || 20;
-		skip = query.from || 0;
+		var limit = query.LIMIT;
+
+		pick = limit.nb;
+		skip = limit.from;
 
 		var find = this.DB.collection(table).find().sort({'_id': -1}).skip(skip).limit(pick);
 

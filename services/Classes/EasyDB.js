@@ -597,22 +597,27 @@ module.exports = function(conf, logger) {
 	}
 	,	pageData = function(table, query) {
 		table = checkTable(table);
+
 		if(!table) { return false; }
+
+		if(!query) { query = '' }
+		else {
+			query = checkSQL(query);
+		}
+
 		var rs
 		,	schema = this.getSchema(table)
+		,	cond = Parser.sql2ast(query);
 		;
 
-		if(!query) {
-			query = {
-				"page": 1,
-				"list": defaultLimit
-			};
+		if(!cond.LIMIT) {
+			cond.LIMIT = {"nb": defaultLimit};
 		}
-		else if(!query.list) {
-			query.list = defaultLimit;
+		else if(!cond.LIMIT.nb) {
+			cond.LIMIT.nb = defaultLimit;
 		}
 
-		this.DB.pageData(table, query, function(err, data) {
+		this.DB.pageData(table, cond, function(err, data) {
 			rs = err? false: data;
 			if(err) { rs = false; }
 			else {
