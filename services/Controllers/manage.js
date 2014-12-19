@@ -38,6 +38,20 @@ var Result = require('../Classes/Result.js')
 			res.result.response(next, 1, 'table not found: ' + table);
 		}
 	}
+,	pageData = function(req, res, next) {
+		res.result = new Result();
+		var userID = req.session.userID;
+		var table = req.params.table;
+		var query = req.query.q;
+		var data = connect(userID).pageData(table, query);
+
+		if(data) {
+			res.result.response(next, 1, 'Data in table : ' + table, data);
+		}
+		else {
+			res.result.response(next, 1, 'table not found: ' + table);
+		}
+	}
 ,	postTable = function(req, res, next) { res.result.response(next, 1, pass, {url: req.originalUrl, method: req.method}); }
 ,	putTable = function(req, res, next) { res.result.response(next, 1, pass, {url: req.originalUrl, method: req.method}); }
 ,	delTable = function(req, res, next) { res.result.response(next, 1, pass, {url: req.originalUrl, method: req.method}); }
@@ -132,7 +146,7 @@ var Result = require('../Classes/Result.js')
 				delTable(req, res, next);
 				break;
 			case 'LIST5':
-				flowData(req, res, next);
+				pageData(req, res, next);
 				break;
 			case 'GET5':
 				getData(req, res, next);
