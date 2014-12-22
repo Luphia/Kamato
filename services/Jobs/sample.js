@@ -2,18 +2,18 @@ var util = require('util')
 ,	Job = require('../Classes/Job.js');
 
 
-var Sample = function() {
-
-	var work = function() {
-		this.done();
-	}
-	,	sample = {
-		work: work
-	};
-	Job.call(sample);
-	return sample;
+var Sample = function(config, callback) {
+	this.config = config;
+	this.setCallback(callback);
 };
 
-util.inherits(Sample, Job);
-//Sample.prototype = new Job();
+Sample.prototype.work = function() {
+	// do job
+
+	// after jo finished
+	this.done();
+};
+
+
+Sample.prototype = new Job();
 module.exports = Sample;

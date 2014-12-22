@@ -1,6 +1,5 @@
 var Job = function() {
-	this.work = function() { console.log('prototype work'); };
-	this.done = function() { console.log('prototype done'); };
+
 };
 
 Job.prototype.options = function() {
@@ -13,12 +12,9 @@ Job.prototype.setCallback = function(callback) {
 	}
 };
 
-Job.prototype.setTimeout = function() {
-	
-};
-
-Job.prototype.start = function() {
-	this.work();
-};
+Job.prototype.setTimeout = function() {};
+Job.prototype.start = function() { this.work(this.done); };
+Job.prototype.work = function(callback) { console.log('prototype work'); callback(); };
+Job.prototype.done = function() { console.log('prototype done'); };
 
 module.exports = Job;

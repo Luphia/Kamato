@@ -18,6 +18,7 @@ var auth = function (req, res, next) {
     var preAuth = passport[platform].getAuthLink();
     var authPath = typeof (preAuth) == 'object' ? preAuth.url : preAuth;
 
+    (req.params.app) && (req.session.APP = req.params.app);
     !req.session.passport && (req.session.passport = {});
     req.session.passport[platform] = preAuth;
 
@@ -352,6 +353,7 @@ module.exports = {
         route.post('/API/:app/urepassword', urepassword);
 
         route.get('/oauth/:platform', auth);
+        route.get('/:app/oauth/:platform', auth);
         route.get('/oauth/:platform/return', authReturn);
     },
     file: function (req, res, next) {

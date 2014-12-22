@@ -1,74 +1,105 @@
-module.exports = function(jobs, done) {
-	var init = function(_jobs, _done) {
-		this.jobs = [];
-		this.finish = 0;
-		this.active = false;
-		if(typeof(_done) == 'function') {
-			this.done = _done;
-		}
-		else {
-			this.done = function() {}
-		}
+/*
 
-		return this;
-	}
-	,	work = function() {
-		if(!this.active) {
-			this.active = true;
+var Job = require('./services/Classes/Job.js');
+var Job = require('./services/Jobs/sample.js');
+var Worker = require('./services/Classes/Worker.js');
 
+ */
+
+var Worker = function(option) {
+	this.option = option;
+	this.jobs = [];
+	this.done = [];
+	this.finish = 0;
+	this.active = false;
+};
+
+
+Worker.prototype.init = function(option) {
+	this.option = option;
+	return this;
+};
+
+Worker.prototype.setCallback = function(callback) {
+	if(typeof(callback) == 'function') {
+		this.finish = callback;
+	}
+	return this;
+};
+
+Worker.prototype.addJob = function(job) {
+	this.jobs.push(job);
+	this.jobStatus.push(false);
+	return this;
+};
+
+Worker.prototype.setPeriod = function(period) {
+	this.period = parseInt(period);
+	return this;
+};
+
+Worker.prototype.getStatus = function() {
+	/*
+		{
+			done:
+			jobs:
+			finish:
+			progress:
+			active:
+			logs:
+			error:
 		}
+	 */
 
-		return this;
-	}
-	,	addJob = function(job) {
-		this.jobs.push(job);
-		return this;
-	}
-	,	setPeriod = function(time) {
-		this.period = time;
-		return this;
-	}
-	,	setCallback = function(callback) {
-		this.callback = callback;
-		return this;
-	}
-	,	getStatus = function() {
-		/*
-			{
-				done:
-				jobs:
-				finish:
-				progress:
-				active:
-				logs:
-				error:
+};
+
+Worker.prototype.start = function() {
+	if(!this.active) {
+		this.active = true;
+
+		for(var key in this.jobs) {
+			if(!this.jobStatus[key]) {
+				this.work[key];
 			}
-		 */
-
-
-		return this;
+		}
 	}
-	,	start = function() {
-		this.active = true;
-		work();
-		return this;
-	}
-	,	stop = function() {
-		this.active = true;
-		return this;
-	};
 
-	var worker = {
-		init: init,
-		addJob: addJob,
-		setPeriod: setPeriod,
-		setCallback: setCallback,
-		getStatus: getStatus,
-		start: start,
-		stop: stop,
-		work: work,
-		done: done
-	};
+	return this;
+};
 
-	return worker.init(jobs, done);
-}
+Worker.prototype.work = function(jobNumber) {
+	var job = this.jobs[jobNumber]
+	,	callback = function() {
+			this.done(jobNumber);
+		}
+	;
+
+	var status = {
+			"inAction": true, 
+			"isFinish": false
+		};
+
+	this.jobStatus[jobNumber] = status;
+
+	job.setCallback(callback);
+	job.start();
+};
+
+Worker.prototype.stop = function() {
+
+	return this;
+};
+
+Worker.prototype.done = function(jobNumber) {
+	console.log('Worker done');
+	return this;
+};
+
+Worker.prototype.finish = function() {
+	console.log('Worker finish');
+	return this;
+};
+
+
+
+module.exports = Worker;
