@@ -96,7 +96,6 @@ var auth = function (req, res, next) {
     res.send(userData);
 }
 , checkAPP = function (app) {
-    logger.info.info('init' + app);
     if (!easyDB[app]) {
         easyDB[app] = new EasyDB(userConfig);
         easyDB[app].DB.connect({ "url": userConfig.option.url + app }, function () { });
@@ -104,7 +103,6 @@ var auth = function (req, res, next) {
         userManager[app] = new UserManager(easyDB[app], config.get('Mail'));
         logger.info.info('initial userManager: ' + app);
 
-        logger.info.info('555') //--
         logger.info.info('initial easyDB: ' + easyDB[app].listTable());
     }
     return true;
@@ -113,7 +111,7 @@ var auth = function (req, res, next) {
 , login = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
-    var x = userManager.login(data);
+    var x = userManager['simple'].login(data);
     var s = req.session;
     if (x == false) {
         res.result.response(next, 0, 'Login Fail');
@@ -133,7 +131,7 @@ var auth = function (req, res, next) {
 , addtoken = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
-    var x = userManager.addToken(data);
+    var x = userManager['simple'].addToken(data);
     if (x == false) {
         res.result.response(next, 0, 'Addtoken Fail');
     } else {
@@ -143,7 +141,7 @@ var auth = function (req, res, next) {
 , regist = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
-    var x = userManager.add(data);
+    var x = userManager['simple'].add(data);
     var s = req.session;
     s._id = x._id;
     s.name = x.name;
@@ -168,7 +166,7 @@ var auth = function (req, res, next) {
 , forgot = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
-    var x = userManager.forgot(data);
+    var x = userManager['simple'].forgot(data);
     if (x == false) {
         res.result.response(next, 0, 'Forgot Fail');
     } else {
@@ -178,7 +176,7 @@ var auth = function (req, res, next) {
 , repassword = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
-    var x = userManager.repassword(data);
+    var x = userManager['simple'].repassword(data);
     if (x == false) {
         res.result.response(next, 0, 'Repassword Fail');
     } else {
