@@ -117,8 +117,10 @@
                     async: false
                 });
                 request.done(function (data) {
+                    if (data.result == 1) {
+                        location.href = hostname + '/APP/' + pathname + "/selectAPP.html";
+                    };
                     console.log(data.result);
-                    location.href = hostname + '/APP/' + pathname + "/selectAPP.html";
                 });
                 request.fail(function (data) {
                     console.log(data);

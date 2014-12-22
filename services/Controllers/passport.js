@@ -238,12 +238,21 @@ var auth = function (req, res, next) {
 
     var app = req.params.app;
     checkAPP(app);
+    logger.info.info(app)
 
     var data = req.body;
     var x = userManager[app].uadd(data);
     if (x == false) {
         res.result.response(next, 0, 'Regist Fail');
     } else {
+
+        !req.session[app] && (req.session[app] = {});
+        req.session[app] = { _id: x._id, name: x.name, picture: x.picture, ulogin: 1, app: app };
+        req.session.APP = app;
+
+        logger.info.info(app)
+        logger.info.info(req.session[app])
+
         res.result.response(next, 1, 'Regist Success', x);
     };
 }

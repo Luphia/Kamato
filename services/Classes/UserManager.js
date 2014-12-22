@@ -98,7 +98,7 @@ module.exports = function (EasyDB, MailConfig) {
             return false; // 'account exist';
         } else {
             var id = db.postData('members', { account: account, password: password, authtime: 'Date' });
-            console.log(db.listData('members'))
+            logger.info.info(db.listData('members')) //--
 
             return { _id: id };
         };
