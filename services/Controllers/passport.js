@@ -39,18 +39,20 @@ var auth = function (req, res, next) {
     if (platform) {
         var preData = req.session.passport[platform];
         var token = platform.getToken(data, preData);
+        var app = req.params.app;
 
         var user = platform.getProfile(token);
 
-        var s = req.session;
+        var s = req.session[app];
         var id = s._id;
 
         if (s.ulogin == 1) {
-            var x = userManager.uaddToken({ _id: id, platform: uplatform, userData: token });
+
+            var x = userManager[app].uaddToken({ _id: id, platform: uplatform, userData: token });
             if (x == false) {
                 res.result.response(next, 0, 'UaddToken Fail#');
             } else {
-                var y = userManager.uidaddByPlatform({ _id: id, platform: uplatform, userData: user });
+                var y = userManager[app].uidaddByPlatform({ _id: id, platform: uplatform, userData: user });
                 if (y == false) {
                     res.result.response(next, 0, 'uidaddByPlatform Fail');
                 } else {
@@ -59,13 +61,13 @@ var auth = function (req, res, next) {
                 //res.result.response(next, 1, 'UaddToken Success#', user); /--
             };
         } else {
-            var x = userManager.ufindByPlatform({ platform: uplatform, userData: user });
+            var x = userManager[app].ufindByPlatform({ platform: uplatform, userData: user });
             if (x == false) {
-                var y = userManager.uaddByPlatform({ platform: uplatform, userData: user });
+                var y = userManager[app].uaddByPlatform({ platform: uplatform, userData: user });
                 if (y == false) {
                     res.result.response(next, 0, 'uaddByPlatform Fail', user);
                 } else {
-                    var z = userManager.uaddToken({ _id: y._id, platform: uplatform, userData: token });
+                    var z = userManager[app].uaddToken({ _id: y._id, platform: uplatform, userData: token });
                     if (z == false) {
                         res.result.response(next, 0, 'UaddToken Fail');
                     } else {
@@ -199,14 +201,13 @@ var auth = function (req, res, next) {
 
     var data = req.body;
     var x = userManager[app].ulogin(data);
-    var s = req.session;
     if (x == false) {
         res.result.response(next, 0, 'Login Fail');
     } else {
-        s._id = x._id;
-        s.name = x.name;
-        s.picture = x.picture;
-        s.ulogin = 1;
+
+        !req.session[app] && (req.session[app] = {});
+        req.session[app] = { _id: x._id, name: x.name, picture: x.picture, ulogin: 1, app: app };
+
         res.result.response(next, 1, 'Login Success', x);
     };
 }
