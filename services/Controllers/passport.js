@@ -39,15 +39,14 @@ var auth = function (req, res, next) {
     if (platform) {
         var preData = req.session.passport[platform];
         var token = platform.getToken(data, preData);
-        var app = req.params.app;
 
         var user = platform.getProfile(token);
 
+        var app = req.session.APP;
         var s = req.session[app];
         var id = s._id;
 
         if (s.ulogin == 1) {
-
             var x = userManager[app].uaddToken({ _id: id, platform: uplatform, userData: token });
             if (x == false) {
                 res.result.response(next, 0, 'UaddToken Fail#');
@@ -110,7 +109,7 @@ var auth = function (req, res, next) {
         console.log('initial userManager: ' + app);
 
 
-        console.log('555')
+        console.log('555') //--
         console.log('initial easyDB: ' + easyDB[app].listTable());
     }
     return true;
@@ -207,7 +206,7 @@ var auth = function (req, res, next) {
 
         !req.session[app] && (req.session[app] = {});
         req.session[app] = { _id: x._id, name: x.name, picture: x.picture, ulogin: 1, app: app };
-
+        req.session.APP = app;
         res.result.response(next, 1, 'Login Success', x);
     };
 }
