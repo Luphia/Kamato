@@ -19,6 +19,7 @@ var auth = function (req, res, next) {
     var authPath = typeof (preAuth) == 'object' ? preAuth.url : preAuth;
 
     (req.params.app) && (req.session.APP = req.params.app);
+
     !req.session.passport && (req.session.passport = {});
     req.session.passport[platform] = preAuth;
 
@@ -44,10 +45,12 @@ var auth = function (req, res, next) {
         var user = platform.getProfile(token);
 
         var app = req.session.APP;
-        var s = req.session[app];
-        var id = s._id;
+        checkAPP(app);
 
-        if (s.ulogin == 1) {
+        var s = req.session[app];
+
+        if (s && s.ulogin == 1) {
+            var id = s._id;
             var x = userManager[app].uaddToken({ _id: id, platform: uplatform, userData: token });
             if (x == false) {
                 res.result.response(next, 0, 'UaddToken Fail#');
@@ -58,7 +61,6 @@ var auth = function (req, res, next) {
                 } else {
                     res.result.response(next, 1, 'uidaddByPlatform Success', user);
                 };
-                //res.result.response(next, 1, 'UaddToken Success#', user); /--
             };
         } else {
             var x = userManager[app].ufindByPlatform({ platform: uplatform, userData: user });
@@ -71,21 +73,15 @@ var auth = function (req, res, next) {
                     if (z == false) {
                         res.result.response(next, 0, 'UaddToken Fail');
                     } else {
-                        s._id = y._id;
-                        s.ulogin = 1;
+                        req.session[app] = { _id: y._id, ulogin: 1, app: app };
                         res.result.response(next, 1, 'UaddToken & uaddByPlatform Success', user);
                     };
-                    //res.result.response(next, 1, 'uaddByPlatform Success'); /--
                 };
             } else {
-                s._id = x._id;
-                s.name = x.name;
-                s.picture = x.picture;
-                s.ulogin = 1;
+                req.session[app] = { _id: x._id, name: x.name, picture: x.picture, ulogin: 1, app: app };
                 res.result.response(next, 1, 'ufindByPlatform Success', user);
             };
         };
-        //res.result.response(next, 1, 'login successful', user); /--
     } else {
         res.write("params:");
         res.write(JSON.stringify(req.params));
@@ -100,18 +96,16 @@ var auth = function (req, res, next) {
     res.send(userData);
 }
 , checkAPP = function (app) {
+    logger.info.info('init' + app);
     if (!easyDB[app]) {
-        var rs;
-
         easyDB[app] = new EasyDB(userConfig);
         easyDB[app].DB.connect({ "url": userConfig.option.url + app }, function () { });
 
         userManager[app] = new UserManager(easyDB[app], config.get('Mail'));
-        console.log('initial userManager: ' + app);
+        logger.info.info('initial userManager: ' + app);
 
-
-        console.log('555') //--
-        console.log('initial easyDB: ' + easyDB[app].listTable());
+        logger.info.info('555') //--
+        logger.info.info('initial easyDB: ' + easyDB[app].listTable());
     }
     return true;
 }
