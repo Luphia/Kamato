@@ -196,7 +196,7 @@
         $('.selectapp').click(function (e) {
             var app = $(this).attr('class').split(' ');
             var x = app[1];
-            opennew('/oauth/' + x, '', '600', '600');
+            opennew('./oauth/' + x, '', '600', '600');
         });
 
 
