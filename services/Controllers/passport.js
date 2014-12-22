@@ -111,15 +111,16 @@ var auth = function (req, res, next) {
 , login = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
-    var x = userManager['simple'].login(data);
+    var app = 'simple';
+
+    var x = userManager[app].login(data);
     var s = req.session;
     if (x == false) {
         res.result.response(next, 0, 'Login Fail');
     } else {
-        s._id = x._id;
-        s.name = x.name;
-        s.picture = x.picture;
-        s.login = 1;
+        !req.session[app] && (req.session[app] = {});
+        req.session[app] = { _id: x._id, name: x.name, picture: x.picture, login: 1, app: app };
+        req.session.APP = app;
         res.result.response(next, 1, 'Login Success', x);
     };
 }
@@ -141,12 +142,11 @@ var auth = function (req, res, next) {
 , regist = function (req, res, next) {
     res.result = new Result();
     var data = req.body;
-    var x = userManager['simple'].add(data);
-    var s = req.session;
-    s._id = x._id;
-    s.name = x.name;
-    s.picture = x.picture;
-    s.login = 1;
+    var app = 'simple';
+    var x = userManager[app].add(data);
+    !req.session[app] && (req.session[app] = {});
+    req.session[app] = { _id: x._id, name: x.name, picture: x.picture, login: 1, app: app };
+    req.session.APP = app;
 
     if (x == false) {
         res.result.response(next, 0, 'Regist Fail');
