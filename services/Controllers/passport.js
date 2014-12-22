@@ -354,6 +354,7 @@ module.exports = {
 
         route.get('/oauth/:platform', auth);
         route.get('/:app/oauth/:platform', auth);
+        route.get('/APP/:app/oauth/:platform', auth);
         route.get('/oauth/:platform/return', authReturn);
     },
     file: function (req, res, next) {
