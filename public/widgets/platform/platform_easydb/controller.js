@@ -72,7 +72,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             }
             //顯示table內容(預設15筆資料)
             $scope.show_table(name,default_table_rows, page_num);
-
         });
 	}
 
@@ -81,51 +80,47 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         //要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
         j_text = document.getElementsByClassName("json_text");
         table = document.getElementsByClassName("db_table");
-        console.log(table);
+
         table[0].childNodes[1].appendChild(j_text[0]);
 
         var total_data = custom_table_rows;
-        var new_page_first_id = first_row_id;
+        //-- var new_page_first_id = first_row_id;
         //無法直接得到第N頁的第一筆資料ID, 故先找出前N-1頁的資料總數
-        if(page_num != 1){
-            total_data = (page_num-1)*custom_table_rows;
-            //找出第N-1頁,最後一筆資料ID & 第N頁,第一筆資料ID
-        }
+        //-- if(page_num != 1){
+        //--     total_data = (page_num-1)*custom_table_rows;
+        //--     //找出第N-1頁,最後一筆資料ID & 第N頁,第一筆資料ID
+        //-- }
 
-        $http.get(db_link+table_name+"/?q=limit "+first_row_id+','+total_data).
+        //第N頁,第一筆資料的index
+        var new_page_first_index = custom_table_rows*(page_num-1);
+
+        $http.get(db_link+table_name+"/?q=limit "+new_page_first_index+','+custom_table_rows).
         success(function(page_schema){
-            if(page_num != 1){ 
-            //不是第一頁
-                new_page_first_id = page_schema.data.end +1 ;      
+            var t_d_temp = page_schema.data.list;
+            $scope.t_head = page_schema.data.list[0];
+            if( Object.keys(page_schema.data.list[0] || {}).length == 0){
+                //空物件
+                $scope.t_d = {};
             }
-            $http.get(db_link+table_name+"/?q=limit "+new_page_first_id+','+custom_table_rows).
-            success(function(page_schema){
-                var t_d_temp = page_schema.data.list;
-                $scope.t_head = page_schema.data.list[0];
-                if( Object.keys(page_schema.data.list[0] || {}).length == 0){
-                    //空物件
-                    $scope.t_d = {};
-                }
-                else{
-                    $scope.colspan = Object.keys(page_schema.data.list[0]).length +1; //+1是del button欄位
-                    angular.forEach(t_d_temp, function(list_value, list_key){
-                        angular.forEach(t_d_temp[list_key], function(value, key){
-                            var value_id = t_d_temp[list_key]._id;
-                            //顯示json檔案格式
-                            if(typeof(value) == "object" && value != null){
-                                //存json         
-                                jsonTemp[value_id+key] = value;
-                                $scope.t_d_more.push(jsonTemp);
-                                //json換註解
-                                t_d_temp[list_key][key] = "json file"
-                            }
-                            $scope.t_d = t_d_temp;
+            else{
+                $scope.colspan = Object.keys(page_schema.data.list[0]).length +1; //+1是del button欄位
+                angular.forEach(t_d_temp, function(list_value, list_key){
+                    angular.forEach(t_d_temp[list_key], function(value, key){
+                        var value_id = t_d_temp[list_key]._id;
+                        //顯示json檔案格式
+                        if(typeof(value) == "object" && value != null){
+                            //存json         
+                            jsonTemp[value_id+key] = value;
+                            $scope.t_d_more.push(jsonTemp);
+                            //json換註解
+                            t_d_temp[list_key][key] = "json file"
+                        }
+                        $scope.t_d = t_d_temp;
 
-                        })
                     })
-                }
-            });     
-        });      
+                })
+            }
+        });           
     }
 
     var delete_table_name="";
