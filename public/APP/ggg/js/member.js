@@ -118,7 +118,7 @@
                 });
                 request.done(function (data) {
                     console.log(data.result);
-                    alert(data.message);
+                    location.href = hostname + '/APP/' + pathname + "/selectAPP.html";
                 });
                 request.fail(function (data) {
                     console.log(data);
