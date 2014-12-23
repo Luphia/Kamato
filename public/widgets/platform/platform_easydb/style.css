@@ -221,6 +221,20 @@
   background-color: rgba(0,0,0,0.4);
 }
 
+.ng-scope.platform .create_table_wrapper .del_col_sche{
+  /*float: right;*/
+  display: inline-block;
+  background: url(../img/simple/easydb/delete.png) no-repeat 50% 50%;
+  opacity: 1;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.ng-scope.platform .create_table_wrapper .checkbox-inline input[type=checkbox]{
+  opacity: 1;
+}
+
 .ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
   width: 100%; 
   margin: 12px;

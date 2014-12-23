@@ -203,6 +203,9 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 
     //=========================Create table====================
     $scope.change_page = false;
+    $scope.strick_clicked  = false;
+    $scope.columns = true;
+
     $scope.create_table = function(){
         $scope.change_page = true;
 
@@ -227,6 +230,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 
     $scope.add_col_fn = function(){
         $scope.input_col_sche.push({'col_name':'', 'schema_type': ''});
+        $scope.col_stricked();
     }
 
     $scope.submit = function(){
@@ -236,6 +240,32 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             temp[$scope.input_col_sche[i].col_name] = $scope.input_col_sche[i].schema_type;
         }
         $scope.submit_col_sche["columns"] = temp;
-        console.log($scope.submit_col_sche);
+        //頁面更換     
+        $scope.change_page = false;
+    }
+
+    $scope.del_col_sche = function(key){
+        console.log(key);
+        console.log($scope.input_col_sche);
+        console.log($scope.input_col_sche[key]);
+        $scope.input_col_sche.splice(key,1);
+        $scope.col_stricked();
+        console.log($scope.input_col_sche);
+    }
+
+    $scope.col_stricked = function(){
+        console.log($scope.strick_clicked);
+        if( $scope.strick_clicked == true){
+            
+            if(($scope.input_col_sche).length <= 1){
+                $scope.columns = false;
+            }
+            else{
+                $scope.columns = true;
+            }
+        }
+        else{
+            $scope.columns = true;
+        }
     }
 });

@@ -90,7 +90,7 @@
 							<input type="text" class="form-control" ng-model="table_name" required>
 						</div>
 					</div>
-					<div class="form-group col_sche m-t-10" ng-repeat="c_s in input_col_sche">
+					<div class="form-group col_sche m-t-10" ng-repeat="(key,c_s) in input_col_sche">
 						<label class="control-label col-md-2">Column Name</label>
 						<div class="col-md-3">
 							<input type="text" class="form-control" ng-model="c_s.col_name" required>
@@ -101,11 +101,17 @@
 								<option value="">==請選擇==</option>
 							</select>{{selected_schema_type}}
 						</div>
+						<div class="del_col_sche" ng-click="del_col_sche(key)" ng-show="columns"></div>
 					</div>
 					<div class="form-group">
 						<div class="col-md-offset-9">
 							<div class="btn add_col_btn" ng-click="add_col_fn()">
 								Add Column
+							</div>
+							<div class="checkbox-inline">
+								<label>
+									<input type="checkbox" ng-model="strick_clicked" ng-change="col_stricked()">Strick
+								</label>
 							</div>
 						</div>
 					</div>
