@@ -202,10 +202,40 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 	}
 
     //=========================Create table====================
-    $scope.change_page = true;
+    $scope.change_page = false;
     $scope.create_table = function(){
         $scope.change_page = true;
 
     }
 
+    $scope.back_btn = function(){
+        $scope.change_page = false;
+    } 
+
+    $scope.schema_type = [  
+        {'type': 'String'},
+        {'type': 'Number'},
+        {'type': 'Boolean'},
+        {'type': 'Date'},
+        {'type': 'JSON'}
+    ]
+
+    $scope.submit_col_sche = {"name":"", "columns":{}};
+    $scope.input_col_sche = [
+        {'col_name':'', 'schema_type': ''}
+    ]
+
+    $scope.add_col_fn = function(){
+        $scope.input_col_sche.push({'col_name':'', 'schema_type': ''});
+    }
+
+    $scope.submit = function(){
+        $scope.submit_col_sche["name"] = $scope.table_name;
+        var temp = {};
+        for (var i in $scope.input_col_sche){
+            temp[$scope.input_col_sche[i].col_name] = $scope.input_col_sche[i].schema_type;
+        }
+        $scope.submit_col_sche["columns"] = temp;
+        console.log($scope.submit_col_sche);
+    }
 });

@@ -1,4 +1,4 @@
-/*=================================easydb top=================================*/
+=================================easydb top=================================*/
 .ng-scope.platform .warnHint{
   width: 400px;
   height: 220px;
@@ -201,9 +201,28 @@
   background-color: rgba(215, 40, 40, 0.9);
 }
 
+/* =================== create table ===================*/
+
+.ng-scope.platform .create_table_wrapper .add_col_btn{
+  margin: 20px 0px 0px 7px;
+}
+
+.ng-scope.platform .create_table_wrapper .back{
+  width: 80px;
+  height: 35px;
+  float: left;
+  font-size: 18px;
+  padding: 5px 0px 0px 31px;
+  cursor: pointer;
+  background: url(../img/simple/easydb/back.png) 20% 50% no-repeat;
+}
+
+.ng-scope.platform .create_table_wrapper .back:hover{
+  background-color: rgba(0,0,0,0.4);
+}
 
 .ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
-  width: 100%;
+  width: 100%; 
   margin: 12px;
   border: 1px solid rgba(256,256,256,0.5);
   background-color: transparent;
@@ -215,14 +234,9 @@
   }
 }
 
-/*@media screen and (max-width: 1010px){
-  .ng-scope.platform .easydb_container > .col-md-2{
-  }
-}*/
-
 @media screen and (min-height: 590px){
   .ng-scope.platform .easydb_container .col-md-2 ul{
   overflow-y: hidden;
   }
 }
-/*=================================easydb bottom=================================*/
+/*=================================easydb bottom=================================
