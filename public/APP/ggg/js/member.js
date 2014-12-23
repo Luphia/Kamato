@@ -101,7 +101,7 @@
 
         // url string
         var pathname = window.location.pathname.split('/')[2];
-        var hostname = $(location).attr('href').split('/')[0];
+        var hostname = $(location).attr('href').split('/APP/')[0];
         var urls = hostname + '/API/' + pathname;
 
         //register
@@ -158,7 +158,7 @@
         $('.forgot').click(function (e) {
             e.preventDefault();
             var request = $.ajax({
-                url: "/uforgot",
+                url: urls + "/uforgot",
                 type: "POST",
                 data: { account: $(".faccount").val() },
                 cache: false,
@@ -177,7 +177,7 @@
         $('.newpassword').click(function (e) {
             e.preventDefault();
             var request = $.ajax({
-                url: "/urepassword",
+                url: urls + "/urepassword",
                 type: "POST",
                 data: { oldpass: QueryString.p, newpass: $('.rpassword').val() },
                 cache: false,
