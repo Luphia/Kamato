@@ -309,15 +309,27 @@ var Result = require('../Classes/Result.js')
             break;
         case 'POST':
             if (!api && app) {
+                putapp(req, res, next);
+            };
+            if (api && app) {
+                putapi(req, res, next);
+            };
+            break;
+        case 'PUT':
+            if (!api && app) {
                 postapp(req, res, next);
             };
             if (api && app) {
                 postapi(req, res, next);
             };
             break;
-        case 'PUT':
-            break;
         case 'DELETE':
+            if (!api && app) {
+                delapp(req, res, next);
+            };
+            if (api && app) {
+                delapi(req, res, next);
+            };
             break;
     };
 
