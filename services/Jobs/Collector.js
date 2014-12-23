@@ -1,49 +1,44 @@
-/**
-Collector物件
-
-搜集資料的程式
-依 user table 所有的人之各平台token，進行該user於xxx運動平台(如：Fitbit、jawbone、runkeeper)之資料搜集的動作。
-並將取得之值寫入各平台之table中，做為Kamato整合平台之用。
-
-
-+----------+
-| 使用方法 |
-+----------+
-	cd ~/Kamato
-	node
-	
-var collector = new require('./services/Classes/Collector.js')();
-var getAllTokenData = collector.getAllToken();
-var setDate = collector.setDate('2014-12-11');		// 該行為抓取指定fitbit特定日期資料時使用，平時不用使用此行。
-var insCollectAll = collector.collectAll(getAllTokenData);
-
-*/
-
-var calendar = require('./Calendar.js')();
 /*
-	做搜集資料寫入table的模式，依平台分為兩種模式。
-	all: 全資料
-	date: 取指定日期之資料(通常取當日資料)
-*/
-var collectType = {
-	"fitbit": "date",
-	"jawbone": "all",
-	"runkeeper": "all"
+var config = { db: {url: 'mongodb://10.10.23.31:27010/easyDB'}, table: 'user', "collectType": {"fitbit": "date", "jawbone": "all", "runkeeper": "all"} };
+var platform = 'fitbit';
+config.deviceJson = {
+	"jawbone": require('./config.private/jawbone.json'),
+	"fitbit":  require('./config.private/fitbit.json'),
+	"runkeeper": require('./config.private/runkeeper.json')
 };
-var _assignDate;
+config.library = '../Passport/';
 
-module.exports = function() {
 
-	var init = function() {
-		var edb = require('./EasyDB.js');
+var callback = function() {console.log('finish %d', new Date());};
+var Collector = require('./services/Jobs/Collector.js');
+
+var collector = new Collector(config, callback);
+//var collector = new Collector(config, '2014-12-20', callback);
+collector.start();
+ */
+
+var util = require('util')
+,	Job = require('../Classes/Job.js')
+,	Calendar = require('../Classes/Calendar.js');
+
+
+var Collector = function(config, date, callback) {
+	this.config = config;
+	this.setCallback(callback);
+	this.date = date;
+};
+
+
+// job detail
+var CollectorJob = function(config) {
+
+	var init = function(_config) {
+		this.config = _config;
+		var edb = require('../Classes/EasyDB.js');
 		this.db = new edb();
-		this.db.connect({url: 'mongodb://10.10.23.31:27010/easyDB'});
-		this.db.setSchema("user", "JSON");
-		var columnType = {userId: 'Number', profile: 'JSON', activities: 'JSON', friend: 'JSON', nutrition: 'JSON', sleep: 'JSON', date: 'Date'};
-		this.db.setSchema("fitbit", columnType);
-		this.db.setSchema("jawbone", columnType);
-		this.db.setSchema("runkeeper", columnType);
-		
+		this.db.connect(this.config.db);
+		this.calendar = new Calendar();
+
 		return this;
 	};
 	
@@ -51,11 +46,7 @@ module.exports = function() {
 	 * [查詢] 取得user table的資料
 	 */
 	var getUserTableData = function() {
-		return this.db.listData("user");
-	};
-	
-	var getTableData = function(table) {
-		return this.db.listData(table);
+		return this.db.listData(this.config.table);
 	};
 
 	/**
@@ -63,35 +54,10 @@ module.exports = function() {
 	 * return data JSON資料格式
 	 */
 	var getAllToken = function() {
-		var list = this.db.listData("user").list;
+		var list = this.db.listData(this.config.table).list;
 		return list;
 	};
-	
-	/**
-	 * [查詢] 依平台取得該平台的 Token
-	 * param platform : (String)平台名稱
-	 * return token(String)
-	 */
-	var getTokenByPlatform = function(platform) {
-		var list = this.getAllToken();
-		var rs = [];
-		for(var i=0; i<list.length; i++) {
-			switch(platform) {
-				case "fitbit":
-					rs.push(list[i][platform]["oauth_token"]);
-					break;
-				case "jawbone":
-				case "runkeeper":
-					rs.push(list[i][platform]["access_token"]);
-					break;
-				default:
-					console.log("no select platform.");
-			}
-		}
 
-		return rs;
-	};
-	
 	/**
 	 * 依據各平台取得該資料中的token
 	 * jsonData : (json)各平台中的原始token之json資料。
@@ -143,18 +109,10 @@ module.exports = function() {
 	}
 	
 	/**
-	 * 指定取資料的日期(該function適用於fitbit)
-	 * param {date} 日期。(YYYY-MM-DD)
-	 */
-	var setDate = function(date) {
-		_assignDate = date;
-	};
-	
-	/**
 	 * [新增]
 	 * 依據user table中的資料，寫入各個user之平台的運動資料。
 	 */
-	var collectAll = function() {
+	var collectAll = function(date, callback) {
 		console.log("--- collectAll postData Start ---");
 		var userAllToken = this.getAllToken();
 		for(var i=0; i<userAllToken.length; i++) {
@@ -162,10 +120,11 @@ module.exports = function() {
 				var userId = userAllToken[i]["_id"];;
 				//console.log(listKey + " : " + userAllToken[i][listKey]);
 				if( listKey!="_id" ) {
-					console.log("_assignDate:"+_assignDate);
-					var now = _assignDate===undefined? calendar.nowDate() : _assignDate;
+					console.log("date:"+date);
+					//var now = date===undefined? this.calendar.nowDate() : date;
+					var now = date===this.calendar.nowDate()? this.calendar.nowDate() : date;
 					console.log("now: "+ now);
-					console.log("平台:" +listKey+ ", 模式:" + collectType[listKey]);
+					console.log("平台:" +listKey+ ", 模式:" + this.config.collectType[listKey]);
 					
 					// 1. [刪除]當日資料
 					var cond = "WHERE userId=" + userId + " AND date='" + now + "'";		// 刪除資料的條件
@@ -190,8 +149,8 @@ module.exports = function() {
 					// 資料從2014-11-20開始有資料
 					/*
 					var startDate = '2014-11-20', endDate = '2014-12-14';
-					var startNumOfDaysAll = calendar.daysInMonth(parseInt(startDate.split('-')[0]), parseInt(startDate.split('-')[1]));
-					var endNumOfDaysAll = calendar.daysInMonth(parseInt(endDate.split('-')[0]), parseInt(endDate.split('-')[1]));
+					var startNumOfDaysAll = this.calendar.daysInMonth(parseInt(startDate.split('-')[0]), parseInt(startDate.split('-')[1]));
+					var endNumOfDaysAll = this.calendar.daysInMonth(parseInt(endDate.split('-')[0]), parseInt(endDate.split('-')[1]));
 					console.log("start: "+startDate+"\tend: "+endDate);
 					//console.log(parseInt(startDate.split('-')[1])+"月份共有"+startNumOfDaysAll+"天");
 					//console.log(parseInt(endDate.split('-')[1])+"月份共有"+endNumOfDaysAll+"天");
@@ -200,32 +159,16 @@ module.exports = function() {
 					//console.log(parseInt(startDate.split('-')[1])+"月份需取"+startNumOfDays+"天的資料");
 					//console.log(parseInt(endDate.split('-')[1])+"月份共有"+endNumOfDays+"天的資料");
 					
-					// 分3段取資料
-					// 開始的那個月為一段
-					for(var day_i=parseInt(startDate.split('-')[2]); day_i<=startNumOfDaysAll; day_i++) {
-						if(day_i<10) {
-							day = "0" + day_i;
+					// 月份相同
+					if( parseInt(startDate.split('-')[1])==parseInt(endDate.split('-')[1]) ) {
+						var month = "", day = "";
+						if(parseInt(startDate.split('-')[1])<10) {
+							month = "0" + parseInt(startDate.split('-')[1]);
 						} else {
-							day = day_i;
+							month = parseInt(startDate.split('-')[1]);
 						}
-						var getDataDate = startDate.split('-')[0] +"-"+ startDate.split('-')[1] +"-"+ day
-						// 1. [刪除]當日資料
-						var cond = "WHERE userId=" + userId + " AND date='" + getDataDate + "'";		// 刪除資料的條件
-						this.db.deleteData(listKey, cond);
 						
-						console.log("寫入開始月份的資料_"+getDataDate);
-						this.collectData(listKey, renewToken[listKey], userId, getDataDate);		// 寫入資料
-					}
-					// 中間一段(數個月)
-					for(var month_i=parseInt(startDate.split('-')[1])+1; month_i<parseInt(endDate.split('-')[1]); month_i++) {
-						var tmpEnd = calendar.daysInMonth(parseInt(startDate.split('-')[0]), month_i);
-						for(var day_j=1; day_j<=tmpEnd; day_j++) {
-							var month = "", day = "";
-							if(month_i<10) {
-								month = "0" + month_i;
-							} else {
-								month = month_i;
-							}
+						for(var day_i=parseInt(startDate.split('-')[2]); day_i<=parseInt(endDate.split('-')[2]); day_i++) {
 							if(day_j<10) {
 								day = "0" + day_j;
 							} else {
@@ -236,27 +179,71 @@ module.exports = function() {
 							var cond = "WHERE userId=" + userId + " AND date='" + getDataDate + "'";		// 刪除資料的條件
 							this.db.deleteData(listKey, cond);
 							
-							console.log("寫入中間數月各日的資料_"+getDataDate);
+							console.log("寫入開始月份的資料_"+getDataDate);
+							this.collectData(listKey, renewToken[listKey], userId, getDataDate);		// 寫入資料
+						}
+
+					} else if( parseInt(startDate.split('-')[1])<parseInt(endDate.split('-')[1]) ) {
+
+						// 分3段取資料
+						// 開始的那個月為一段
+						for(var day_i=parseInt(startDate.split('-')[2]); day_i<=startNumOfDaysAll; day_i++) {
+							if(day_i<10) {
+								day = "0" + day_i;
+							} else {
+								day = day_i;
+							}
+							var getDataDate = startDate.split('-')[0] +"-"+ startDate.split('-')[1] +"-"+ day
+							// 1. [刪除]當日資料
+							var cond = "WHERE userId=" + userId + " AND date='" + getDataDate + "'";		// 刪除資料的條件
+							this.db.deleteData(listKey, cond);
+							
+							console.log("寫入開始月份的資料_"+getDataDate);
+							this.collectData(listKey, renewToken[listKey], userId, getDataDate);		// 寫入資料
+						}
+						// 中間一段(數個月)
+						for(var month_i=parseInt(startDate.split('-')[1])+1; month_i<parseInt(endDate.split('-')[1]); month_i++) {
+							var tmpEnd = this.calendar.daysInMonth(parseInt(startDate.split('-')[0]), month_i);
+							for(var day_j=1; day_j<=tmpEnd; day_j++) {
+								var month = "", day = "";
+								if(month_i<10) {
+									month = "0" + month_i;
+								} else {
+									month = month_i;
+								}
+								if(day_j<10) {
+									day = "0" + day_j;
+								} else {
+									day = day_j;
+								}
+								var getDataDate = startDate.split('-')[0] +"-"+ month +"-"+ day;		// 寫入資料
+								// 1. [刪除]當日資料
+								var cond = "WHERE userId=" + userId + " AND date='" + getDataDate + "'";		// 刪除資料的條件
+								this.db.deleteData(listKey, cond);
+								
+								console.log("寫入中間數月各日的資料_"+getDataDate);
+								this.collectData(listKey, renewToken[listKey], userId, getDataDate);		// 寫入資料
+							}
+						}
+						// 結束的那個月為一段
+						for(var day_i=1; day_i<=parseInt(endDate.split('-')[2]); day_i++) {
+							var day = "";
+							if(day_i<10) {
+								day = "0" + day_i;
+							} else {
+								day = day_i;
+							}
+							var getDataDate = endDate.split('-')[0] +"-"+ endDate.split('-')[1] +"-"+ day;		// 寫入資料
+							// 1. [刪除]當日資料
+							var cond = "WHERE userId=" + userId + " AND date='" + getDataDate + "'";		// 刪除資料的條件
+							this.db.deleteData(listKey, cond);
+							
+							
+							console.log("寫入結束月份的各日之資料_"+getDataDate);
 							this.collectData(listKey, renewToken[listKey], userId, getDataDate);		// 寫入資料
 						}
 					}
-					// 結束的那個月為一段
-					for(var day_i=1; day_i<=parseInt(endDate.split('-')[2]); day_i++) {
-						var day = "";
-						if(day_i<10) {
-							day = "0" + day_i;
-						} else {
-							day = day_i;
-						}
-						var getDataDate = endDate.split('-')[0] +"-"+ endDate.split('-')[1] +"-"+ day;		// 寫入資料
-						// 1. [刪除]當日資料
-						var cond = "WHERE userId=" + userId + " AND date='" + getDataDate + "'";		// 刪除資料的條件
-						this.db.deleteData(listKey, cond);
-						
-						
-						console.log("寫入結束月份的各日之資料_"+getDataDate);
-						this.collectData(listKey, renewToken[listKey], userId, getDataDate);		// 寫入資料
-					}*/
+					*/
 					//+++--------- [批量寫入資料] 一次抓取大量fitbit、jawbone、runkeeper資料，用以擷取大量資料做為測試用。
 
 					this.collectData(listKey, renewToken[listKey], userId, now);		// 寫入資料
@@ -264,29 +251,9 @@ module.exports = function() {
 			}
 		}
 		console.log("--- collectAll postData End ---");
+		if(typeof(callback) == 'function') { callback(); }
 	};
-	
-	/**
-	 * 設定各平台之token，該格式用於Passport產出實際token用。
-	 * param {platform} 平台名稱
-	 * param {tokenObj} token字串
-	 * return (Json Object)token
-	 */
-	var setPlatformToken = function(platform, tokenObj) {
-		var tokenJson;
-		// 依平台組出token json
-		switch(platform) {
-			case "fitbit":
-				tokenJson = {"oauth_token": tokenObj["oauth_token"],"oauth_verifier": "8glg5g43orqd1kd0vjqqbuurpa"};
-				break;
-			case "jawbone":
-			case "runkeeper":
-				tokenJson = {"code": this._getTokenByPlatform(platform, tokenObj)};
-				break;
-		}
-		return tokenJson;
-	};
-	
+
 	/**
 	 * 檢查該平台之token是否存活著，如不存在則重新取得token並更新table。
 	 * param {platform} 平台名稱
@@ -294,9 +261,10 @@ module.exports = function() {
 	 * param {userId} 使用者id (_id)
 	 */
 	var checkTokenAndToActive = function(platform, tokenObject, userId) {
-		var deviceJson = require('../../config.private/'+platform+'.json');
-		var library = '../Passport/' + platform + ".js";
-		var passport = new require(library)(deviceJson);
+		//var deviceJson = require('../../config.private/'+platform+'.json');
+		//var library = '../Passport/' + platform + ".js";
+		platformName = platform.substr(0,1).toUpperCase() + platform.substr(1);
+		var passport = new require(this.config.library)[platformName](this.config.deviceJson[platform]);
 		var bTokenAlive;
 
 		switch(platform) {
@@ -340,7 +308,7 @@ module.exports = function() {
 				if(bIsUpdate) {
 					// 使用easyDB putData做update的動作
 					var updateData = {jawbone: renewToken};
-					var rs = this.db.putData("user", userId, updateData);
+					var rs = this.db.putData(this.config.table, userId, updateData);
 					console.log("更新[user] table, userId:" + userId + " 資料更新:" + rs);
 					renewToken = updateData;
 				}
@@ -367,20 +335,20 @@ module.exports = function() {
 		//console.log("----[collectData param] ↓↓↓----");
 		//console.log(token);
 		//console.log("----[collectData param] ↑↑↑----");
-		var deviceJson = require('../../config.private/'+platform+'.json');
-		var library = '../Passport/' + platform + ".js";
-		var passport = new require(library)(deviceJson);
+		//var deviceJson = require('../../config.private/'+platform+'.json');
+		//var library = '../Passport/' + platform + ".js";
+		var passport = new require(this.config.library)[platformName](this.config.deviceJson[platform]);
 		var rs, profile, activities, friends, nutrition, sleep;
 
 		switch(platform) {
 			case "fitbit":
-				var setAccessToken = passport.renewToken(token);		// 將token設定給accessApiOauthData以利 Passport.fitbit.js 進行以下動作
+				//var setAccessToken = passport.renewToken(token);		// 將token設定給accessApiOauthData以利 Passport.fitbit.js 進行以下動作
 				//console.log("{setAccessToken}-->"+JSON.stringify(setAccessToken));
-				profile = passport.getProfile("1", ".json");
-				activities = passport.getActivities("1", dataDate, ".json");
-				friends = passport.getFriends("1", ".json");
-				nutrition = passport.getNutrition("1", dataDate, ".json");
-				sleep = passport.getSleep("1", dataDate, ".json");
+				profile = passport.getProfile(token);
+				activities = passport.getActivities(token, dataDate);
+				friends = passport.getFriends(token);
+				nutrition = passport.getNutrition(token, dataDate);
+				sleep = passport.getSleep(token, dataDate);
 				break;
 				
 			case "jawbone":
@@ -402,24 +370,29 @@ module.exports = function() {
 		return rs;
 		console.log("--- collectData postData End ---");
 	};
-	
-	var deleteData = function(userId, date) {
-		
-	};
-	
-	var collector = {
+
+	var collectorJob = {
 		init: init,
 		getUserTableData: getUserTableData,
-		getTableData: getTableData,
-		setDate: setDate,
 		getAllToken: getAllToken,
-		getTokenByPlatform: getTokenByPlatform,
 		_getTokenByPlatform: _getTokenByPlatform,
 		_getTokenJsonObject: _getTokenJsonObject,
-		setPlatformToken: setPlatformToken,
 		checkTokenAndToActive: checkTokenAndToActive,
 		collectAll: collectAll,
 		collectData: collectData
 	};
-	return collector.init();
+	return collectorJob.init(config);
 };
+
+
+Collector.prototype = new Job();
+Collector.prototype.work = function() {
+	// do job
+	var calendar = new Calendar();
+	var job = new CollectorJob(this.config);
+	var insCollectAll = job.collectAll( typeof this.date!='function'? this.date: calendar.nowDate(), this.done );
+};
+
+
+
+module.exports = Collector;
