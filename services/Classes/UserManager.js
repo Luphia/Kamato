@@ -267,7 +267,7 @@ module.exports = function (EasyDB, MailConfig) {
 	    };
 	}
 
-    // data = { account }
+    // data = { account ,url}
 	// return = true || false (not found)
     , forgot = function (data) {
         var db = this.DB;
@@ -319,6 +319,7 @@ module.exports = function (EasyDB, MailConfig) {
         var db = this.DB;
 
         var account = data.account;
+        var url = String(data.url).replace(/API/i, "APP");
 
         //use random(max, min) random range
         var check = random(32767, 0);
@@ -336,7 +337,7 @@ module.exports = function (EasyDB, MailConfig) {
             if (ans == true) {
                 var transporter = nodemailer.createTransport(Mailconfig);
 
-                var content = "<a href=http://localhost/member.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
+                var content = "<a href=" + url + "/member.html?a=" + account + "&p=" + faccount + ">請點選連結重新設定您的密碼</a>";
 
                 var Mailopt = {
                     from: Mailconfig.auth.from, // sender address
