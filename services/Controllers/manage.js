@@ -178,8 +178,8 @@ var Result = require('../Classes/Result.js')
     if (MDB) {
         return MDB;
     } else {
-        var db = new EasyDB(config, logger);
         var path = config.uri;
+        var db = new EasyDB(config, logger);
         db.connect({ "url": path });
         MDB = db;
         return MDB;
@@ -187,16 +187,59 @@ var Result = require('../Classes/Result.js')
 }
 , showallapp = function (req, res, next) {
     res.result = new Result();
-
     var table = 'app';
-    var query = 'limit';
-    console.log('999999')
-    var data = MDBconnect().pageData(table);
+    var query = req.query.q || '';
+    var data = MDBconnect().pageData(table, query);
 
     if (data) {
-        res.result.response(next, 1, 'APIRoute GET Success', data);
+        res.result.response(next, 1, 'APIRoute showallapp GET Success', data);
     };
 }
+, showappapi = function (req, res, next) {
+    res.result = new Result();
+    var table = 'api';
+    var query = req.query.q || '';
+    var data = MDBconnect().pageData(table, query);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute showappapi GET Success', data);
+    };
+}
+, showappapiinfo = function (req, res, next) {
+    res.result = new Result();
+    var table = 'api';
+    var query = req.query.q || '';
+    var data = MDBconnect().pageData(table, query);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute showappapiinfo GET Success', data);
+    };
+}
+
+, postapp = function (req, res, next) {
+    res.result = new Result();
+    var table = 'app';
+    var info = req.body || '';
+
+    var data = MDBconnect().postData(table, info);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute postapp POST Success', { _id: data });
+    };
+}
+, postapi = function (req, res, next) {
+    res.result = new Result();
+    var table = 'api';
+    var info = req.body || '';
+
+    var data = MDBconnect().postData(table, info);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute postapp POST Success', { _id: data });
+    };
+}
+
+
 , APIRoute = function (req, res, next) {
     res.result = new Result();
 
@@ -207,24 +250,22 @@ var Result = require('../Classes/Result.js')
 
     switch (method) {
         case 'GET':
-            //var type, source, sql, visible, tag
-            showallapp(req, res, next);
-
-            //res.result.response(next, 1, 'APIRoute GET Success', x);
-
-            //res.json({
-            //    app: app,
-            //    api: api,
-            //    message: 'The get api for name: ' + app,
-            //    aaa: '123'
-            //});
+            if (!api && !app) {
+                showallapp(req, res, next);
+            };
+            if (!api && app) {
+                showappapi(req, res, next);
+            };
+            if (api && app) {
+                showappapiinfo(req, res, next);
+            };
             break;
         case 'POST':
-            res.json({
-                apiname: req.params.apiname,
-                message: 'The post api for name: ' + req.params.apiname,
-                aaa: '123'
-            })
+            if (!api && app) {
+                postapp(req, res, next);
+            };
+
+
             break;
         case 'PUT':
             break;
