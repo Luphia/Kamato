@@ -9,7 +9,7 @@ var oauth = new require('./services/Passport/Fitbit.js')(deviceJson);
 var x = oauth.getAuthLink();
 	// 於瀏覽器, 瀏覽oauth.getAuthLink();回傳的網址，取得body的json，copy貼。
 	
-	var token = oauth.getToken({"oauth_token":"67986ff0d3769b3acd08eae0b743df2a","oauth_verifier":"gu6odsb7gvh300frmdl6319bcm"}, x);
+	var token = oauth.getToken({"oauth_token":"5c5ee81e14f0d86923a8b54e272e0bd8","oauth_verifier":"35qjqhi2hcn9jfa6prdpprfc0p"}, x);
 
 	// 取各個想要的資料
 	var sleepJson = oauth.getSleep(token, "2014-11-21");
@@ -244,12 +244,14 @@ module.exports = function(_config) {
 	// param strUri : (String) 欲取得的資料的uri，即組url用的中間字串。
 	// param dataDate : 格式YYYY-mm-dd, 如:2010-02-25.
 	var getAnyData = function(debugName, strUri, combindToken, dataDate) {
+
 		var rs,
 		token = combindToken.token,
 		oauthData = combindToken.oauthData;
+		console.log(combindToken);
 
 		var link = this.config.url.apiPath + "/" + this.config.apiVersion + "/user/" + token.encoded_user_id + strUri + (dataDate? dataDate: '') + this.config.resFormat;
-		//console.log("[debug] "+debugName+" link:\n"+link);
+		console.log("[debug] "+debugName+" link:\n"+link);
 
 		var headerOptions = {
 			"method": "GET",
@@ -270,7 +272,9 @@ module.exports = function(_config) {
 			} catch(exp) {
 				//console.log(body);
 				//console.log(exp);
+				//console.log("aaaaaaaaerr:"+err);
 			}
+			
 		});
 
 		while(rs === undefined) {
@@ -295,6 +299,7 @@ module.exports = function(_config) {
 	
 
 	var getToken = function(data, predata) {
+		
 		var oauthData = this.getOauthDataObj(data);
 		var token = this.getAccessToken(predata.data, oauthData);
 		var combindToken = {"token": token, "oauthData": oauthData};
@@ -327,6 +332,7 @@ module.exports = function(_config) {
 		while(rs === undefined) {
 			require('deasync').runLoopOnce();
 		}
+
 		
 		//console.log("Temporary kyValue: "+rs);
 		//將值存成json
