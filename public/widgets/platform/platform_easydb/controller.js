@@ -1,5 +1,4 @@
 Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDialog, $rootScope){
-// ====================== easydb top======================
 
 	var db_link = "./manage/db/";
 
@@ -44,13 +43,23 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     var first_row_id = 0; 
-    // $scope.default_table_rows = 15;
+
+    $scope.option_index = 2;          //page   
+    $scope.default_rows = 15;
+    $scope.rows_options = [
+        {'num': 5},
+        {'num': 10},
+        {'num': 15},
+        {'num': 20}
+    ]
+
+    $scope.custom_rows = 15;  //table click
 
 	$scope.table_click =function(name, default_table_rows, page_num){
-        //清除上一次在其他table點擊json的事件
-        pre_id_attr="";
-        //清除在其他table點擊的刪除警告標語
-        $scope.warn_hint = false;
+        pre_id_attr="";    //清除上一次在其他table點擊json的事件
+        $scope.warn_hint = false;   //清除在其他table點擊的刪除警告標語
+        
+        $scope.custom_rows = default_table_rows;
 		viewing_table = name;
 		$scope.is_show = false;
 		//要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
@@ -80,19 +89,12 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         //要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
         j_text = document.getElementsByClassName("json_text");
         table = document.getElementsByClassName("db_table");
-
         table[0].childNodes[1].appendChild(j_text[0]);
 
-        var total_data = custom_table_rows;
-        //-- var new_page_first_id = first_row_id;
-        //無法直接得到第N頁的第一筆資料ID, 故先找出前N-1頁的資料總數
-        //-- if(page_num != 1){
-        //--     total_data = (page_num-1)*custom_table_rows;
-        //--     //找出第N-1頁,最後一筆資料ID & 第N頁,第一筆資料ID
-        //-- }
-
+        $scope.page = page_num;
         //第N頁,第一筆資料的index
         var new_page_first_index = custom_table_rows*(page_num-1);
+        var total_data = custom_table_rows;
 
         $http.get(db_link+table_name+"/?q=limit "+new_page_first_index+','+custom_table_rows).
         success(function(page_schema){
@@ -198,5 +200,12 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 			$scope.show_sample = false;
 		}
 	}
-// ====================== easydb bottom======================
+
+    //=========================Create table====================
+    $scope.change_page = true;
+    $scope.create_table = function(){
+        $scope.change_page = true;
+
+    }
+
 });

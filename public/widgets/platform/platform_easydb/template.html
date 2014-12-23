@@ -4,14 +4,17 @@
 			<div class="title">
 				<h1>Easy DB</h1>
 			</div>
-			<div class="easydb_container">
+			<div class="easydb_container" ng-hide="change_page">
 				<div class="col-md-2">
 					<aside class="table_list">
-						<h3>Table List</h3>
-						<ul>
+						<div class="table_list_title">
+							<div class="create_table" ng-click="create_table()"></div>
+							<h3>Table List</h3>
+						</div>
+						<ul class="clearfix">
 							<li ng-repeat="table in tables">
 								<div class="del_table" ng-click="del_warn(table)"></div>
-								<div ng-click="table_click(table, 15,1)" class="table_name">
+								<div ng-click="table_click(table, default_rows,1)" class="table_name">
 									<a ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
 								</div>
 							</li>
@@ -20,12 +23,7 @@
 				</div>
 				<div class="col-md-9">
 					<div class="sql_manipulate clearfix">
-						<!-- <div class="col-md-2 sql_operation">
-							<a tooltip="Create Table" class="sa-list-add"></a>
-							<a tooltip="Delete Table" class="sa-list-delete" ng-click="del_warn()"></a>
-							<a tooltip="Edit Schema" class="sa-list-edit"></a>
-						</div> -->
-						<div class="sql_command col-md-8">
+						<div class="sql_command col-md-12">
 							<span class="text-center">SQL Command: </span>
 							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list(command_sample)" ng-enter="findData()">
 						</div>
@@ -36,11 +34,16 @@
 						</div>
 						<div class="sql_result"></div>
 					</div>	
-					<div class="page_wrapper">
-						<div class="page_block clearfix">
+					<div class="page_wrapper clearfix">
+						<div class="page_block col-md-9">
+							頁數 :
 							<div class="indiv_page_block" ng-repeat="p in total_pages track by $index">
-								<a ng-click="show_table(default_view_table, 15, $index+1)">{{$index+1}}</a>
+								<a ng-click="show_table(default_view_table, custom_rows, $index+1)" ng-class="{'page_clicked': $index+1 == page}"> {{$index+1}}</a>
 							</div>
+						</div>
+						<div class="custom_rows col-md-3">
+							<select class="form-control" ng-model="custom_rows" ng-options="r.num as r.num for r in rows_options" ng-click="table_click(default_view_table, custom_rows, 1)"></select>
+							<div class="custom_rows_title">每頁顯示的資料筆數</div>
 						</div>
 					</div>				
 					<div class="table_content table-responsive">
@@ -63,7 +66,23 @@
 							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre>{{show_json | json}}</pre></td></tr>
 						</table>				
 					</div>
+					<div class="page_wrapper clearfix">
+						<div class="page_block col-md-9">
+							頁數 :
+							<div class="indiv_page_block" ng-repeat="p in total_pages track by $index">
+								<a ng-click="show_table(default_view_table, custom_rows, $index+1)" ng-class="{'page_clicked': $index+1 == page}"> {{$index+1}}</a>
+							</div>
+						</div>
+						<div class="custom_rows col-md-3">
+							<select class="form-control" ng-model="custom_rows" ng-options="r.num as r.num for r in rows_options" ng-click="table_click(default_view_table, custom_rows, 1)"></select>
+							<div class="custom_rows_title">每頁顯示的資料筆數</div>
+						</div>
+					</div>						
 				</div>
+			</div>
+			<div ng-show="change_page">
+				<h3 class="text-center">新增 Table</h3>
+				<form class="horizontal-form"></form>
 			</div>
 		</div>
 	</div>
