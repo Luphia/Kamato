@@ -160,7 +160,7 @@
             var request = $.ajax({
                 url: urls + "/uforgot",
                 type: "POST",
-                data: { account: $(".faccount").val() },
+                data: { account: $(".faccount").val(), url: urls },
                 cache: false,
                 async: false
             });

@@ -156,7 +156,9 @@ var auth = function (req, res, next) {
 }
 , check = function (req, res, next) {
     res.result = new Result();
-    var s = req.session;
+    var app = 'simple';
+
+    var s = req.session[app];
     if (s && s.name != null && s.login == 1) {
         res.result.response(next, 1, 'Check Success', s);
     } else {
@@ -281,7 +283,7 @@ var auth = function (req, res, next) {
     checkAPP(app);
 
     var data = req.body;
-    var x = userManager.urepassword(data);
+    var x = userManager[app].urepassword(data);
     if (x == false) {
         res.result.response(next, 0, 'Repassword Fail');
     } else {
