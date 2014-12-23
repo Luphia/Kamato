@@ -8,6 +8,7 @@ var filters = require('./filters.js')
 ,	easyDB = require('./easyDB.js')
 ,	manage = require('./manage.js')
 ,	demo = require('./demo.js')
+,	api = require('./api.js')
 ;
 
 var log4js, db;
@@ -30,6 +31,7 @@ module.exports = function(_config, _log4js, route) {
 	easyDB.init(easyDBConfig, logger, route);
 	manage.init(easyDBConfig, logger, route);
 	demo.init({}, logger, route);
+	api.init(easyDBConfig, logger, route);
 
 	return {
 		index: index,
@@ -37,6 +39,7 @@ module.exports = function(_config, _log4js, route) {
 		passport: passport,
 		oauth2: oauth2,
 		easyDB: easyDB,
-		demo: demo
+		demo: demo,
+		api: api
 	}
 };

@@ -91,6 +91,8 @@ var Schema = function(table) {
 ,	getValueSchema = function(data) {
 	var schema = {};
 	if(!data || typeof data != 'object') { data = {}; }
+	else if(data.length > 1) { return getValueSchema(data[0]); }
+
 	for(var key in data) {
 		schema[key] = valueType(data[key]);
 	}
@@ -678,6 +680,44 @@ module.exports = function(conf, logger) {
 
 		return rs;
 	}
+	,	dataFind = function(data, sql) {
+		var rs;
+		var table = "_" + Math.random().toString(36).substring(7);
+		var jobs = 0;
+		if(typeof(sql) != 'string') { sql = ''; }
+
+		if(data.length > 1) {
+			for(var k in data) {
+
+				jobs++;
+				var query = Parser.sql2ast("WHERE _id = " + k);
+				query.WHERE = preCondiction(query.WHERE);
+
+				for(var kk in data[k]) {
+					data[k][kk] = checkValue(data[k][kk]);
+				}
+
+				this.DB.putData(table, query, {"$set": data[k]}, function(err, _data) {
+					jobs--;
+				});
+			}
+		}
+		else {
+			jobs++;
+			this.DB.putData(table, {}, data, function(err, _data) {
+				jobs--;
+			});
+		}
+		while(jobs > 0) { require('deasync').runLoopOnce(); }
+
+		var query = Parser.sql2ast(sql);
+		query.WHERE = preCondiction(query.WHERE);
+		this.DB.listData(table, query, function(err, _data) { rs = _data;});
+		while(rs === undefined) { require('deasync').runLoopOnce(); }
+
+		this.DB.deleteTable(table);
+		return rs;
+	}
 	,	postData = function(table, data) {
 		var check, rs, schema, id = [];
 		table = checkTable(table);
@@ -828,6 +868,7 @@ module.exports = function(conf, logger) {
 		flowData: flowData,
 		getData: getData,
 		find: find,
+		dataFind: dataFind,
 		postData: postData,
 		putData: putData,
 		deleteData: deleteData,

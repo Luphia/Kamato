@@ -368,7 +368,6 @@ module.exports = function(logger) {
 	}
 	,	putData = function(table, query, data, callback) {
 		var condition = parseCondition(query);
-
 		this.DB.collection(table).update(condition, data, {w:1, upsert: true}, function(err) {
 			if(err) { callback(err); }
 			else { callback(err, true); }

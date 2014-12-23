@@ -1,16 +1,18 @@
 /*
 
-var Job = require('./services/Classes/Job.js');
 var Job = require('./services/Jobs/sample.js');
 var Worker = require('./services/Classes/Worker.js');
+
+var w = new Worker();
+var j = new Job();
+w.addJob(j).start();
 
  */
 
 var Worker = function(option) {
-	this.option = option;
+	this.init(option);
 	this.jobs = [];
-	this.done = [];
-	this.finish = 0;
+	this.jobStatus = [];
 	this.active = false;
 };
 
@@ -59,7 +61,7 @@ Worker.prototype.start = function() {
 
 		for(var key in this.jobs) {
 			if(!this.jobStatus[key]) {
-				this.work[key];
+				this.work(key);
 			}
 		}
 	}
@@ -69,18 +71,19 @@ Worker.prototype.start = function() {
 
 Worker.prototype.work = function(jobNumber) {
 	var job = this.jobs[jobNumber]
+	,	that = this
 	,	callback = function() {
-			this.done(jobNumber);
+			that.done(jobNumber);
 		}
 	;
 
+	//++ initial Job Status
 	var status = {
 			"inAction": true, 
 			"isFinish": false
 		};
 
 	this.jobStatus[jobNumber] = status;
-
 	job.setCallback(callback);
 	job.start();
 };
@@ -91,15 +94,27 @@ Worker.prototype.stop = function() {
 };
 
 Worker.prototype.done = function(jobNumber) {
+	//++ set Job Status
+	this.jobStatus[jobNumber] = {
+		"inAction": false, 
+		"isFinish": true
+	};
+
 	console.log('Worker done');
 	return this;
+};
+
+Worker.prototype.reset = function() {
+	this.jobStatus = [];
+	for(var k in this.jobs) {
+		this.jobStatus.push(false);
+	}
 };
 
 Worker.prototype.finish = function() {
 	console.log('Worker finish');
 	return this;
 };
-
 
 
 module.exports = Worker;

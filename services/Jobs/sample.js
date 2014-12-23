@@ -7,13 +7,13 @@ var Sample = function(config, callback) {
 	this.setCallback(callback);
 };
 
+Sample.prototype = new Job();
 Sample.prototype.work = function() {
 	// do job
+	console.log('%s do sample job', new Date());
 
 	// after jo finished
 	this.done();
 };
 
-
-Sample.prototype = new Job();
 module.exports = Sample;
