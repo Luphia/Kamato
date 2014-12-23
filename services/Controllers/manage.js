@@ -286,8 +286,63 @@ var Result = require('../Classes/Result.js')
     };
 }
 
+//tag api
+, getalltag = function (req, res, next) {
+    res.result = new Result();
+    var table = 'tag';
+    var query = req.query.q || '';
+    var data = MDBconnect().pageData(table, query);
 
-, APIRoute = function (req, res, next) {
+    if (data) {
+        res.result.response(next, 1, 'APIRoute getalltag GET Success', data);
+    };
+}
+, gettag = function (req, res, next) {
+    res.result = new Result();
+    var table = 'tag';
+    var query = req.query.q || '';
+    var data = MDBconnect().pageData(table, query);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute gettag GET Success', data);
+    };
+}
+, posttag = function (req, res, next) {
+    res.result = new Result();
+    var table = 'tag';
+    var info = req.body || '';
+
+    var data = MDBconnect().postData(table, info);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute posttag POST Success', { _id: data });
+    };
+}
+, puttag = function (req, res, next) {
+    res.result = new Result();
+    var table = 'tag';
+    var query = req.query.q || '';
+
+    var data = MDBconnect().putData(table, query);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute puttag POST Success', { _id: data });
+    };
+}
+, deltag = function (req, res, next) {
+    res.result = new Result();
+    var table = 'tag';
+    var query = req.query.q || '';
+
+    var data = MDBconnect().deleteData(table, query);
+
+    if (data) {
+        res.result.response(next, 1, 'APIRoute deltag POST Success', { _id: data });
+    };
+}
+
+
+, apiRoute = function (req, res, next) {
     res.result = new Result();
 
     var routeURL = url.parse(req.originalUrl).pathname;
@@ -332,47 +387,40 @@ var Result = require('../Classes/Result.js')
             };
             break;
     };
-
-
-
-
-
-    //    .get(function (req, res) {
-    //        var apiname = req.params.apiname,
-    //            type,
-    //            source,
-    //            sql,
-    //            visible,
-    //            tag
-
-    //        res.json({
-    //            apiname: apiname,
-    //            message: 'The get api for name: ' + req.params.apiname,
-    //            aaa: '123'
-    //        })
-    //    })
-    //.post(function (req, res) {
-    //    res.json({
-    //        apiname: req.params.apiname,
-    //        message: 'The post api for name: ' + req.params.apiname,
-    //        aaa: '123'
-    //    })
-    //})
-    //.put(function (req, res) {
-    //    res.json({
-    //        appname: req.params.appname,
-    //        message: 'The put api for name: ' + req.params.appname
-    //    })
-    //})
-    //.delete(function (req, res) {
-    //    res.json({
-    //        appname: req.params.appname,
-    //        message: 'The delete api for name: ' + req.params.appname
-    //    })
-    //});
-
-
 }
+, tagRoute = function (req, res, next) {
+    res.result = new Result();
+
+    var routeURL = url.parse(req.originalUrl).pathname;
+    var method = req.method;
+    var tag = req.params.tag;
+
+    switch (method) {
+        case 'GET':
+            if (!tag) {
+                getalltag(req, res, next);
+            } else {
+                gettag(req, res, next);
+            };
+            break;
+        case 'POST':
+            if (tag) {
+                posttag(req, res, next);
+            };
+            break;
+        case 'PUT':
+            if (tag) {
+                puttag(req, res, next);
+            };
+            break;
+        case 'DELETE':
+            if (tag) {
+                deltag(req, res, next);
+            };
+            break;
+    };
+}
+
 , init = function (_config, _logger, route) {
     config = _config;
     logger = _logger;
@@ -384,12 +432,12 @@ var Result = require('../Classes/Result.js')
     route.all('/manage/db/:table/:id', dbRoute);
 
     //managerAPI
-    route.all('/manage/api/', APIRoute); //show all app
-    route.all('/manage/api/:app', APIRoute); //show app's api
-    route.all('/manage/api/:app/:api', APIRoute); //show the api info
+    route.all('/manage/api/', apiRoute); //show all app
+    route.all('/manage/api/:app', apiRoute); //show app's api
+    route.all('/manage/api/:app/:api', apiRoute); //show the api info
 
-    route.all('/manage/tag/', APIRoute); //show all tag
-    route.all('/manage/tag/:tag', APIRoute); //show tag's info
+    route.all('/manage/tag/', tagRoute); //show all tag
+    route.all('/manage/tag/:tag', tagRoute); //show tag's info
 
 }
 ;
