@@ -251,8 +251,10 @@ var auth = function (req, res, next) {
 }
 , ucheck = function (req, res, next) {
     res.result = new Result();
-    var s = req.session;
-    if (s && s.name != null && s.login == 1) {
+    var app = req.params.app;
+    var s = req.session[app];
+
+    if (s && s.ulogin == 1) {
         res.result.response(next, 1, 'Check Success', s);
     } else {
         res.result.response(next, -2, 'Check Fail');
