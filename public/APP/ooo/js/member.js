@@ -88,6 +88,12 @@
             return query_string;
         }();
 
+        //valid email
+        function valid_email(email) {
+            var mail = new RegExp(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]+$/);
+            return mail.test(email);
+        };
+
         // when change password link ready
         if (QueryString.a && QueryString.p) {
             $('.box').removeClass('active');
@@ -107,6 +113,11 @@
         //register
         $('.register').click(function (e) {
             e.preventDefault();
+
+            if (!valid_email($(".raccount").val())) {
+                alert('your account is not e-mail');
+                return false;
+            };
 
             if ($('.rpassword').val() == $('.rpassword2').val()) {
                 var request = $.ajax({
@@ -133,6 +144,12 @@
         //login
         $('.login').click(function (e) {
             e.preventDefault();
+
+            if (!valid_email($(".laccount").val())) {
+                alert('your account is not e-mail');
+                return false;
+            };
+
             var request = $.ajax({
                 url: urls + "/ulogin",
                 type: "POST",
@@ -157,6 +174,11 @@
         //forgot
         $('.forgot').click(function (e) {
             e.preventDefault();
+            if (!valid_email($(".faccount").val())) {
+                alert('your account is not e-mail');
+                return false;
+            };
+
             var request = $.ajax({
                 url: urls + "/uforgot",
                 type: "POST",
