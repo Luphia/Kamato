@@ -104,20 +104,18 @@
 						<div class="del_col_sche" ng-click="del_col_sche(key)" ng-show="columns"></div>
 					</div>
 					<div class="form-group">
-						<div class="col-md-offset-9">
+						<div class="col-md-offset-8">
+							<div class="checkbox-inline">
+								<label>Strick</label><input type="checkbox" ng-model="strick_clicked" ng-change="col_stricked()">
+							</div>
 							<div class="btn add_col_btn" ng-click="add_col_fn()">
 								Add Column
-							</div>
-							<div class="checkbox-inline">
-								<label>
-									<input type="checkbox" ng-model="strick_clicked" ng-change="col_stricked()">Strick
-								</label>
 							</div>
 						</div>
 					</div>
 					<div class="form-group">
 						<div class="col-md-offset-5">
-							<input class="btn" type="submit" value="Submit">
+							<input class="btn submit_btn" type="submit" value="Submit">
 							<button class="btn" type="reset">Reset</button>
 						</div>
 					</div>

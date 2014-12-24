@@ -1,4 +1,4 @@
-=================================easydb top=================================*/
+/*=================================easydb top=================================*/*/
 .ng-scope.platform .warnHint{
   width: 400px;
   height: 220px;
@@ -79,7 +79,7 @@
 }
 
 .ng-scope.platform .easydb_container .table_list .create_table:hover{
-  background: url(../img/simple/easydb/create_db_hover.png) no-repeat 50% 50%;
+  /*background: url(../img/simple/easydb/create_db_hover.png) no-repeat 50% 50%;*/
   opacity: 1;
 }
 
@@ -127,7 +127,7 @@
 }
 
 .ng-scope.platform .easydb_container .del_table:hover{
-  background: url(../img/simple/easydb/delete_hover.png) no-repeat 50% 50%;
+  /*background: url(../img/simple/easydb/delete_hover.png) no-repeat 50% 50%;*/
   opacity: 1;
 }
 
@@ -203,6 +203,14 @@
 
 /* =================== create table ===================*/
 
+.ng-scope.platform .create_table_wrapper .form-group .control-label{
+  font-size: 16px;
+}
+
+.ng-scope.platform .create_table_wrapper .submit_btn{
+  margin-right: 30px;
+}
+
 .ng-scope.platform .create_table_wrapper .add_col_btn{
   margin: 20px 0px 0px 7px;
 }
@@ -231,8 +239,19 @@
   cursor: pointer;
 }
 
+.ng-scope.platform .create_table_wrapper .checkbox-inline{
+  margin-top: 20px;
+}
+
+.ng-scope.platform .create_table_wrapper .checkbox-inline label{
+  font-size: 16px;
+}
+
 .ng-scope.platform .create_table_wrapper .checkbox-inline input[type=checkbox]{
   opacity: 1;
+  width: 16px;
+  height: 16px;
+  /*margin-right: 10px;*/
 }
 
 .ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
