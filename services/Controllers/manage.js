@@ -236,6 +236,7 @@ var Result = require('../Classes/Result.js')
     var data = MDBconnect().postData(table, info);
 
     if (data) {
+        console.log(MDBconnect().listData(table));
         res.result.response(next, 1, 'APIRoute postapi POST Success', { _id: data });
     };
 }
@@ -254,11 +255,13 @@ var Result = require('../Classes/Result.js')
 , putapi = function (req, res, next) {
     res.result = new Result();
     var table = 'api';
-    var query = req.query.q || '';
+    var query = req.body || '';
 
     var data = MDBconnect().putData(table, query);
-
     if (data) {
+        console.log(MDBconnect().listData(table));
+        console.log(data);
+
         res.result.response(next, 1, 'APIRoute putapi POST Success', { _id: data });
     };
 }
@@ -364,18 +367,18 @@ var Result = require('../Classes/Result.js')
             break;
         case 'POST':
             if (!api && app) {
-                putapp(req, res, next);
-            };
-            if (api && app) {
-                putapi(req, res, next);
-            };
-            break;
-        case 'PUT':
-            if (!api && app) {
                 postapp(req, res, next);
             };
             if (api && app) {
                 postapi(req, res, next);
+            };
+            break;
+        case 'PUT':
+            if (!api && app) {
+                putapp(req, res, next);
+            };
+            if (api && app) {
+                putapi(req, res, next);
             };
             break;
         case 'DELETE':
