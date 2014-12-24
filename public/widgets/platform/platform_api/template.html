@@ -39,14 +39,14 @@
 			<h2 class="text-center">新增API</h2>
 			<form class="form-horizontal" ng-submit="api_submit()">
 				<div class="form-group">
-					<h4 class="col-md-2 control-label">API Name</h4>
+					<h4 class="col-md-2 control-label">*API Name</h4>
 					<div class="col-md-8">
 						<input type="text" class="form-control create_api_input" ng-model="new_api_name" ng-required="new_api_required">	
 					</div>
 				</div>
 				<!-- API Methods -->
 				<div class="form-group">
-					<h4 class="col-md-2 control-label">REST Methods</h4>
+					<h4 class="col-md-2 control-label">*REST Methods</h4>
 					<div class="col-md-8">
 						<div ng-repeat="m in rest_methods" class="api_checkboxes">
 							<span>{{m.name}}</span>
@@ -56,13 +56,13 @@
 				</div>
 				<!-- 下SQL指令 從Easy_DB取得API-->
 				<div class="form-group rest_sql_group" ng-repeat="m in rest_methods" ng-show="m.checked">
-					<h5 class="col-md-2 control-label">{{m.name}} SQL</h5>
+					<h5 class="col-md-2 control-label">*{{m.name}} SQL</h5>
 					<div class="col-md-8">
 						<input type="text" class="form-control sql_input " ng-model="m.sql" placeholder="Typing the SQL Command ..." ng-required="m.checked">
 					</div>
 				</div>
 				<div class="form-group">
-					<h4 class="col-md-2 control-label">Public API</h4>
+					<h4 class="col-md-2 control-label">*Public API</h4>
 					<div class="col-md-8">
 						<div ng-click="api_public('Public')" class="btn" ng-class="{'public_btn': visible_clicked == 'Public'}">Public</div>
 						<div ng-click="api_public('Private')"class="btn" ng-class="{'privacy_btn': visible_clicked == 'Private'}">Privacy</div>
