@@ -120,10 +120,10 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     ]
 
     $scope.apiList = [
-		{ 'name': 'NikePlus', 'cate': ['sport', 'running', 'Nike'], 'visible': 'Public' },
-		{ 'name': 'Runkeeper', 'cate': ['sport', 'running', 'Runkeeper'], 'visible': 'Public' },
-		{ 'name': 'GooglePlus', 'cate': ['scocial network', 'google+'], 'visible': 'Public' },
-		{ 'name': 'Facebook', 'cate': ['sn', 'fb'], 'visible': 'Public' },
+		{ 'name': 'NikePlus', 'tag': ['sport', 'running', 'Nike'], 'public': 'Public' },
+		{ 'name': 'Runkeeper', 'tag': ['sport', 'running', 'Runkeeper'], 'public': 'Public' },
+		{ 'name': 'GooglePlus', 'tag': ['scocial network', 'google+'], 'public': 'Public' },
+		{ 'name': 'Facebook', 'tag': ['sn', 'fb'], 'public': 'Public' },
     ]
 
     $scope.apiSearch = [];
@@ -181,21 +181,19 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.typing_tag = false;
     $scope.api_submit = function () {
-        var temp = [];
-        for (var c in $scope.rest_methods) {
-            //有勾選
-            if ($scope.rest_methods[c].checked == true) {
-                temp.push($scope.rest_methods[c]);
-
-            }
-        }
-        console.log(temp);
         // 送出表單
         if ($scope.typing_tag == false) {
             var app = $scope.appname;   //傳入所屬app名稱
             var api = this.new_api_name;    //傳入所建立之api名稱
             var method = [];
             var config = {};
+
+            for (var c in $scope.rest_methods) {
+                if ($scope.rest_methods[c].checked == true) {
+                    method.push($scope.rest_methods[c]);
+                };
+            };
+
             var hostname = $(location).attr('href').split('/#/')[0];    //組合連結
             var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': $scope.types, 'tag': [$scope.new_tag], 'method': method, 'config': config };   //資料格式
             //ajax 導入
