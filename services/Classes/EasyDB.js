@@ -686,6 +686,13 @@ module.exports = function(conf, logger) {
 		var jobs = 0;
 		if(typeof(sql) != 'string') { sql = ''; }
 
+		var search = Parser.sql2ast(sql);
+		search.WHERE = preCondiction(search.WHERE);
+		var where = 0;
+		for(var k in search.WHERE) {
+			where ++;
+		}
+
 		if(data.length > 1) {
 			for(var k in data) {
 
@@ -697,9 +704,13 @@ module.exports = function(conf, logger) {
 					data[k][kk] = checkValue(data[k][kk]);
 				}
 
-				this.DB.putData(table, query, {"$set": data[k]}, function(err, _data) {
-					jobs--;
-				});
+				if(where > 0) {
+					this.DB.putData(table, query, {"$set": data[k]}, function(err, _data) { jobs--; });
+				}
+			}
+
+			if(where == 0) {
+				return data;
 			}
 		}
 		else {
@@ -710,9 +721,7 @@ module.exports = function(conf, logger) {
 		}
 		while(jobs > 0) { require('deasync').runLoopOnce(); }
 
-		var query = Parser.sql2ast(sql);
-		query.WHERE = preCondiction(query.WHERE);
-		this.DB.listData(table, query, function(err, _data) { rs = _data;});
+		this.DB.listData(table, search, function(err, _data) { rs = _data;});
 		while(rs === undefined) { require('deasync').runLoopOnce(); }
 
 		this.DB.deleteTable(table);

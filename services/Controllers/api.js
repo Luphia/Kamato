@@ -19,12 +19,21 @@ var RouteAPI = function(req, res, next) {
 		,	sql = req.query.sql || '';
 		;
 
+		var t1, t2, t3, t4;
+		t1 = new Date();
+
 		request[method](options, function(err, response, body) {
 			var data;
+			t2 = new Date();
 			try {
 				var tmpData = JSON.parse(body);
 
 				data = DB.dataFind(tmpData, sql);
+				t3 = new Date();
+				res.result.setCost({
+					"fetch": t2 - t1,
+					"index": t3 - t2
+				});
 				res.result.response(next, 1, '', data);
 			}
 			catch(e) {
