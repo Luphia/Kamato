@@ -9,7 +9,7 @@ config.deviceJson = {
 config.library = '../Passport/';
 
 
-var callback = function() {console.log('finish %d', new Date());};
+var callback = function() {console.log('finish %s', new Date());};
 var Collector = require('./services/Jobs/Collector.js');
 
 var collector = new Collector(config, callback);
@@ -392,7 +392,6 @@ Collector.prototype.work = function() {
 	var job = new CollectorJob(this.config);
 	var insCollectAll = job.collectAll( typeof this.date!='function'? this.date: calendar.nowDate(), this.done );
 };
-
 
 
 module.exports = Collector;
