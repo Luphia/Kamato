@@ -244,7 +244,7 @@ var Result = require('../Classes/Result.js')
 , putapp = function (req, res, next) {
     res.result = new Result();
     var table = 'app';
-    var query = req.query.q || '';
+    var query = req.body || '';
 
     var data = MDBconnect().putData(table, query);
 
