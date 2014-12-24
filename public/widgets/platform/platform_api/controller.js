@@ -186,11 +186,14 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             var app = $scope.appname;   //傳入所屬app名稱
             var api = this.new_api_name;    //傳入所建立之api名稱
             var method = [];
-            var config = {};
+            var config = { sql: {}};
 
             for (var c in $scope.rest_methods) {
                 if ($scope.rest_methods[c].checked == true) {
-                    method.push($scope.rest_methods[c]);
+                    var cname = $scope.rest_methods[c].name;
+                    var csql = $scope.rest_methods[c].sql;
+                    method.push(cname); //填入類型
+                    config.sql[cname] = csql;   //填入SQL語法
                 };
             };
 
