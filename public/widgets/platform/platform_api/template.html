@@ -25,7 +25,12 @@
                             <span ng-repeat="c in item.tag">{{c}}</span>
                         </td>
                         <td>
-                            {{item.public}}
+                            <div ng-if="item.public == true">
+                                Public
+                            </div>
+                            <div ng-if="item.public == false">
+                                Privacy
+                            </div>
                             <!-- <select ng-model=""></select> -->
                         </td>
                         <td>
@@ -65,8 +70,8 @@
                 <div class="form-group">
                     <h4 class="col-md-2 control-label">*Public API</h4>
                     <div class="col-md-8">
-                        <div ng-click="api_public('Public')" class="btn" ng-class="{'public_btn': visible_clicked == 'Public'}">Public</div>
-                        <div ng-click="api_public('Private')" class="btn" ng-class="{'privacy_btn': visible_clicked == 'Private'}">Privacy</div>
+                        <div ng-click="api_public(true)" class="btn" ng-class="{'public_btn': visible_clicked == true}">Public</div>
+                        <div ng-click="api_public(false)" class="btn" ng-class="{'privacy_btn': visible_clicked == false}">Privacy</div>
                     </div>
                 </div>
                 <!-- API Category Tag -->
@@ -120,8 +125,8 @@
                     <div class="form-group">
                         <h4 class="col-md-2 control-label">*Public API</h4>
                         <div class="col-md-8">
-                            <div ng-click="api_public('Public')" class="btn" ng-class="{'public_btn': visible_clicked == 'Public'}">Public</div>
-                            <div ng-click="api_public('Private')" class="btn" ng-class="{'privacy_btn': visible_clicked == 'Private'}">Privacy</div>
+                            <div ng-click="api_public(true)" class="btn" ng-class="{'public_btn': visible_clicked == true}">Public</div>
+                            <div ng-click="api_public(false)" class="btn" ng-class="{'privacy_btn': visible_clicked == false}">Privacy</div>
                         </div>
                     </div>
                     <!-- API Category Tag -->

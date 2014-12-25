@@ -231,7 +231,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         }
     }
 
-    $scope.visible_clicked = "Public";
+    $scope.visible_clicked = true;
     $scope.api_public = function (name) {
         $scope.visible_clicked = name;
     }
@@ -272,7 +272,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             config.source = sources;
 
             var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': types, 'tag': tag, 'method': method, 'config': config };   //資料格式
-            
+
             $http({
                 method: 'POST',
                 url: './manage/api/' + app + '/' + api,
