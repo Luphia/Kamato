@@ -7,6 +7,7 @@ config.deviceJson = {
 	"runkeeper": require('./config.private/runkeeper.json')
 };
 config.library = '../Passport/';
+config.date = undefined;	// 要抓某日時須打入 '2014-11-20' 
 
 
 var callback = function() {console.log('finish %s', new Date());};
@@ -22,10 +23,9 @@ var util = require('util')
 ,	Calendar = require('../Classes/Calendar.js');
 
 
-var Collector = function(config, date, callback) {
+var Collector = function(config, callback) {
 	this.config = config;
 	this.setCallback(callback);
-	this.date = date;
 };
 
 
@@ -390,7 +390,7 @@ Collector.prototype.work = function() {
 	// do job
 	var calendar = new Calendar();
 	var job = new CollectorJob(this.config);
-	var insCollectAll = job.collectAll( typeof this.date!='function'? this.date: calendar.nowDate(), this.done );
+	var insCollectAll = job.collectAll( typeof this.config.date!='undefined'? this.config.date: calendar.nowDate(), this.done );
 };
 
 
