@@ -50,6 +50,9 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.appname = 'iii';        //所屬APP名稱
     $scope.types = 'sql';          //設定該頁type
+    $scope.api_types = function (name) {
+        $scope.types = name;
+    };
 
     $scope.api_list = true;		   //API管理頁面
     $scope.create_api = false;     //隱藏新增API頁面
@@ -63,7 +66,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             method: 'GET',
             url: './manage/api/' + app
         }).success(function (data, status, headers, config) {
-            $scope.apiList=data.data.list;
+            $scope.apiList = data.data.list;
             $scope.create_api = false;
             $scope.api_list = true;
         }).error(function (data, status, headers, config) {

@@ -145,6 +145,20 @@
   padding: 5px 10px;
 }
 
+.ng-scope.platform .list-container .sql_btn{
+  background: rgba(38, 182, 44, 0.7);
+  border: 1px solid rgba(256,256,256,0.4);
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.ng-scope.platform .list-container .outer_btn{
+  background: rgba(174, 44, 44, 0.9);
+  border: 1px solid rgba(0,0,0,0.3);
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
 .ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
   width: 100%;
   margin: 12px;
