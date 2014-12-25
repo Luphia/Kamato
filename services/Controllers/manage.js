@@ -221,12 +221,20 @@ var Result = require('../Classes/Result.js')
     res.result = new Result();
     var table = 'app';
     var info = req.body || '';
+    var name = info.name;
+    var dbt = MDBconnect().listData(table, "name='" + name + "'").list[0];
 
-    var data = MDBconnect().postData(table, info);
+    if (dbt) {
+        res.result.response(next, 0, 'APIRoute postapp POST Fail');
+    } else {
+        var data = MDBconnect().postData(table, info);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute postapp POST Success', { _id: data });
+        if (data) {
+            console.log(MDBconnect().listData(table));
+            res.result.response(next, 1, 'APIRoute postapp POST Success', { _id: data });
+        };
     };
+
 }
 , postapi = function (req, res, next) {
     res.result = new Result();
@@ -276,12 +284,14 @@ var Result = require('../Classes/Result.js')
 , delapp = function (req, res, next) {
     res.result = new Result();
     var table = 'app';
-    var query = req.query.q || '';
+    var app = req.params.app;
+
+    var query = "_id='" + app + "'";
 
     var data = MDBconnect().deleteData(table, query);
 
     if (data) {
-        res.result.response(next, 1, 'APIRoute putapp POST Success', { _id: data });
+        res.result.response(next, 1, 'APIRoute delapp POST Success', { _id: data });
     };
 }
 , delapi = function (req, res, next) {
@@ -293,7 +303,7 @@ var Result = require('../Classes/Result.js')
     var data = MDBconnect().deleteData(table, query);
 
     if (data) {
-        res.result.response(next, 1, 'APIRoute putapi POST Success', { _id: data });
+        res.result.response(next, 1, 'APIRoute delapi POST Success', { _id: data });
     };
 }
 
@@ -374,7 +384,7 @@ var Result = require('../Classes/Result.js')
             };
             break;
         case 'POST':
-            if (!api && app) {
+            if (!api && !app) {
                 postapp(req, res, next);
             };
             if (api && app) {

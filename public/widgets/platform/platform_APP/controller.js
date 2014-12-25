@@ -18,8 +18,22 @@ Kamato.register.controller('appCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.new_app = function () {
         if (this.new_app_name != null) {
-            $scope.appList.push({ 'name': this.new_app_name });
-            $scope.create_app = !$scope.create_app;
+            var datas = { 'name': this.new_app_name };
+
+            $http({
+                method: 'POST',
+                url: './manage/api/',
+                data: datas
+            }).success(function (data, status, headers, config) {
+                if (data.result == 1) {
+                    $scope.appList.splice(0, 0, datas);
+                    $scope.create_app = !$scope.create_app;
+                } else {
+                    alert('Please change your api name');
+                };
+            }).error(function (data, status, headers, config) {
+
+            });
         }
         else {
             $scope.new_app_required = true;
@@ -56,7 +70,11 @@ Kamato.register.controller('appCtrl', function ($scope, $http, $modal, ngDialog,
             method: 'DELETE',
             url: './manage/api/' + id,
         }).success(function (data, status, headers, config) {
-            $scope.appList.splice($scope.appList.indexOf(app), 1);
+            if (data.result == 1) {
+                $scope.appList.splice($scope.appList.indexOf(app), 1);
+            } else {
+                alert('error');
+            };
         }).error(function (data, status, headers, config) {
 
         });

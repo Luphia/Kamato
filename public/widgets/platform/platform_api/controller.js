@@ -50,7 +50,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.appname = 'iii';        //所屬APP名稱
     $scope.types = 'sql';          //設定該頁type
-    $scope.warn_hint = false;
+    $scope.warn_hint = false;      //select type
     $scope.api_types = function (name) {
         $scope.types = name;
         switch (name) {
@@ -71,9 +71,19 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 $scope.warn_hint = false;
                 break;
             case 'outer':
+                $scope.api_list = false;
+                $scope.create_api = false;
+
+                $scope.new_api_required = false;
+                $scope.select_rest_mt = false;
+
+
+                $scope.api_outer = true;
+                $scope.warn_hint = false;
                 break;
         };
     };
+    $scope.api_outer = false;      //outer api page
 
     $scope.api_list = true;		   //API管理頁面
     $scope.create_api = false;     //隱藏新增API頁面
@@ -114,6 +124,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         $scope.api_list = true;
         $scope.create_api = false;
         $scope.req_chart = false;
+        $scope.api_outer = false;
 
         //取消require
         $scope.select_rest_mt = false;
@@ -140,7 +151,11 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             method: 'DELETE',
             url: './manage/api/' + app + '/' + id,
         }).success(function (data, status, headers, config) {
-            $scope.apiList.splice($scope.apiList.indexOf(api), 1);
+            if (data.result == 1) {
+                $scope.apiList.splice($scope.apiList.indexOf(api), 1);
+            } else {
+                alert('error');
+            };
         }).error(function (data, status, headers, config) {
 
         });

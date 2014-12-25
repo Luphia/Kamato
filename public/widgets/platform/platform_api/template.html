@@ -36,6 +36,7 @@
             </div>
         </div>
         <div ng-show="create_api" class="create_api">
+            <div class="back" ng-click="return_api_page()">Back</div>
             <h2 class="text-center">新增API</h2>
             <form class="form-horizontal" ng-submit="api_submit()">
                 <div class="form-group">
@@ -92,6 +93,71 @@
                 <button type="submit" class="btn btn-lg btn-alt m-t-10" ng-click="return_api_page()">Back</button>
                 <h2>每日Request次數(req/day)</h2>
                 <activitychart ng-model="Request" class="main-chart" id="Request"></activitychart>
+            </div>
+        </div>
+        <div ng-show="api_outer" class="dataflow">
+            <div class="create_api">
+                <div class="back" ng-click="return_api_page()">Back</div>
+                <h2 class="text-center">新增 Outer API</h2>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <h4 class="col-md-2 control-label">*API Name</h4>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control create_api_input" ng-model="new_api_name" ng-required="new_api_required">
+                        </div>
+                    </div>
+                    <!-- 下SQL指令 從Easy_DB取得API-->
+                    <div class="form-group rest_sql_group" ng-repeat="m in rest_methods" ng-show="m.checked">
+                        <h5 class="col-md-2 control-label">*{{m.name}} SQL</h5>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control sql_input " ng-model="m.sql" placeholder="Typing the SQL Command ..." ng-required="m.checked">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h4 class="col-md-2 control-label">*Public API</h4>
+                        <div class="col-md-8">
+                            <div ng-click="api_public('Public')" class="btn" ng-class="{'public_btn': visible_clicked == 'Public'}">Public</div>
+                            <div ng-click="api_public('Private')" class="btn" ng-class="{'privacy_btn': visible_clicked == 'Private'}">Privacy</div>
+                        </div>
+                    </div>
+                    <!-- API Category Tag -->
+                    <div class="form-group">
+                        <h4 class="col-md-2 control-label">Category Tag</h4>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control create_api_input" ng-keyup="ca_tag_keyup($event)" ng-model="new_tag" ng-focus="typing_tag= true " ng-blur="typing_tag= false">
+                            <!--++  ng-enter="addTag(new_tag)" -->
+                            <!-- 						<div>
+                                                <div class="tag" ng-repeat="(key, value) in tags">{{value.name}}</div>
+                                            </div> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="operate">
+                <div class="set">
+                    <label>Source:</label><input ng-model="source" ng-change="updatePath()">
+                </div>
+                <div class="set">
+                    <label>SQL:</label><textarea ng-model="sql" rows=5 ng-change="updatePath()"></textarea>
+                </div>
+                <button type="submit" class="btn btn-lg btn-alt m-t-10" ng-click="fetch()">查詢</button>
+                <button type="submit" class="btn btn-lg btn-alt m-t-10 pull-right" ng-click="api_submit()">建立</button>
+            </div>
+            <div class="table" ng-class="loading? 'loading': ''">
+                <div class="set">
+                    <label>JSON API:</label><input ng-model="outer">
+                </div>
+                <div class="set">
+                    Fetch cost <a class="value">{{cost.fetch}}</a> ms and Index cost <a class="value">{{cost.index}}</a> ms
+                </div>
+                <table>
+                    <thead><tr><th ng-repeat="key in keys">{{key}}</th></tr></thead>
+                    <tbody>
+                        <tr ng-repeat="row in collections">
+                            <td ng-repeat="value in row">{{value}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
