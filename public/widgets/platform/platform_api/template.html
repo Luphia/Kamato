@@ -106,13 +106,17 @@
                             <input type="text" class="form-control create_api_input" ng-model="new_api_name" ng-required="new_api_required">
                         </div>
                     </div>
-                    <!-- 下SQL指令 從Easy_DB取得API-->
-                    <div class="form-group rest_sql_group" ng-repeat="m in rest_methods" ng-show="m.checked">
-                        <h5 class="col-md-2 control-label">*{{m.name}} SQL</h5>
+                    <!-- API Methods -->
+                    <div class="form-group">
+                        <h4 class="col-md-2 control-label">*REST Methods</h4>
                         <div class="col-md-8">
-                            <input type="text" class="form-control sql_input " ng-model="m.sql" placeholder="Typing the SQL Command ..." ng-required="m.checked">
+                            <div ng-repeat="m in rest_methods" class="api_checkboxes">
+                                <span>{{m.name}}</span>
+                                <input type="checkbox" ng-model="m.checked" ng-change="click_checkbox(rest_methods)" ng-required="m.required" disabled>
+                            </div>
                         </div>
                     </div>
+                    <!-- 下SQL指令 從Easy_DB取得API-->
                     <div class="form-group">
                         <h4 class="col-md-2 control-label">*Public API</h4>
                         <div class="col-md-8">

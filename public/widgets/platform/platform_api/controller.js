@@ -74,9 +74,17 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 $scope.api_list = false;
                 $scope.create_api = false;
 
-                $scope.new_api_required = false;
                 $scope.select_rest_mt = false;
+                $scope.new_api_required = false;
 
+                for (var r in $scope.rest_methods) {
+                    $scope.rest_methods[r]['sql'] = "";
+                    $scope.rest_methods[r]['checked'] = false;
+                    $scope.rest_methods[r]['required'] = false;
+                    $scope.rest_methods[r]['diabled'] = true;
+                };
+
+                $scope.rest_methods[0]['checked'] = true;
 
                 $scope.api_outer = true;
                 $scope.warn_hint = false;
@@ -245,22 +253,26 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             var app = $scope.appname;   //傳入所屬app名稱
             var api = this.new_api_name;    //傳入所建立之api名稱
             var method = [];
-            var config = { sql: {} };
+            var config = { sql: {}, source: {} };
             var tag = [];
+            var types = $scope.types;
+            var sources = [];
 
             for (var c in $scope.rest_methods) {
                 if ($scope.rest_methods[c].checked == true) {
                     var cname = $scope.rest_methods[c].name;
                     var csql = $scope.rest_methods[c].sql;
                     method.push(cname); //填入類型
-                    config.sql[cname] = csql;   //填入SQL語法
+                    config.sql[cname] = csql || $scope.sql;   //填入SQL語法
                 };
             };
 
+            sources.push($scope.source);
             tag.push($scope.new_tag);
+            config.source = sources;
 
-            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': $scope.types, 'tag': tag, 'method': method, 'config': config };   //資料格式
-
+            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': types, 'tag': tag, 'method': method, 'config': config };   //資料格式
+            
             $http({
                 method: 'POST',
                 url: './manage/api/' + app + '/' + api,
@@ -269,6 +281,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 if (data.result == 1) {
                     $scope.apiList.splice(0, 0, datas);
                     $scope.create_api = false;
+                    $scope.api_outer = false;
                     $scope.api_list = true;
                 } else {
                     alert('Please change your api name');
