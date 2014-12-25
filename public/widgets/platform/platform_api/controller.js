@@ -56,6 +56,22 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.req_chart = false;	   //隱藏API活躍頁面
     $scope.ca_tag = ['sport', 'running', 'Nike', 'running', 'Runkeeper', 'sn', 'google+', 'sn', 'fb'];
 
+    $scope.init = function () {
+        var app = $scope.appname;   //傳入所屬app名稱
+
+        $http({
+            method: 'GET',
+            url: './manage/api/' + app
+        }).success(function (data, status, headers, config) {
+            $scope.apiList=data.data.list;
+            $scope.create_api = false;
+            $scope.api_list = true;
+        }).error(function (data, status, headers, config) {
+
+        });
+
+    };
+
     $scope.create_api_page = function () {
         //表單初始化
         $scope.api_list = false;
@@ -119,12 +135,14 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 		{ 'name': 'Goverment', 'required': true },
     ]
 
-    $scope.apiList = [
-		{ 'name': 'NikePlus', 'tag': ['sport', 'running', 'Nike'], 'public': 'Public' },
-		{ 'name': 'Runkeeper', 'tag': ['sport', 'running', 'Runkeeper'], 'public': 'Public' },
-		{ 'name': 'GooglePlus', 'tag': ['scocial network', 'google+'], 'public': 'Public' },
-		{ 'name': 'Facebook', 'tag': ['sn', 'fb'], 'public': 'Public' },
-    ]
+
+    $scope.apiList = [];
+    //$scope.apiList = [
+    //	{ 'name': 'NikePlus', 'tag': ['sport', 'running', 'Nike'], 'public': 'Public' },
+    //	{ 'name': 'Runkeeper', 'tag': ['sport', 'running', 'Runkeeper'], 'public': 'Public' },
+    //	{ 'name': 'GooglePlus', 'tag': ['scocial network', 'google+'], 'public': 'Public' },
+    //	{ 'name': 'Facebook', 'tag': ['sn', 'fb'], 'public': 'Public' },
+    //]
 
     $scope.apiSearch = [];
 
@@ -186,7 +204,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             var app = $scope.appname;   //傳入所屬app名稱
             var api = this.new_api_name;    //傳入所建立之api名稱
             var method = [];
-            var config = { sql: {}};
+            var config = { sql: {} };
 
             for (var c in $scope.rest_methods) {
                 if ($scope.rest_methods[c].checked == true) {
