@@ -25,12 +25,7 @@
                             <span ng-repeat="c in item.tag">{{c}}</span>
                         </td>
                         <td>
-                            <div ng-if="item.public == true">
-                                Public
-                            </div>
-                            <div ng-if="item.public == false">
-                                Privacy
-                            </div>
+                            {{item.public ? 'Public' : 'Privacy'}}
                             <!-- <select ng-model=""></select> -->
                         </td>
                         <td>
