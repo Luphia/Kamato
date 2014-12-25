@@ -246,6 +246,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             var api = this.new_api_name;    //傳入所建立之api名稱
             var method = [];
             var config = { sql: {} };
+            var tag = [];
 
             for (var c in $scope.rest_methods) {
                 if ($scope.rest_methods[c].checked == true) {
@@ -256,7 +257,9 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 };
             };
 
-            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': $scope.types, 'tag': [$scope.new_tag], 'method': method, 'config': config };   //資料格式
+            tag.push($scope.new_tag);
+
+            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': $scope.types, 'tag': tag, 'method': method, 'config': config };   //資料格式
 
             $http({
                 method: 'POST',
@@ -299,4 +302,3 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.daily_req(reqs);
     // ====================== api bottom======================	
 });
-
