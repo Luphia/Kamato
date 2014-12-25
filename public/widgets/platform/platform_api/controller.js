@@ -81,6 +81,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.ca_tag = ['sport', 'running', 'Nike', 'running', 'Runkeeper', 'sn', 'google+', 'sn', 'fb'];
 
     $scope.init = function () {
+        //載入後端資料
         var app = $scope.appname;   //傳入所屬app名稱
 
         $http({
@@ -130,12 +131,14 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     }
 
     $scope.del_api = function (api) {
+        //刪除後端資料
         var app = $scope.appname;   //傳入所屬app名稱
         var name = api.name;        //傳入api名稱
+        var id = api._id;        //傳入api id
 
         $http({
             method: 'DELETE',
-            url: './manage/api/' + app + '/' + name,
+            url: './manage/api/' + app + '/' + id,
         }).success(function (data, status, headers, config) {
             $scope.apiList.splice($scope.apiList.indexOf(api), 1);
         }).error(function (data, status, headers, config) {
@@ -238,17 +241,20 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 };
             };
 
-            var hostname = $(location).attr('href').split('/#/')[0];    //組合連結
             var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': $scope.types, 'tag': [$scope.new_tag], 'method': method, 'config': config };   //資料格式
-            //ajax 導入
+
             $http({
                 method: 'POST',
                 url: './manage/api/' + app + '/' + api,
                 data: datas
             }).success(function (data, status, headers, config) {
-                $scope.apiList.push(datas);
-                $scope.create_api = false;
-                $scope.api_list = true;
+                if (data.result == 1) {
+                    $scope.apiList.splice(0, 0, datas);
+                    $scope.create_api = false;
+                    $scope.api_list = true;
+                } else {
+                    alert('Please change your api name');
+                };
             }).error(function (data, status, headers, config) {
 
             });
