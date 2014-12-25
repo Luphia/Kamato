@@ -13,7 +13,7 @@ Job.prototype.setCallback = function(callback) {
 };
 
 Job.prototype.setTimeout = function() {};
-Job.prototype.start = function() { this.work(this.done); };
+Job.prototype.start = function(data) { this.work(data); };
 Job.prototype.work = function(callback) { console.log('prototype work'); callback(); };
 Job.prototype.done = function() { console.log('prototype done'); };
 

@@ -23,6 +23,7 @@ var express = require('express'),
 	push = require('../services/PushServer.js'),
 	oauth = require('../services/OAuth2Server.js'),
 	twitter = require('../services/TwitterMonitor.js'),
+	worker = require('../services/Classes/Worker.js'),
 	ssl,
 	session;
 
@@ -87,3 +88,15 @@ twitter.configure(config, logger);
 socket.start();
 //twitter.start();
 web.start();
+
+
+// worker
+/*
+var jobOption = {
+	config.get('mongo').uri;
+var Job = require('./services/Jobs/Collector.js');
+var woker = new Worker();
+worker.setCallback(function(data) { console.log(data); });
+worker.setPeriod(3600000);
+w.addJob(Job, jobOption).addJob(Job, {}).start();
+ */
