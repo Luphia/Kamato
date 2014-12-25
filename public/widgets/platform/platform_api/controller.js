@@ -50,8 +50,29 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.appname = 'iii';        //所屬APP名稱
     $scope.types = 'sql';          //設定該頁type
+    $scope.warn_hint = false;
     $scope.api_types = function (name) {
         $scope.types = name;
+        switch (name) {
+            case 'sql':
+                $scope.api_list = false;
+                $scope.create_api = true;
+                // 表單require
+                $scope.new_api_required = true;
+                $scope.select_rest_mt = true;
+                // 表格初始化
+                $scope.new_api_name = "";
+                $scope.new_tag = "";
+                for (var r in $scope.rest_methods) {
+                    $scope.rest_methods[r]['sql'] = "";
+                    $scope.rest_methods[r]['checked'] = false;
+                    $scope.rest_methods[r]['required'] = true;
+                };
+                $scope.warn_hint = false;
+                break;
+            case 'outer':
+                break;
+        };
     };
 
     $scope.api_list = true;		   //API管理頁面
@@ -77,19 +98,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.create_api_page = function () {
         //表單初始化
-        $scope.api_list = false;
-        $scope.create_api = true;
-        // 表單require
-        $scope.new_api_required = true;
-        $scope.select_rest_mt = true;
-        // 表格初始化
-        $scope.new_api_name = "";
-        $scope.new_tag = "";
-        for (var r in $scope.rest_methods) {
-            $scope.rest_methods[r]['sql'] = "";
-            $scope.rest_methods[r]['checked'] = false;
-            $scope.rest_methods[r]['required'] = true;
-        }
+        $scope.warn_hint = true;
     }
 
     // $scope.init = function(){
@@ -121,8 +130,19 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     }
 
     $scope.del_api = function (api) {
-        $scope.apiList.splice($scope.apiList.indexOf(api), 1);
-    }
+        var app = $scope.appname;   //傳入所屬app名稱
+        var name = api.name;        //傳入api名稱
+
+        $http({
+            method: 'DELETE',
+            url: './manage/api/' + app + '/' + name,
+        }).success(function (data, status, headers, config) {
+            $scope.apiList.splice($scope.apiList.indexOf(api), 1);
+        }).error(function (data, status, headers, config) {
+
+        });
+
+    };
 
     $scope.api_table_head = [
 		{ 'name': 'API Name' },

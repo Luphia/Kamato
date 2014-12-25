@@ -280,7 +280,7 @@ var Result = require('../Classes/Result.js')
 , delapi = function (req, res, next) {
     res.result = new Result();
     var table = 'api';
-    var query = req.query.q || '';
+    var query = "name='" + req.params.api + "'";
 
     var data = MDBconnect().deleteData(table, query);
 

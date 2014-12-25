@@ -4,9 +4,6 @@
             <h1>API 管理</h1>
         </div>
         <div ng-show="api_list" class="listview list-container">
-            <div ng-click="api_types('sql')" class="btn" ng-class="{'sql_btn': types == 'sql'}">SQL API</div>
-            <div ng-click="api_types('outer')" class="btn" ng-class="{'outer_btn': types == 'outer'}">Outer API</div>
-
             <header class="listview-header media">
                 <a tooltip="Create a New API" class="sa-list-add col-md-1" ng-click="create_api_page()"></a>
                 <!-- <div ng-show="apiSearch.length>0" class="clear col-md-1" ng-click="cleanSearch()"></div> -->
@@ -97,6 +94,11 @@
                 <activitychart ng-model="Request" class="main-chart" id="Request"></activitychart>
             </div>
         </div>
+    </div>
+    <div ng-show="warn_hint" class="warnHint">
+        <h3 class="text-center">Please Select Type</h3>
+        <button class="btn btn-alt btn-lg sql_btn" ng-click="api_types('sql')">SQL API</button>
+        <button class="btn btn-alt btn-lg outer_btn" ng-click="api_types('outer')">Outer API</button>
     </div>
 </div>
 
