@@ -1,3 +1,5 @@
+/// <reference path="Classes/EasyDB.js" />
+/// <reference path="Classes/EasyDB.js" />
 /*
 	{
 		"user": {
@@ -33,6 +35,8 @@ var session = require('express-session'),
 var usernames = {},
 	numUsers = 0;
 
+var EasyDB = require('./Classes/EasyDB.js');
+
 var configure = function (_config, _server, _secureServer, _session, _logger, _route) {
     config = _config;
     server = _server;
@@ -46,40 +50,30 @@ var configure = function (_config, _server, _secureServer, _session, _logger, _r
     io.adapter(redis(config.get('redis')));
     secureServer && (io.listen(secureServer));
 
-    db = dbconn(config.get('mongo'));
-};
+    //db = dbconn(config.get('mongo')); //--
+    var mongoconfig = config.get('mongo');
+    var userConfig = config.get('userConfig');
+    var path = mongoconfig.uri;
 
-var dbconn = function (option) {
-    var rs,
-		dbURL = url.parse(option.uri);;
-
-    !option && (option = {});
-    option.protocol = 'mongodb:';
-    option.pathname = '/pushServer';
-    option.slashes = true;
-    !option.host && (option.host = dbURL.host);
-    !option.port && (option.port = dbURL.port);
-
-    MongoClient.connect(url.format(option), function (err, _db) {
-        if (err) {
-            logger.exception.error(err);
-            rs = false;
-        }
-
-        rs = _db;
-    });
-
-    while (rs === undefined) {
-        require('deasync').runLoopOnce();
-    }
-    return rs;
+    db = new EasyDB(userConfig);
+    db.connect({ "url": path });
+    var path = mongoconfig.uri;
 };
 
 var Channel = require('./Classes/Channel.js');
 
+var nsp = [];
+
 var start = function () {
     var self = this;
     io.use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
+
+    var apps = db.listData('app');
+
+    for (var x in apps.list) {
+        var name = apps.list[x].name;
+        nsp[name] = io.of('/' + name);
+    };
 
     io.on('connection', function (socket) {
         var session = socket.handshake.session;
