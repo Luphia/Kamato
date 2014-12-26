@@ -11,13 +11,14 @@
 	}
  */
 
-var Collection = require('../Classes/Collection.js'),
-	Mongo = require('mongodb'),
-	url = require('url'),
-	Worker = require('../Classes/Worker.js'),
-	Client = Mongo.MongoClient,
-	dbURL,
-	defaultDB = "mongodb://127.0.0.1:27017/";
+var Collection = require('../Classes/Collection.js')
+,	Schema = require('../Classes/Schema.js')
+,	Mongo = require('mongodb')
+,	url = require('url')
+,	Worker = require('../Classes/Worker.js')
+,	Client = Mongo.MongoClient
+,	dbURL
+,	defaultDB = "mongodb://127.0.0.1:27017/";
 
 
 var parseCondition = function(ast) {
@@ -129,9 +130,8 @@ module.exports = function(logger) {
 			else {
 				var rs;
 				if(data.length > 0) {
-					rs = data[0];
-					delete rs._id;
-					if(typeof rs.strick == 'undefined') { rs.strick = true; }
+					var schema = new Schema(data[0]);
+					rs = schema.toJSON();
 				}
 				else {
 					rs = false;
@@ -143,17 +143,13 @@ module.exports = function(logger) {
 	,	newSchema = function(table, schema, callback) {
 		var rs
 		,	condition = { "name": table }
-		,	tableSchema = {
-			"name": table,
-			"max_serial_num": 0,
-			"columns": {}
-		};
-		for(var key in schema) {
-			if(key.indexOf('_', 0) == 0) { continue; }
-			tableSchema.columns[key] = schema[key];
-		}
+		,	tableSchema = new Schema(schema)
+		;
 
-		this.DB.collection('_tables').update(condition, tableSchema, {w:1, upsert: true}, function(err, data) {
+		tableSchema.setName(table);
+		tableSchema.setMaxSerialNum(0);
+
+		this.DB.collection('_tables').update(condition, tableSchema.toConfig(), {w:1, upsert: true}, function(err, data) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});
@@ -161,17 +157,9 @@ module.exports = function(logger) {
 	,	setSchema = function(table, schema, callback) {
 		var rs
 		,	condition = { "name": table }
-		,	tableSchema = {
-			"$set": {
-				"columns": {}
-			}
-		};
-		for(var key in schema) {
-			if(key.indexOf('_', 0) == 0) { continue; }
-			tableSchema.$set.columns[key] = schema[key];
-		}
+		,	tableSchema = new Schema(schema);
 
-		this.DB.collection('_tables').update(condition, tableSchema, {w:1, upsert: true}, function(err, data) {
+		this.DB.collection('_tables').update(condition, {"$set": tableSchema.toConfig()}, {w:1, upsert: true}, function(err, data) {
 			if(err) { callback(err); }
 			else { callback(err, true); }
 		});

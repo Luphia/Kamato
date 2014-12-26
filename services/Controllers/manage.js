@@ -7,14 +7,12 @@ var Result = require('../Classes/Result.js')
 , MDB
 
 , listTable = function (req, res, next) {
-    res.result = new Result();
-    var userID = req.session.userID;
+    var userID = req.session.simple._id;
     var data = connect(userID).listTable();
     res.result.response(next, 1, 'list all table', data);
 }
 , getSchema = function (req, res, next) {
-    res.result = new Result();
-    var userID = req.session.userID;
+    var userID = req.session.simple._id;
     var table = req.params.table;
     var data = connect(userID).getTable(table);
 
@@ -26,8 +24,7 @@ var Result = require('../Classes/Result.js')
     }
 }
 , flowData = function (req, res, next) {
-    res.result = new Result();
-    var userID = req.session.userID;
+    var userID = req.session.simple._id;
     var table = req.params.table;
     var query = req.query.q;
     var data = connect(userID).flowData(table, query);
@@ -40,8 +37,7 @@ var Result = require('../Classes/Result.js')
     }
 }
 , pageData = function (req, res, next) {
-    res.result = new Result();
-    var userID = req.session.userID;
+    var userID = req.session.simple._id;
     var table = req.params.table;
     var query = req.query.q;
     var data = connect(userID).pageData(table, query);
@@ -53,12 +49,17 @@ var Result = require('../Classes/Result.js')
         res.result.response(next, 1, 'table not found: ' + table);
     }
 }
-, postTable = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
+, postTable = function (req, res, next) {
+    var userID = req.session.simple._id;
+    var table = req.params.table;
+    var schema = req.body;
+    var rs = connect(userID).postTable(table, schema);
+    res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); 
+  }
 , putTable = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
 , delTable = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
 , getData = function (req, res, next) {
-    res.result = new Result();
-    var userID = req.session.userID;
+    var userID = req.session.simple._id;
     var table = req.params.table;
     var id = req.params.id;
     var data = connect(userID).getData(table, id);
@@ -71,8 +72,7 @@ var Result = require('../Classes/Result.js')
     }
 }
 , findData = function (req, res, next) {
-    res.result = new Result();
-    var userID = req.session.userID;
+    var userID = req.session.simple._id;
     var table = req.params.table;
     var query = req.body;
     var data = connect(userID).find(table, query);
@@ -85,8 +85,7 @@ var Result = require('../Classes/Result.js')
 , putData = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
 , delData = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
 , sql = function (req, res, next) {
-    res.result = new Result();
-    var userID = req.session.userID;
+    var userID = req.session.simple._id;
     var sql = req.body.sql || req.query.sql;
     var data = connect(userID).sql(sql);
 
