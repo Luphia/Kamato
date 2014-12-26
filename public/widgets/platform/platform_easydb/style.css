@@ -207,6 +207,15 @@
   font-size: 16px;
 }
 
+.ng-scope.platform .create_table_wrapper h3{
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.ng-scope.platform .create_table_wrapper h3 span{
+  font-size: 12px;
+}
+
 .ng-scope.platform .create_table_wrapper .submit_btn{
   margin-right: 30px;
 }
@@ -264,6 +273,12 @@
 @media screen and (max-width: 1410px){
   .ng-scope.platform .easydb_container > .col-md-9{
      margin-left: 40px;
+  }
+}
+
+@media screen and (max-width: 1024px){
+  .ng-scope.platform .create_table_wrapper .control-label{
+    margin: 0px;
   }
 }
 
