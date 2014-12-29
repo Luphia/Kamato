@@ -197,14 +197,18 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     };
 
     function update_users() {
-        Get_usersData();
-        $.plot($("#Users"), dataset_users, options1)
-        setTimeout(update_users, updateInterval);
+        if ($('.main-chart').length > 0) {
+            Get_usersData();
+            $.plot($("#Users"), dataset_users, options1)
+            setTimeout(update_users, updateInterval);
+        };
     };
     function update_networks() {
-        Get_networksData();
-        $.plot($("#Networks"), dataset_networks, options2)
-        setTimeout(update_networks, updateInterval);
+        if ($('.main-chart').length > 0) {
+            Get_networksData();
+            $.plot($("#Networks"), dataset_networks, options2)
+            setTimeout(update_networks, updateInterval);
+        };
     };
 
 });

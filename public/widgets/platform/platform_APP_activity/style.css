@@ -6,6 +6,11 @@
     text-align: center;
 }
 
+.main-chart {
+    width: 100%;
+    height: 250px;
+}
+
 .fai {
     font-size: 18px;
 }
