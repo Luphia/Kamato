@@ -241,7 +241,7 @@ function registerNamespace(name) {
         console.log("I am in namespace: " + nsp[name].name);
         nsps(socket, nsp[name].name)
         socket.on('data', function (data) {
-            socket.broadcast(data);
+            socket.broadcast.emit(data);
         });
         socket.on('disconnect', function () {
             console.log("I was in namespace: " + nsp[name].name);
