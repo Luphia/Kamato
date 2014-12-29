@@ -84,6 +84,20 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         });
 	}
 
+    $scope.edit_td = function(key, id, td){
+        $scope.id_td = id+td;  
+    }
+
+    // ++ 遇到tag不是input會停止
+    $scope.edit_finish = function(){  
+        console.log(event);
+        var e = event.target;
+        var next_e = e.parentNode.nextElementSibling.firstElementChild;
+        e.blur();
+
+        next_e.focus();
+        
+    }
 
     $scope.show_table = function(table_name, custom_table_rows, page_num){
         //要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 

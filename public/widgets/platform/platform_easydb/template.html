@@ -55,9 +55,9 @@
 								<th></th>
 							</tr>
 							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}">
-								<td ng-repeat="(key, value) in r">
-									<span ng-hide=" value =='json file'">{{value}}</span>
-									<a href="" ng-show= " value =='json file'" ng-click="show_json_file(r._id, key, default_view_table)" ng-class="{'table_clicked': t_json == r._id+key}">{{value}} </a>
+								<td ng-repeat="(key, value) in r" >
+									<input class="input_td" ng-disabled="key == '_id'" ng-click="edit_td(key, r._id, value)" ng-hide="value =='json file'" type="text" ng-model="r[key]" ng-enter="edit_finish()">
+									<a href="" ng-show= " value =='json file'" ng-click="show_json_file(r._id, key, default_valueiew_table)" ng-class="{'table_clicked': t_json == r._id+key}">{{value}}
 								</td>
 								<td>
 									<button class="btn btn-alt btn-block" ng-click="del_t_row(r)">Delete</button>

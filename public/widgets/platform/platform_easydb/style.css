@@ -201,6 +201,18 @@
   background-color: rgba(215, 40, 40, 0.9);
 }
 
+.ng-scope.platform .easydb_container .input_td{
+  background-color: rgba(0,0,0,0);
+  border: none; 
+  cursor: default;
+}
+
+.ng-scope.platform .easydb_container .db_table input:focus{
+  background-color: rgba(0,0,0,0);
+  border: 1px rgba(256,256,256,0.7) solid;
+  padding: 5px;
+}
+
 /* =================== create table ===================*/
 
 .ng-scope.platform .create_table_wrapper .form-group .control-label{
