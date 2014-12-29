@@ -1,25 +1,4 @@
 Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, ngDialog, $rootScope) {
-
-
-    //var plot;
-    //var data = [{ data: [] }];
-    //var options = {
-    //    series: {
-    //        lines: { show: true },
-    //        points: { show: false }
-    //    },
-    //    xaxis: {
-    //        mode: "time",
-    //        timezone: "browser"
-    //    }
-    //};
-
-    //$scope.init = function () {
-    //    plot = $.plot("#Request", data, options);
-    //    //plot.setupGrid();
-    //    //plot.draw();
-    //    fetchData();
-    //};
     //隨機產生
     function getRandom(minNum, maxNum) {	//取得 minNum(最小值) ~ maxNum(最大值) 之間的亂數
         return Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
@@ -44,86 +23,47 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         return rdmArray;
     };
 
-    //var iteration = 0;
-
-    //function fetchData() {
-    //    ++iteration;
-
-    //    var time = Math.floor((new Date()).getTime() / 1000) * 1000;
-    //    var dd = [time, getRandom(0, 200)];
-    //    data[0].data.push(dd);
-    //    plot = $.plot("#Request", data, options);
-    //    plot.setData([
-    //      {
-    //          label: '每10秒更新',
-    //          data: data[0].data,
-    //      }
-    //    ]);
-    //    plot.setupGrid();
-    //    plot.draw();
-
-    //    //function onDataReceived(series) {
-    //    //    data[0].data.push(series);
-    //    //    $.plot("#Request", data, options);
-    //    //}
-
-    //    //var time = Math.floor((new Date()).getTime() / 1000) * 1000;
-    //    //var dd = [time, getRandom(0, 200)];
-
-    //    //onDataReceived(dd);
-
-    //    if (iteration < 600) {
-    //        setTimeout(fetchData, 1000);
-    //    } else {
-    //        //data = [];
-    //        //alreadyFetched = {};
-    //    }
-    //}
-
-
     // ====================== APP管理 top======================
     $scope.app_oper = [
 		// {'tip': 'Home', 'icon': 'sa-list-home'},
 		{ 'tip': 'Back', 'icon': 'sa-list-back', 'link': '#/platform/APP' },
-		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder' },
 		{ 'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP_activity' },
 		{ 'tip': 'Info.', 'icon': 'sa-list-info', 'link': '#/platform/APP_info' },		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
+ 		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder' },
     ];
     // ====================== APP管理 bottom======================
 
     var data = [];
     var dataset;
-    var totalPoints = 590;
     var updateInterval = 1000;
-    //var now = new Date().getTime();
 
     $scope.init = function () {
         Get600Data();
         dataset = [{ label: "線上用戶量", data: data }];
-        $.plot($("#Request"), dataset, options);
+        $.plot($("#Users"), dataset, options);
         update();
     };
 
     function Get600Data() {
         data.shift();
-        var now = 1419660013792;
+
+        var myDate = new Date().getTime();
+        var wanttime = myDate - (10 * 60 * 1000);
+        wanttime = new Date(wanttime).getTime();
 
         for (var i = 0; i < 600; i++) {
-            var y = getRandom(0, 100);
-            var temp = [now += 1000, y];
+            var y = getRandom(0, 1000);
+            var temp = [wanttime += 1000, y];
             data.push(temp);
         };
-        console.log(data)
     };
 
     function GetData() {
         data.shift();
-        while (data.length < totalPoints) {
-            var y = getRandom(0, 100);
-            var now = new Date().getTime();
-            var temp = [now, y];
-            data.push(temp);
-        };
+        var y = getRandom(0, 1000);
+        var now = new Date()//.getTime();
+        var temp = [now, y];
+        data.push(temp);
     };
 
     var options = {
@@ -131,11 +71,13 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             lines: {
                 show: true,
                 lineWidth: 1.2,
-                fill: true
+                fill: true,
+                shadowSize: 0
             }
         },
         xaxis: {
             mode: "time",
+            //tickSize: [10, "second"],
             tickFormatter: function (v, axis) {
                 var date = new Date(v);
                 if (date.getSeconds() % 10 == 0) {
@@ -146,12 +88,22 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
                 } else {
                     return "";
                 };
+            },
+            font: {
+                lineHeight: 13,
+                style: "normal",
+                color: "rgba(255,255,255,0.8)",
             }
         },
         yaxis: {
             tickFormatter: function (v, axis) {
-                return v + "位";
+                return v + "";
             },
+            font: {
+                lineHeight: 13,
+                style: "normal",
+                color: "rgba(255,255,255,0.8)",
+            }
         },
         legend: {
             labelBoxBorderColor: "#fff"
@@ -160,7 +112,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     function update() {
         GetData();
-        $.plot($("#Request"), dataset, options)
+        $.plot($("#Users"), dataset, options)
         setTimeout(update, updateInterval);
     };
 

@@ -3,9 +3,9 @@ Kamato.register.controller('appCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.app_oper = [
 		// {'tip': 'Home', 'icon': 'sa-list-home'},
 		{ 'tip': 'Back', 'icon': 'sa-list-back', 'link': '#/platform/APP' },
-		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP/folder' },
-		{ 'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP/activity' },
+	    { 'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP/activity' },
 		{ 'tip': 'Info.', 'icon': 'sa-list-info', 'link': '#/platform/APP/info' },
+	    { 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP/folder' },
 		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
     ];
 

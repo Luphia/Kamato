@@ -14,7 +14,7 @@
                     </div>
                 </header>
                 <div>
-                    <a href="#/platform/APP_folder" class="media appList" ng-repeat="item in appList | filter:appSearch">
+                    <a href="#/platform/APP_activity" class="media appList" ng-repeat="item in appList | filter:appSearch">
                         <div class="appIcon"></div>
                         <div class="appName">{{item.name}}</div>
                         <div class="btn btn-alt pull-right" ng-click="$event.preventDefault(); del_app(item);">Delete</div>

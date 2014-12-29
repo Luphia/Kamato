@@ -3,9 +3,9 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
 	$scope.app_oper = [
 		// {'tip': 'Home', 'icon': 'sa-list-home'},
 		{'tip': 'Back', 'icon': 'sa-list-back', 'link': '#/platform/APP'},
-		{'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder'},
 		{'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP_activity'},
 		{'tip': 'Info.', 'icon': 'sa-list-info','link': '#/platform/APP_info'},
+		{'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder'},
 		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
 	];
 
