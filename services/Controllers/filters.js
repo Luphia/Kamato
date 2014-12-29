@@ -41,6 +41,10 @@ module.exports = {
 		else if(_req.originalUrl.startsWith('/oauth/renew/')) {
 			module.exports.oauth2(_req, _res, _next, 'renew');
 		}
+		else if(_req.originalUrl.startsWith('/manage/')) {
+			!_req.session.simple && (_req.session.simple = {});
+			_next();
+		}
 		else {
 			_next();
 		}
