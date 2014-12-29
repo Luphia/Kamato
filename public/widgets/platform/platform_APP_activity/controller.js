@@ -32,47 +32,127 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
  		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder' },
     ];
     // ====================== APP管理 bottom======================
+    $scope.app_info = [
+        {
+            online: '123456',
+            total: '987654321',
+            network: { in: '00', out: '00' },
+            online_history: '12345',
+            network_history: { in: '00', out: '00' }
+        }
+    ];
+    var users_data = []
+    var dataset_users;
 
-    var data = [];
-    var dataset;
+    var networks_datain = [];
+    var networks_dataout = [];
+
+    var dataset_networks;
+
     var updateInterval = 1000;
 
     $scope.init = function () {
         Get600Data();
-        dataset = [{ label: "線上用戶量", data: data }];
-        $.plot($("#Users"), dataset, options);
-        update();
+
+        dataset_users = [{ label: "線上用戶", data: users_data }];
+        $.plot($("#Users"), dataset_users, options1);
+        update_users();
+
+        dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
+        $.plot($("#Networks"), dataset_networks, options2);
+        update_networks();
     };
 
     function Get600Data() {
-        data.shift();
-
+        users_data.shift();
         var myDate = new Date().getTime();
-        var wanttime = myDate - (10 * 60 * 1000);
+        var wanttime = myDate - (5 * 60 * 1000);
         wanttime = new Date(wanttime).getTime();
-
-        for (var i = 0; i < 600; i++) {
-            var y = getRandom(0, 1000);
+        for (var i = 0; i < 300; i++) {
+            var y = getRandom(0, 5000);
             var temp = [wanttime += 1000, y];
-            data.push(temp);
+            users_data.push(temp);
+            networks_datain.push(temp);
+            networks_dataout.push(temp);
         };
     };
 
-    function GetData() {
-        data.shift();
-        var y = getRandom(0, 1000);
+    function Get_usersData() {
+        users_data.shift();
+        var y = getRandom(4000, 5000);
         var now = new Date()//.getTime();
         var temp = [now, y];
-        data.push(temp);
+        users_data.push(temp);
     };
 
-    var options = {
+    function Get_networksData() {
+        networks_datain.shift();
+        networks_dataout.shift();
+        var y = getRandom(0, 3000);
+        var now = new Date()//.getTime();
+        var temp = [now, y];
+        networks_datain.push(temp);
+        networks_dataout.push(temp);
+    };
+
+    var options1 = {
         series: {
             lines: {
                 show: true,
                 lineWidth: 1.2,
                 fill: true,
                 shadowSize: 0
+            }
+        },
+        colors: ['rgba(255,255,255,1)'],
+        xaxis: {
+            mode: "time",
+            //tickSize: [10, "second"],
+            tickFormatter: function (v, axis) {
+                var date = new Date(v);
+                if (date.getSeconds() % 10 == 0) {
+                    var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                    var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                    var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+                    return minutes + ":" + seconds;
+                } else {
+                    return "";
+                };
+            },
+            font: {
+                lineHeight: 13,
+                style: "normal",
+                color: "rgba(255,255,255,1)",
+            }
+        },
+        yaxis: {
+            tickFormatter: function (v, axis) {
+                return v + "";
+            },
+            font: {
+                lineHeight: 13,
+                style: "normal",
+                color: "rgba(255,255,255,1)",
+            }
+        },
+        legend: {
+            labelBoxBorderColor: "#fff"
+        },
+        grid: {
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.25)',
+            labelMargin: 10,
+            mouseActiveRadius: 6,
+        },
+    };
+
+    var options2 = {
+        series: {
+            lines: {
+                show: true,
+                lineWidth: 1.2,
+                fill: 1,
+                fillColor: { colors: [{ opacity: 1.0 }, { opacity: 1.0 }] }
             }
         },
         xaxis: {
@@ -92,7 +172,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             font: {
                 lineHeight: 13,
                 style: "normal",
-                color: "rgba(255,255,255,0.8)",
+                color: "rgba(255,255,255,1)",
             }
         },
         yaxis: {
@@ -102,18 +182,29 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             font: {
                 lineHeight: 13,
                 style: "normal",
-                color: "rgba(255,255,255,0.8)",
+                color: "rgba(255,255,255,1)",
             }
         },
         legend: {
             labelBoxBorderColor: "#fff"
-        }
+        },
+        grid: {
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.25)',
+            labelMargin: 10,
+            mouseActiveRadius: 6,
+        },
     };
 
-    function update() {
-        GetData();
-        $.plot($("#Users"), dataset, options)
-        setTimeout(update, updateInterval);
+    function update_users() {
+        Get_usersData();
+        $.plot($("#Users"), dataset_users, options1)
+        setTimeout(update_users, updateInterval);
+    };
+    function update_networks() {
+        Get_networksData();
+        $.plot($("#Networks"), dataset_networks, options2)
+        setTimeout(update_networks, updateInterval);
     };
 
 });

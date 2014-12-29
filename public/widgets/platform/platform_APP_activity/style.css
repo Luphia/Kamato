@@ -1,0 +1,11 @@
+[class^="fa-"], [class*=" fa-"] {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    margin: 10px;
+    text-align: center;
+}
+
+.fai {
+    font-size: 18px;
+}
