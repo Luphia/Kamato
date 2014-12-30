@@ -37,6 +37,9 @@ var usernames = {},
 
 var EasyDB = require('./Classes/EasyDB.js');
 
+//demo
+var socketc = require('socket.io-client');
+
 var configure = function (_config, _server, _secureServer, _session, _logger, _route) {
     config = _config;
     server = _server;
@@ -230,13 +233,15 @@ function nsps(socket, chanel) {
         socket.channel.splice(socket.channel.indexOf(room), 1);
     });
 
+    //emit channel data
     socket.on('data', function (data) {
         socket.broadcast.emit('data', data);
     });
 
-    socket.on('disconnect', function () {
-        console.log("I was in namespace: " + nsp[name].name);
+    socket.on('summary', function (data) {
+        socket.broadcast.emit('summary', data);
     });
+
 
 };
 
@@ -244,12 +249,17 @@ var nsp = [];
 
 function registerNamespace(name) {
     nsp[name] = io.of(name);
-    nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
+  //  nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
 
     nsp[name].on('connection', function (socket) {
         console.log("I am in namespace: " + nsp[name].name);
         nsps(socket, nsp[name].name)
+        socket.on('disconnect', function () {
+            console.log("I was in namespace: " + nsp[name].name);
+        });
     });
+
+
 }
 
 var start = function () {
