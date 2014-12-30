@@ -136,29 +136,29 @@ Kamato.config(function($controllerProvider, $compileProvider, $filterProvider, $
 			}
 		}
 	}).
+    when('/platform/APP/:app/:widget', {
+        templateUrl: function (path) {
+            return './widgets/platform/platform_' + path.widget + '/template.html';
+        },
+
+        resolve: {
+            load: function ($q, $route, $rootScope) {
+                var deferred = $q.defer();
+                var dependencies = ['./widgets/platform/platform_' + $route.current.params.widget + '/controller.js'];
+
+                loadCss('./widgets/platform/platform_' + $route.current.params.widget + '/style.css');
+
+                $script(dependencies, function () {
+                    $rootScope.$apply(function () {
+                        deferred.resolve();
+                    });
+                });
+
+                return deferred.promise;
+            }
+        }
+    }).
 	when('/APP/:widget', {
-		templateUrl: function(path) {
-			return './widgets/platform/platform_' + path.widget + '/template.html';
-		},
-
-		resolve: {
-			load: function($q, $route, $rootScope) {
-				var deferred = $q.defer();
-				var dependencies = ['./widgets/platform/platform_' + $route.current.params.widget + '/controller.js'];
-
-				loadCss('./widgets/platform/platform_' + $route.current.params.widget + '/style.css');
-
-				$script(dependencies, function () {
-					$rootScope.$apply(function() {
-						deferred.resolve();
-					});
-				});
-
-				return deferred.promise;
-			}
-		}
-	}).
-	when('/platform/:widget', {
 		templateUrl: function(path) {
 			return './widgets/platform/platform_' + path.widget + '/template.html';
 		},
