@@ -50,17 +50,20 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     var dataset_networks;
 
     var updateInterval = 1000;
+    var t1;
 
     $scope.init = function () {
+        clearTimeout(t1);
+
         Get600Data();
 
         dataset_users = [{ label: "線上用戶", data: users_data }];
         $.plot($("#Users"), dataset_users, options1);
-        update_users();
 
         dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
         $.plot($("#Networks"), dataset_networks, options2);
-        update_networks();
+
+        t1 = setTimeout(update, updateInterval);
     };
 
     function Get600Data() {
@@ -69,7 +72,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         var wanttime = myDate - (5 * 60 * 1000);
         wanttime = new Date(wanttime).getTime();
         for (var i = 0; i < 300; i++) {
-            var y = getRandom(0, 5000);
+            var y = getRandom(0, 3000);
             var temp = [wanttime += 1000, y];
             users_data.push(temp);
             networks_datain.push(temp);
@@ -79,7 +82,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     function Get_usersData() {
         users_data.shift();
-        var y = getRandom(4000, 5000);
+        var y = getRandom(0, 3000);
         var now = new Date()//.getTime();
         var temp = [now, y];
         users_data.push(temp);
@@ -104,7 +107,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
                 shadowSize: 0
             }
         },
-        colors: ['rgba(255,255,255,1)'],
+        colors: ['rgba(255,255,255,0.3)'],
         xaxis: {
             mode: "time",
             //tickSize: [10, "second"],
@@ -152,7 +155,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
                 show: true,
                 lineWidth: 1.2,
                 fill: 1,
-                fillColor: { colors: [{ opacity: 1.0 }, { opacity: 1.0 }] }
+                fillColor: { colors: [{ opacity: 0.3 }, { opacity: 0.3 }] }
             }
         },
         xaxis: {
@@ -196,18 +199,14 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         },
     };
 
-    function update_users() {
+    function update() {
         if ($('.main-chart').length > 0) {
             Get_usersData();
             $.plot($("#Users"), dataset_users, options1)
-            setTimeout(update_users, updateInterval);
-        };
-    };
-    function update_networks() {
-        if ($('.main-chart').length > 0) {
+
             Get_networksData();
             $.plot($("#Networks"), dataset_networks, options2)
-            setTimeout(update_networks, updateInterval);
+            t1 = setTimeout(update, updateInterval);
         };
     };
 
