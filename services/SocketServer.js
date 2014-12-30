@@ -37,9 +37,6 @@ var usernames = {},
 
 var EasyDB = require('./Classes/EasyDB.js');
 
-//demo
-var socketc = require('socket.io-client');
-
 var configure = function (_config, _server, _secureServer, _session, _logger, _route) {
     config = _config;
     server = _server;
@@ -67,10 +64,10 @@ var Channel = require('./Classes/Channel.js');
 
 function nsps(socket, chanel) {
     var session = socket.handshake.session;
-   // console.log(socket.handshake.sessionID);//--
-   // console.log(session.text);//--
-   // console.log(session.ip);//--
-   // console.log(config.get('Mail'));//--
+    console.log(socket.handshake.sessionID);//--
+    console.log(session.text);//--
+    console.log(session.ip);//--
+    console.log(config.get('Mail'));//--
 
     var cl = new Channel({ channel: chanel, room: 'once', socket: socket, io: io, auto: true }, config.get('Mail'));
     console.log(cl.channel)
@@ -249,7 +246,7 @@ var nsp = [];
 
 function registerNamespace(name) {
     nsp[name] = io.of(name);
-  //  nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
+    nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
 
     nsp[name].on('connection', function (socket) {
         console.log("I am in namespace: " + nsp[name].name);
