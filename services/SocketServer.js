@@ -67,10 +67,10 @@ var Channel = require('./Classes/Channel.js');
 
 function nsps(socket, chanel) {
     var session = socket.handshake.session;
-    console.log(socket.handshake.sessionID);//--
-    console.log(session.text);//--
-    console.log(session.ip);//--
-    console.log(config.get('Mail'));//--
+   // console.log(socket.handshake.sessionID);//--
+   // console.log(session.text);//--
+   // console.log(session.ip);//--
+   // console.log(config.get('Mail'));//--
 
     var cl = new Channel({ channel: chanel, room: 'once', socket: socket, io: io, auto: true }, config.get('Mail'));
     console.log(cl.channel)
