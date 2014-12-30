@@ -1,4 +1,4 @@
-Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, ngDialog, $rootScope, $timeout) {
+Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, ngDialog, $rootScope, $timeout, $routeParams) {
     //隨機產生
     function getRandom(minNum, maxNum) {	//取得 minNum(最小值) ~ maxNum(最大值) 之間的亂數
         return Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
@@ -51,6 +51,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     var updateInterval = 1000;
     var t1;
+    var socket;
 
     //when leave this page than clear timer
     $scope.$on("$destroy", function () {
@@ -60,15 +61,20 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     });
 
     $scope.init = function () {
-        Get600Data();
+        socket = io.connect('/' + $routeParams.APP);
 
-        dataset_users = [{ label: "線上用戶", data: users_data }];
-        $.plot($("#Users"), dataset_users, options1);
+        socket.on('connect', function () {
+            Get600Data();
 
-        dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
-        $.plot($("#Networks"), dataset_networks, options2);
+            dataset_users = [{ label: "線上用戶", data: users_data }];
+            $.plot($("#Users"), dataset_users, options1);
 
-        t1 = $timeout(update, updateInterval);
+            dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
+            $.plot($("#Networks"), dataset_networks, options2);
+
+            t1 = $timeout(update, updateInterval);
+        });
+
     };
 
     function Get600Data() {

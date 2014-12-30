@@ -136,7 +136,7 @@ Kamato.config(function($controllerProvider, $compileProvider, $filterProvider, $
 			}
 		}
 	}).
-    when('/platform/APP/:app/:widget', {
+    when('/platform/APP/:APP/:widget', {
         templateUrl: function (path) {
             return './widgets/platform/platform_' + path.widget + '/template.html';
         },
