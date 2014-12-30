@@ -229,6 +229,15 @@ function nsps(socket, chanel) {
         socket.leave(room);
         socket.channel.splice(socket.channel.indexOf(room), 1);
     });
+
+    socket.on('data', function (data) {
+        socket.broadcast.emit('data', data);
+    });
+
+    socket.on('disconnect', function () {
+        console.log("I was in namespace: " + nsp[name].name);
+    });
+
 };
 
 var nsp = [];
@@ -240,12 +249,6 @@ function registerNamespace(name) {
     nsp[name].on('connection', function (socket) {
         console.log("I am in namespace: " + nsp[name].name);
         nsps(socket, nsp[name].name)
-        socket.on('data', function (data) {
-            socket.broadcast.emit('data', data);
-        });
-        socket.on('disconnect', function () {
-            console.log("I was in namespace: " + nsp[name].name);
-        });
     });
 }
 
