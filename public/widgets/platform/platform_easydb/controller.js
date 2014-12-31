@@ -116,9 +116,16 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         $scope.id_td = id+td;  
     }
 
-    // ++ 遇到tag不是input會停止
-    $scope.edit_finish = function(){  
-        console.log(event);
+    // ++ 需要避開delete btn
+    $scope.edit_finish = function(id, edited_key, row){ 
+        var temp_array =[];
+        var temp_json = {};
+        temp_json[edited_key] = row[edited_key];
+        temp_array.push(temp_json);
+
+        $http.put(db_link+viewing_table+'/'+id, temp_array[0]).success(function(edited_data_msg){
+            console.log(edited_data_msg);
+        })
         var e = event.target;
         var next_e = e.parentNode.nextElementSibling.firstElementChild;
         e.blur();
