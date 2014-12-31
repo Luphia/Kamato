@@ -103,7 +103,12 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     $scope.sch_type_click = function(schema_name, type){
-        $scope.t_head[schema_name] = type;
+        if(schema_name == '_id'){
+            $scope.t_head[schema_name] = 'Number';
+        }
+        else{
+            $scope.t_head[schema_name] = type;    
+        }
         $scope.sch_name = '';
         console.log($scope.t_head); 
         $http.put(db_link+viewing_table, $scope.t_head).
