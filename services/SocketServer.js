@@ -253,6 +253,7 @@ function registerNamespace(name) {
     // nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
 
     nsp[name].on('connection', function (socket) {
+        socket.broadcast.emit('enter');
         logger.info.info("I am in namespace: " + nsp[name].name);
         nsps(socket, nsp[name].name)
     });
