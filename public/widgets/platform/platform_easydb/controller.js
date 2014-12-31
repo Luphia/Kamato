@@ -105,9 +105,10 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     $scope.sch_type_click = function(schema_name, type){
         $scope.t_head[schema_name] = type;
         $scope.sch_name = '';
-        $http.put(db_link+viewing_table).
+        console.log($scope.t_head); 
+        $http.put(db_link+viewing_table, $scope.t_head).
         success(function(page_schema){  
-            page_schema.data.columns = $scope.t_head;
+            console.log(page_schema);
         });
     }
 
@@ -180,6 +181,11 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     $scope.del_table = function(){
     	var next_table_index = $scope.tables.indexOf(delete_table_name)+1;
     	var next_table = $scope.tables[next_table_index];
+
+        $http.delete(db_link+delete_table_name).success(function(del_msg){
+            console.log(del_msg);
+        })
+
     	$scope.tables.splice($scope.tables.indexOf(delete_table_name),1);  //從table list移除
         if (delete_table_name == viewing_table){
         	$scope.table_click(next_table, 15, 1);   //畫面換到下一個table的內容    
@@ -287,6 +293,10 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         $scope.submit_col_sche["columns"] = temp;
         //頁面更換     
         $scope.change_page = false;
+
+        $http.post(db_link/$scope.table_name).success(function(post_table_msg){
+            console.log(post_table_msg);
+        })
     }
 
     $scope.del_col_sche = function(key){
