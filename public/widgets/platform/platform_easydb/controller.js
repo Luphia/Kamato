@@ -103,9 +103,12 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     $scope.sch_type_click = function(schema_name, type){
-        $scope.schName_type = schema_name+type;
         $scope.t_head[schema_name] = type;
         $scope.sch_name = '';
+        $http.put(db_link+viewing_table).
+        success(function(page_schema){  
+            page_schema.data.columns = $scope.t_head;
+        });
     }
 
     $scope.edit_td = function(key, id, td){
