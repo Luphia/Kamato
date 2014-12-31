@@ -27,9 +27,9 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     $scope.app_oper = [
 		// {'tip': 'Home', 'icon': 'sa-list-home'},
 		{ 'tip': 'Back', 'icon': 'sa-list-back', 'link': '#/platform/APP' },
-		{ 'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/' + $routeParams.APP + '/APP_activity' },
-		{ 'tip': 'Info.', 'icon': 'sa-list-info', 'link': '#/platform/APP_info' },		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
- 		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder' },
+		{ 'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP/' + $routeParams.APP + '/APP_activity' },
+		{ 'tip': 'Info.', 'icon': 'sa-list-info', 'link': '#/platform/APP/' + $routeParams.APP + '/APP_info' },		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
+ 		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP/' + $routeParams.APP + '/APP_folder' },
     ];
     // ====================== APP管理 bottom======================
     $scope.app_info = [
@@ -50,32 +50,33 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     var dataset_networks;
 
     var updateInterval = 1000;
-    var t1;
-    var socket;
+    var t1, t2;
 
     //when leave this page than clear timer
     $scope.$on("$destroy", function () {
+        socket.disconnect();
+        socket.removeAllListeners();
         if (t1) {
             $timeout.cancel(t1);
         };
-        socket.disconnect();
+    });
+
+    var socket = io('/' + $routeParams.APP, { autoConnect: false });
+    socket.on('connect', function () {
+        console.log('123')
+        update();
+    });
+    socket.on('disconnect', function (data) {
+        //socket.connect();
     });
 
     $scope.init = function () {
-        socket = io.connect('/' + $routeParams.APP);
-
-        socket.on('connect', function () {
-            Get600Data();
-
-            dataset_users = [{ label: "線上用戶", data: users_data }];
-            $.plot($("#Users"), dataset_users, options1);
-
-            dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
-            $.plot($("#Networks"), dataset_networks, options2);
-
-            t1 = $timeout(update, updateInterval);
-        });
-
+        Get600Data();
+        dataset_users = [{ label: "線上用戶", data: users_data }];
+        $.plot($("#Users"), dataset_users, options1);
+        dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
+        $.plot($("#Networks"), dataset_networks, options2);
+        socket.connect();
     };
 
     function Get600Data() {

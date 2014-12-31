@@ -63,15 +63,17 @@ var configure = function (_config, _server, _secureServer, _session, _logger, _r
 var Channel = require('./Classes/Channel.js');
 
 function nsps(socket, chanel) {
-    var session = socket.handshake.session;
-    console.log(socket.handshake.sessionID);//--
-    console.log(session.text);//--
-    console.log(session.ip);//--
-    console.log(config.get('Mail'));//--
+
+    //var session = socket.handshake.session;
+    //console.log(socket.handshake.sessionID);//--
+    //console.log(session.text);//--
+    //console.log(session.ip);//--
+    //console.log(config.get('Mail'));//--
 
     var cl = new Channel({ channel: chanel, room: 'once', socket: socket, io: io, auto: true }, config.get('Mail'));
-    console.log(cl.channel)
-    console.log(cl.sID())
+  //  console.log(cl.channel)
+  //  console.log(cl.sID())
+
     //console.log(cl.watchallroom())
     //cl.changeroom('ffe', function (cb) {
     //    if (cb == true) {
@@ -230,13 +232,15 @@ function nsps(socket, chanel) {
         socket.channel.splice(socket.channel.indexOf(room), 1);
     });
 
+    //emit channel data
     socket.on('data', function (data) {
         socket.broadcast.emit('data', data);
     });
 
-    socket.on('disconnect', function () {
-        console.log("I was in namespace: " + nsp[name].name);
+    socket.on('summary', function (data) {
+        socket.broadcast.emit('summary', data);
     });
+
 
 };
 
@@ -244,17 +248,23 @@ var nsp = [];
 
 function registerNamespace(name) {
     nsp[name] = io.of(name);
-    nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
+   // nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
 
     nsp[name].on('connection', function (socket) {
         console.log("I am in namespace: " + nsp[name].name);
         nsps(socket, nsp[name].name)
+        socket.on('disconnect', function () {
+            console.log("I was in namespace: " + nsp[name].name);
+        });
     });
+
+
 }
 
 var start = function () {
     var self = this;
     var apps = db.listData('app');
+   // registerNamespace('/');
 
     for (var x in apps.list) {
         var name = apps.list[x].name;
