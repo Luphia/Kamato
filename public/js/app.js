@@ -58,7 +58,6 @@ function loadCss(url) {
 var Kamato = angular.module('Kamato', [
 	'ngRoute',
 	'KamatoControllers',
-	'socket-io',
 	'google-maps',
 	'luegg.directives'
 ]);
