@@ -264,10 +264,10 @@ module.exports = function(logger) {
 		var todo = 2;
 		var done = function(err) {
 			todo--;
-			if(todo <= 0) { return false; }
+			if(todo < 0) { return false; }
 
 			if(err) { callback(err); todo = 0; }
-			else if(todo <= 0) { callback(err, true); }
+			else if(todo == 0) { callback(err, true); }
 		};
 		this.DB.collection('_tables').findAndModify(
 			{name: table}, [], {}, {remove: true}, done

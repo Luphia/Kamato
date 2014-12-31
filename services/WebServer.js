@@ -84,7 +84,7 @@ var start = function() {
 	app.set('view engine', 'jade');
 	app.engine('html', require('ejs').renderFile);
 
-	//app.use(log4js.connectLogger(logger.info, { level: log4js.levels.INFO }));
+	app.use(log4js.connectLogger(logger.info, { level: log4js.levels.INFO }));
 	//app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(bodyParser.json());
