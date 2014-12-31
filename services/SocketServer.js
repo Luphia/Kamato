@@ -241,7 +241,10 @@ function nsps(socket, chanel) {
         socket.broadcast.emit('summary', data);
     });
 
-
+    socket.on('disconnect', function () {
+        console.log("aaI was in namespace: " + chanel);
+        logger.info.info("aaI was in namespace: " + chanel);
+    });
 };
 
 var nsp = [];
