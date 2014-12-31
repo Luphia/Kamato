@@ -69,7 +69,7 @@ var Result = require('../Classes/Result.js')
     var userID = req.session.simple._id;
     var table = req.params.table;
     var schema = req.body;
-    var rs = connect(userID).postTable(table, schema);
+    var rs = connect(userID).deleteTable(table, schema);
     var pass = "Delete table: " + table;
     res.result.response(next, 1, pass); 
 }
