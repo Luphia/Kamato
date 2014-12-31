@@ -84,6 +84,30 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         });
 	}
 
+    $scope.sch_click = function(name){  
+        if($scope.sch_name  == name){
+            $scope.sch_name = '';
+        }
+        else{
+            $scope.sch_name = name;
+        }
+    }
+
+    $scope.sch_menu_click = function(schema_name){
+        if($scope.selected_sch_menu == schema_name){
+            $scope.selected_sch_menu = '';
+        }
+        else{ 
+            $scope.selected_sch_menu = schema_name;
+        }
+    }
+
+    $scope.sch_type_click = function(schema_name, type){
+        $scope.schName_type = schema_name+type;
+        $scope.t_head[schema_name] = type;
+        $scope.sch_name = '';
+    }
+
     $scope.edit_td = function(key, id, td){
         $scope.id_td = id+td;  
     }
@@ -94,9 +118,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         var e = event.target;
         var next_e = e.parentNode.nextElementSibling.firstElementChild;
         e.blur();
-
         next_e.focus();
-        
     }
 
     $scope.show_table = function(table_name, custom_table_rows, page_num){
@@ -110,10 +132,16 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         var new_page_first_index = custom_table_rows*(page_num-1);
         var total_data = custom_table_rows;
 
+        $http.get(db_link+table_name).
+        success(function(page_schema){
+            page_schema.data.columns['_id'] = 'Number';
+            $scope.t_head = page_schema.data.columns;
+        });
+
         $http.get(db_link+table_name+"/?q=limit "+new_page_first_index+','+custom_table_rows).
         success(function(page_schema){
             var t_d_temp = page_schema.data.list;
-            $scope.t_head = page_schema.data.list[0];
+            // $scope.t_head = page_schema.data.list[0];
             if( Object.keys(page_schema.data.list[0] || {}).length == 0){
                 //空物件
                 $scope.t_d = {};

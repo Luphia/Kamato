@@ -51,6 +51,21 @@
 							<tr>
 								<th ng-repeat="(key,value) in t_head">
 									{{key}}
+									<div class="th_option">
+										<span ng-click="sch_click(key)">...</span> 
+										<div class="th_opt_list" ng-show="key == sch_name">
+											<ul>
+												<li class="sch_type" ng-click="sch_menu_click(key)" ng-class="{'sch_menu_select': key == selected_sch_menu}">Schema type</li>
+													<ul class="sch_type_list" ng-show="key == selected_sch_menu">
+														<li ng-repeat="s in schema_type" ng-click="sch_type_click(key, s.type)" ng-class="{'sch_type_selected': s.type == value}">{{s.type}}</li>
+													</ul>
+												<li class="del_sch">Remove Column</li>
+												<div class="sch_type_icon"></div>
+											</ul>
+										</div>
+										<!-- <select class="form-control" ng-model="th_sch" ng-options="shc.type as shc.type for shc in schema_type">
+										</select> -->
+									</div>
 								</th>
 								<th></th>
 							</tr>
