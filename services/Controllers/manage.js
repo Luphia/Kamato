@@ -54,8 +54,15 @@ var Result = require('../Classes/Result.js')
     var table = req.params.table;
     var schema = req.body;
     var rs = connect(userID).postTable(table, schema);
-    var pass = "Add new table: " + table;
-    res.result.response(next, 1, pass); 
+    var pass;
+    if(rs) {
+        pass = "Add new table: " + table;
+        res.result.response(next, 1, pass);
+    }
+    else {
+        pass = "Table already exist: " + table;
+        res.result.response(next, 0, pass); 
+    }
   }
 , putTable = function (req, res, next) {
     var userID = req.session.simple._id;
