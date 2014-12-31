@@ -4,8 +4,8 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
 		// {'tip': 'Home', 'icon': 'sa-list-home'},
 		{ 'tip': 'Back', 'icon': 'sa-list-back', 'link': '#/platform/APP' },
 		{ 'tip': 'Activity', 'icon': 'sa-list-activity', 'link': '#/platform/APP/' + $routeParams.APP + '/APP_activity' },
-		{ 'tip': 'Info.', 'icon': 'sa-list-info', 'link': '#/platform/APP_info' },
-		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP_folder' },
+		{ 'tip': 'Info.', 'icon': 'sa-list-info', 'link': '#/platform/APP/' + $routeParams.APP + '/APP_info' },
+		{ 'tip': 'Folder', 'icon': 'sa-list-folder', 'link': '#/platform/APP/' + $routeParams.APP + '/APP_folder' },
 		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
     ];
 
