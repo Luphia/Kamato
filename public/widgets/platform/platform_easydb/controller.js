@@ -293,19 +293,30 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         $scope.submit_col_sche["columns"] = temp;
         //頁面更換     
         $scope.change_page = false;
-
-        $http.post(db_link/$scope.table_name).success(function(post_table_msg){
+        $http.post(db_link+$scope.table_name, $scope.submit_col_sche)
+        .success(function(post_table_msg){
             console.log(post_table_msg);
+             $http.get(db_link).
+            success(function(db) {
+                console.log(db)
+                $scope.tables = db.data;
+                $scope.table_click(db.data[0], 15, 1);
+            });           
         })
+        $scope.reset_create_table_form();
     }
 
+    $scope.reset_create_table_form = function(){
+        $scope.table_name = "";
+        $scope.input_col_sche = [
+            {'col_name':'', 'schema_type': ''}
+        ]
+        $scope.strick_clicked = false;
+    } 
+
     $scope.del_col_sche = function(key){
-        console.log(key);
-        console.log($scope.input_col_sche);
-        console.log($scope.input_col_sche[key]);
         $scope.input_col_sche.splice(key,1);
         $scope.col_stricked();
-        console.log($scope.input_col_sche);
     }
 
     $scope.col_stricked = function(){
