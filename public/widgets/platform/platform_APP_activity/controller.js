@@ -61,7 +61,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         };
     });
 
-    var socket = io('https://simple.tanpopo.cc/' + $routeParams.APP, { autoConnect: false });
+    var socket = io('https://simple.tanpopo.cc/' + $routeParams.APP, { autoConnect: false, secure: true });
     socket.on('connect', function () {
         console.log('123')
         update();
