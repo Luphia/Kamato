@@ -71,8 +71,8 @@ function nsps(socket, chanel) {
     //console.log(config.get('Mail'));//--
 
     var cl = new Channel({ channel: chanel, room: 'once', socket: socket, io: io, auto: true }, config.get('Mail'));
-    //  console.log(cl.channel)
-    //  console.log(cl.sID())
+  //  console.log(cl.channel)
+  //  console.log(cl.sID())
 
     //console.log(cl.watchallroom())
     //cl.changeroom('ffe', function (cb) {
@@ -251,12 +251,12 @@ var nsp = [];
 
 function registerNamespace(name) {
     nsp[name] = io.of(name);
-    // nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
+   // nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
 
     nsp[name].on('connection', function (socket) {
         console.log("I am in namespace: " + nsp[name].name);
         logger.info.info("I am in namespace: " + nsp[name].name);
-        //  nsps(socket, nsp[name].name)
+      //  nsps(socket, nsp[name].name)
         socket.on('disconnect', function () {
             console.log("I was in namespace: " + nsp[name].name);
             logger.info.info("I was in namespace: " + nsp[name].name);
@@ -268,21 +268,13 @@ function registerNamespace(name) {
 
 var start = function () {
     var self = this;
-    // var apps = db.listData('app');
-    // registerNamespace('/');
+    var apps = db.listData('app');
+   // registerNamespace('/');
 
-    //for (var x in apps.list) {
-    //    var name = apps.list[x].name;
-    //    registerNamespace('/' + name);
-    //};
-
-    io.on('connection', function (socket) {
-        socket.emit('data', { hello: 'world' });
-        logger.info.info("I am in");
-        socket.on('disconnect', function () {
-            logger.info.info("I am out");
-        });
-    });
+    for (var x in apps.list) {
+        var name = apps.list[x].name;
+        registerNamespace('/' + name);
+    };
 
     //push service
     route.all('/push/', module.exports.pushMessage);
