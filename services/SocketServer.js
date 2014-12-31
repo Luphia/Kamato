@@ -238,12 +238,15 @@ function nsps(socket, chanel) {
     });
 
     socket.on('summary', function (data) {
+        logger.info.info("summary");
         socket.broadcast.emit('summary', data);
     });
 
     socket.on('disconnect', function () {
         logger.info.info("I was in namespace: " + chanel);
     });
+
+    socket.broadcast.emit('enter');
 };
 
 var nsp = [];
@@ -253,7 +256,6 @@ function registerNamespace(name) {
     // nsp[name].use(socketHandshake({ store: RedisSession, key: 'connect.sid', secret: config.get('server').secret, parser: cookieParser() }));
 
     nsp[name].on('connection', function (socket) {
-        socket.broadcast.emit('enter');
         logger.info.info("I am in namespace: " + nsp[name].name);
         nsps(socket, nsp[name].name)
     });
