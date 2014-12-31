@@ -54,21 +54,21 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     //when leave this page than clear timer
     $scope.$on("$destroy", function () {
-       // socket.disconnect();
-       // socket.removeAllListeners();
+        socket.disconnect();
+        socket.removeAllListeners();
         if (t1) {
             $timeout.cancel(t1);
         };
     });
 
-    //var socket = io('/', { autoConnect: false });
-    //socket.on('connect', function () {
-    //    console.log('123')
-    //    update();
-    //});
-    //socket.on('disconnect', function (data) {
-    //    //socket.connect();
-    //});
+    var socket = io('https://simple.tanpopo.cc/' + $routeParams.APP, { autoConnect: false });
+    socket.on('connect', function () {
+        console.log('123')
+        update();
+    });
+    socket.on('disconnect', function (data) {
+        //socket.connect();
+    });
 
     $scope.init = function () {
         Get600Data();
@@ -76,8 +76,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         $.plot($("#Users"), dataset_users, options1);
         dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
         $.plot($("#Networks"), dataset_networks, options2);
-        update();
-      //  socket.connect();
+        socket.connect();
     };
 
     function Get600Data() {
