@@ -8,10 +8,8 @@ file data
 	id: [sha1]
 	name: [file name] 
 	type: [file type]
-	sha1: [file hash] 
 	size: [file size]
-	slices: 
-	sha1
+	sha1: [file hash] 
 	blob
 }
 
