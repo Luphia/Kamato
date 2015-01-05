@@ -126,7 +126,7 @@ var Result = require('../Classes/Result.js')
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var id = req.params.id;
-	var result = connect(userID).deleteData(table, id, data);
+	var result = connect(userID).deleteData(table, id);
 
 	if (data) { res.result.response(next, 1, 'Delete table row: ' + table + ' - ' + id); }
 	else { res.result.response(next, 1, 'table not found: ' + table); }
