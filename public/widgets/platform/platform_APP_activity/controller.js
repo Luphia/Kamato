@@ -71,7 +71,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             $scope.app_info[0].online = data.current.session[0];
             $scope.app_info[0].network.in = data.current.in[0];
             $scope.app_info[0].network.out = data.current.out[0];
-            $scope.app_info[0].total = total[0];
+            $scope.app_info[0].total = total;
             $scope.$apply();
             start = true;
 
@@ -86,12 +86,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
             Get_Data(dsession, din, dout);
             $.plot($("#Users"), dataset_users, options1);
-            $.plot($("#Networks"), dataset_networks, options2)
-
-            $scope.app_info[0].online = dsession[0];
-            $scope.app_info[0].network.in = din[0];
-            $scope.app_info[0].network.out = dout[0];
-            $scope.$apply();
+            $.plot($("#Networks"), dataset_networks, options2);
         };
     });
 
@@ -105,10 +100,16 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     function Get_Data(num, nin, nout) {
         var x = nin[0];
+        $scope.app_info[0].network.in = x;
+
         var xx = nin[1];
         var y = nout[0];
+        $scope.app_info[0].network.out = y;
+
         var yy = nout[1];
         var z = num[0];
+        $scope.app_info[0].online = z;
+
         var zz = num[1];
 
         var tempx = [xx, x];
@@ -122,6 +123,8 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         networks_datain.push(tempx);
         networks_dataout.push(tempy);
         users_data.push(tempz);
+        $scope.$apply();
+
     };
 
     var options1 = {
