@@ -34,7 +34,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     // ====================== APP管理 bottom======================
     $scope.app_info = [
         {
-            online: '123456',
+            online: 0,
             total: '987654321',
             network: { in: '00', out: '00' },
             online_history: '12345',
@@ -50,35 +50,76 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     var dataset_networks;
 
     var updateInterval = 1000;
-    var t1, t2;
 
     //when leave this page than clear timer
     $scope.$on("$destroy", function () {
         socket.disconnect();
         socket.removeAllListeners();
-        if (t1) {
-            $timeout.cancel(t1);
-        };
     });
 
     var socket = io('https://simple.tanpopo.cc/' + $routeParams.APP, { autoConnect: false, secure: true });
     socket.on('connect', function () {
         console.log('123')
-        update();
+        //update();
     });
     socket.on('disconnect', function (data) {
         //socket.connect();
     });
 
+    // 初始化資料
+    socket.on('summary', function (data) {
+        if ($('.main-chart').length > 0) {
+            var netin = data.history.in;    //300
+            var netout = data.history.out;  //300
+            var session = data.history.session; //300
+
+            var myDate = new Date().getTime();
+
+            var wanttime = myDate - (5 * 60 * 1000);
+            wanttime = new Date(wanttime).getTime();
+
+            for (var i = 0; i < 300; i++) {
+                var x = netin[i];
+                var y = netout[i];
+                var z = session[i];
+                wanttime += 1000;
+
+                var netintemp = [wanttime, x];
+                networks_datain.push(netintemp);
+
+                var netouttemp = [wanttime, y];
+                networks_dataout.push(netouttemp);
+
+                var sessiontemp = [wanttime, z];
+                users_data.push(sessiontemp);
+            };
+        };
+    });
+
+    socket.on('data', function (data) {
+        var din = data.in;
+        var dout = data.out;
+        var dsession = data.session;
+        $scope.app_info[0].online = dsession;
+        if ($('.main-chart').length > 0) {
+            Get_usersData(dsession);
+            Get_netinData(din);
+            Get_netoutData(dout);
+
+            $.plot($("#Users"), dataset_users, options1);
+            $.plot($("#Networks"), dataset_networks, options2)
+        };
+    });
+
     $scope.init = function () {
-        Get600Data();
         dataset_users = [{ label: "線上用戶", data: users_data }];
         $.plot($("#Users"), dataset_users, options1);
-        dataset_networks = [{ label: "網路流量(IN)", data: users_data, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
+        dataset_networks = [{ label: "網路流量(IN)", data: networks_datain, color: '#08F' }, { label: "網路流量(OUT)", data: networks_dataout, color: '#5C6' }];
         $.plot($("#Networks"), dataset_networks, options2);
         socket.connect();
     };
 
+    // test function
     function Get600Data() {
         users_data.shift();
         var myDate = new Date().getTime();
@@ -93,21 +134,27 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         };
     };
 
-    function Get_usersData() {
+    function Get_usersData(num) {
         users_data.shift();
-        var y = getRandom(0, 3000);
-        var now = new Date()//.getTime();
+        var y = num;
+        var now = new Date();
         var temp = [now, y];
         users_data.push(temp);
     };
 
-    function Get_networksData() {
+    function Get_netinData(num) {
         networks_datain.shift();
-        networks_dataout.shift();
-        var y = getRandom(0, 3000);
-        var now = new Date()//.getTime();
+        var y = num;
+        var now = new Date();
         var temp = [now, y];
         networks_datain.push(temp);
+    };
+
+    function Get_netoutData(num) {
+        networks_dataout.shift();
+        var y = num;
+        var now = new Date();
+        var temp = [now, y];
         networks_dataout.push(temp);
     };
 
