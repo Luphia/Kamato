@@ -113,16 +113,24 @@ var Result = require('../Classes/Result.js')
 }
 , updateData = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
 , putData = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var id = req.params.id;
-    var data = req.body;
-    var result = connect(userID).putData(table, id, data);
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var id = req.params.id;
+	var data = req.body;
+	var result = connect(userID).putData(table, id, data);
 
-    if (data) { res.result.response(next, 1, 'Update table row: ' + table + ' - ' + id); }
-    else { res.result.response(next, 1, 'table not found: ' + table); }
+	if (data) { res.result.response(next, 1, 'Update table row: ' + table + ' - ' + id); }
+	else { res.result.response(next, 1, 'table not found: ' + table); }
 }
-, delData = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
+, delData = function (req, res, next) {
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var id = req.params.id;
+	var result = connect(userID).deleteData(table, id, data);
+
+	if (data) { res.result.response(next, 1, 'Delete table row: ' + table + ' - ' + id); }
+	else { res.result.response(next, 1, 'table not found: ' + table); }
+}
 , sql = function (req, res, next) {
     var userID = req.session.simple._id;
     var sql = req.body.sql || req.query.sql;
