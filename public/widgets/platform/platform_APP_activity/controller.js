@@ -68,10 +68,10 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
                 users_data.push(sessiontemp);
             };
 
-            $scope.app_info[0].online = data.current.session;
-            $scope.app_info[0].network.in = data.current.in;
-            $scope.app_info[0].network.out = data.current.out;
-            $scope.app_info[0].total = total;
+            $scope.app_info[0].online = data.current.session[0];
+            $scope.app_info[0].network.in = data.current.in[0];
+            $scope.app_info[0].network.out = data.current.out[0];
+            $scope.app_info[0].total = total[0];
             $scope.$apply();
             start = true;
 
@@ -88,9 +88,9 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             $.plot($("#Users"), dataset_users, options1);
             $.plot($("#Networks"), dataset_networks, options2)
 
-            $scope.app_info[0].online = dsession;
-            $scope.app_info[0].network.in = din;
-            $scope.app_info[0].network.out = dout;
+            $scope.app_info[0].online = dsession[0];
+            $scope.app_info[0].network.in = din[0];
+            $scope.app_info[0].network.out = dout[0];
             $scope.$apply();
         };
     });
