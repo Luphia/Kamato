@@ -7,56 +7,56 @@ var Result = require('../Classes/Result.js')
 , MDB
 
 , listTable = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var data = connect(userID).listTable();
-    res.result.response(next, 1, 'list all table', data);
+	var userID = req.session.simple._id;
+	var data = connect(userID).listTable();
+	res.result.response(next, 1, 'list all table', data);
 }
 , getSchema = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var data = connect(userID).getTable(table);
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var data = connect(userID).getTable(table);
 
-    if (data) {
-        res.result.response(next, 1, 'table schema: ' + table, data);
-    }
-    else {
-        res.result.response(next, 1, 'table not found: ' + table);
-    }
+	if (data) {
+		res.result.response(next, 1, 'table schema: ' + table, data);
+	}
+	else {
+		res.result.response(next, 1, 'table not found: ' + table);
+	}
 }
 , flowData = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var query = req.query.q;
-    var data = connect(userID).flowData(table, query);
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var query = req.query.q;
+	var data = connect(userID).flowData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'Data in table : ' + table, data);
-    }
-    else {
-        res.result.response(next, 1, 'table not found: ' + table);
-    }
+	if (data) {
+		res.result.response(next, 1, 'Data in table : ' + table, data);
+	}
+	else {
+		res.result.response(next, 1, 'table not found: ' + table);
+	}
 }
 , pageData = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var query = req.query.q;
-    var data = connect(userID).pageData(table, query);
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var query = req.query.q;
+	var data = connect(userID).pageData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'Data in table : ' + table, data);
-    }
-    else {
-        res.result.response(next, 1, 'table not found: ' + table);
-    }
+	if (data) {
+		res.result.response(next, 1, 'Data in table : ' + table, data);
+	}
+	else {
+		res.result.response(next, 1, 'table not found: ' + table);
+	}
 }
 , postTable = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var schema = req.body;
-    var rs = connect(userID).postTable(table, schema);
-    var pass;
-    if(rs) {
-        pass = "Add new table: " + table;
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var schema = req.body;
+	var rs = connect(userID).postTable(table, schema);
+	var pass;
+	if(rs) {
+		pass = "Add new table: " + table;
         res.result.response(next, 1, pass);
     }
     else {
@@ -94,15 +94,23 @@ var Result = require('../Classes/Result.js')
     }
 }
 , findData = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var query = req.body;
-    var data = connect(userID).find(table, query);
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var query = req.body;
+	var data = connect(userID).find(table, query);
 
-    if (data) { res.result.response(next, 1, 'Find in table : ' + table, { "list": data }); }
-    else { res.result.response(next, 1, 'table not found: ' + table); }
+	if (data) { res.result.response(next, 1, 'Find in table : ' + table, { "list": data }); }
+	else { res.result.response(next, 1, 'table not found: ' + table); }
 }
-, postData = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
+, postData = function (req, res, next) {
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var query = req.body;
+	var data = connect(userID).postData(table, query);
+
+	if (data) { res.result.response(next, 1, 'Insert into table : ' + table, data); }
+	else { res.result.response(next, 1, 'table not found: ' + table); }
+}
 , updateData = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
 , putData = function (req, res, next) {
     var userID = req.session.simple._id;
