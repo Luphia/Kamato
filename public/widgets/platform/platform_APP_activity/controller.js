@@ -35,10 +35,10 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     $scope.app_info = [
         {
             online: 0,
-            total: '987654321',
-            network: { in: '00', out: '00' },
-            online_history: '12345',
-            network_history: { in: '00', out: '00' }
+            total: 0,
+            network: { in: 0, out: 0 },
+            online_history: 0,
+            network_history: { in: 0, out: 0 }
         }
     ];
     var users_data = []
@@ -69,6 +69,10 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     // 初始化資料
     socket.on('summary', function (data) {
         if ($('.main-chart').length > 0) {
+            $scope.app_info[0].online = data.current.session;
+            $scope.app_info[0].network.in = data.current.in;
+            $scope.app_info[0].network.out = data.current.out;            
+
             var netin = data.history.in;    //300
             var netout = data.history.out;  //300
             var session = data.history.session; //300
@@ -77,11 +81,12 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
             var wanttime = myDate - (5 * 60 * 1000);
             wanttime = new Date(wanttime).getTime();
-
+            var total = 0;
             for (var i = 0; i < 300; i++) {
                 var x = netin[i];
                 var y = netout[i];
                 var z = session[i];
+                total += z;
                 wanttime += 1000;
 
                 var netintemp = [wanttime, x];
@@ -92,7 +97,10 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
                 var sessiontemp = [wanttime, z];
                 users_data.push(sessiontemp);
+
+                $scope.app_info[0].total = total;
             };
+            $scope.$apply();
         };
     });
 
@@ -100,12 +108,14 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         var din = data.in;
         var dout = data.out;
         var dsession = data.session;
-        $scope.app_info[0].online = dsession;
-        if ($('.main-chart').length > 0) {
-            Get_usersData(dsession);
-            Get_netinData(din);
-            Get_netoutData(dout);
 
+        $scope.app_info[0].online = dsession;
+        $scope.app_info[0].network.in = din;
+        $scope.app_info[0].network.out = dout;
+        $scope.$apply();
+
+        if ($('.main-chart').length > 0) {
+            Get_Data(dsession, din, dout);
             $.plot($("#Users"), dataset_users, options1);
             $.plot($("#Networks"), dataset_networks, options2)
         };
@@ -119,43 +129,24 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         socket.connect();
     };
 
-    // test function
-    function Get600Data() {
+    function Get_Data(num, nin, nout) {
         users_data.shift();
-        var myDate = new Date().getTime();
-        var wanttime = myDate - (5 * 60 * 1000);
-        wanttime = new Date(wanttime).getTime();
-        for (var i = 0; i < 300; i++) {
-            var y = getRandom(0, 3000);
-            var temp = [wanttime += 1000, y];
-            users_data.push(temp);
-            networks_datain.push(temp);
-            networks_dataout.push(temp);
-        };
-    };
-
-    function Get_usersData(num) {
-        users_data.shift();
-        var y = num;
-        var now = new Date();
-        var temp = [now, y];
-        users_data.push(temp);
-    };
-
-    function Get_netinData(num) {
         networks_datain.shift();
-        var y = num;
-        var now = new Date();
-        var temp = [now, y];
-        networks_datain.push(temp);
-    };
-
-    function Get_netoutData(num) {
         networks_dataout.shift();
-        var y = num;
+
+        var x = nin;
+        var y = nout;
+        var z = num;
+
         var now = new Date();
-        var temp = [now, y];
-        networks_dataout.push(temp);
+
+        var tempx = [now, x];
+        var tempy = [now, y];
+        var tempz = [now, z];
+
+        networks_datain.push(tempx);
+        networks_dataout.push(tempy);
+        users_data.push(tempz);
     };
 
     var options1 = {
@@ -257,17 +248,6 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             labelMargin: 10,
             mouseActiveRadius: 6,
         },
-    };
-
-    function update() {
-        if ($('.main-chart').length > 0) {
-            Get_usersData();
-            $.plot($("#Users"), dataset_users, options1)
-
-            Get_networksData();
-            $.plot($("#Networks"), dataset_networks, options2)
-            t1 = $timeout(update, updateInterval);
-        };
     };
 
 });
