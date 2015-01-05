@@ -44,6 +44,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 
     var first_row_id = 0; 
 
+     $scope.custom_rows
     $scope.option_index = 2;          //page   
     $scope.default_rows = 15;
     $scope.rows_options = [
@@ -54,6 +55,48 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     ]
 
     $scope.custom_rows = 15;  //table click
+    $scope.new_row_uncommitted = false;
+    $scope.new_row_count = 0;  //計算新資料的筆數
+
+    $scope.create_td_click = function() {
+        $scope.new_row_count += 1;
+        var new_td = {};
+        for( var h in $scope.t_head){
+            new_td[h] = ''
+        }
+
+        $scope.t_d.splice(0,0,new_td);
+        $scope.new_row_uncommitted = true;
+    }
+
+    $scope.commit_new_row = function(){
+        var new_row_array = [] 
+        for (var i = 0; i < $scope.new_row_count; i++){
+            var is_edit = false;
+            for(var t in $scope.t_d[i]){
+                if($scope.t_d[i][t] != ''){
+                    is_edit = true;
+                }
+            }
+            if(is_edit == false){
+                $scope.t_d.splice($scope.t_d.indexOf($scope.t_d[i]),1);
+            }
+            else{
+                new_row_array.push($scope.t_d[i]);
+                console.log($scope.t_d[i]);
+                 console.log(new_row_array);
+            }
+        }
+
+        console.log(viewing_table); 
+        // var new_row_json = JSON.stringify(new_row_array)
+        $http.post(db_link+viewing_table+'/', new_row_json).success(function(create_row){
+            console.log(create_row);
+            $scope.table_click(viewing_table, $scope.custom_rows, 1);
+        })       
+        $scope.new_row_uncommitted = false;
+        $scope.new_row_count = 0 ;
+   }
 
 	$scope.table_click =function(name, default_table_rows, page_num){
         pre_id_attr="";    //清除上一次在其他table點擊json的事件
@@ -122,15 +165,17 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     // ++ 需要避開delete btn
+    var edit_temp_array =[];
     $scope.edit_finish = function(id, edited_key, row){ 
-        var temp_array =[];
         var temp_json = {};
         temp_json[edited_key] = row[edited_key];
-        temp_array.push(temp_json);
-
-        $http.put(db_link+viewing_table+'/'+id, temp_array[0]).success(function(edited_data_msg){
-            console.log(edited_data_msg);
-        })
+        edit_temp_array.push(temp_json);
+        if( id != ''){
+            //不是新增的data
+            $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
+                console.log(edited_data_msg);
+            })
+        }
         var e = event.target;
         var next_e = e.parentNode.nextElementSibling.firstElementChild;
         e.blur();
@@ -157,10 +202,10 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         $http.get(db_link+table_name+"/?q=limit "+new_page_first_index+','+custom_table_rows).
         success(function(page_schema){
             var t_d_temp = page_schema.data.list;
-            // $scope.t_head = page_schema.data.list[0];
-            if( Object.keys(page_schema.data.list[0] || {}).length == 0){
+
+            if( Object.keys(page_schema.data.list[0] || []).length == 0){
                 //空物件
-                $scope.t_d = {};
+                $scope.t_d = [];
             }
             else{
                 $scope.colspan = Object.keys(page_schema.data.list[0]).length +1; //+1是del button欄位
@@ -175,8 +220,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
                             //json換註解
                             t_d_temp[list_key][key] = "json file"
                         }
-                        $scope.t_d = t_d_temp;
-
+                        $scope.t_d = t_d_temp;                      
                     })
                 })
             }
@@ -209,8 +253,18 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     	$scope.warn_hint = false;
     }
 
-	$scope.del_t_row = function(row){
+	$scope.del_t_row = function(row, id){
+        if($scope.new_row_count >= 0){
+             $scope.new_row_count -= 1;
+        }
+
 		$scope.t_d.splice($scope.t_d.indexOf(row),1);
+        if( id != ''){
+            $http.delete(db_link+viewing_table+'/'+id, row).success(function(del_row){
+                console.log(del_row);
+            })
+        }
+
 	}
 
 	var pre_id="";

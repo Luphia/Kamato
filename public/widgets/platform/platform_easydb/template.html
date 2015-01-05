@@ -48,6 +48,8 @@
 					</div>				
 					<div class="table_content table-responsive">
 						<table class="table db_table tile table-bordered">
+							<div class="create_td" ng-click="create_td_click()" ></div>
+							<div ng-show="new_row_uncommitted" class="row_uncommitted" ng-click="commit_new_row()"></div>
 							<tr>
 								<th ng-repeat="(key,value) in t_head">
 									{{key}}
@@ -69,13 +71,13 @@
 								</th>
 								<th></th>
 							</tr>
-							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}">
+							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}"  ng-class="{'new_row': r._id == ''}">
 								<td ng-repeat="(key, value) in r" >
 									<input class="input_td" ng-disabled="key == '_id'" ng-click="edit_td(key, r._id, value)" ng-hide="value =='json file'" type="text" ng-model="r[key]" ng-enter="edit_finish(r._id, key, r)">
 									<a href="" ng-show= " value =='json file'" ng-click="show_json_file(r._id, key, default_valueiew_table)" ng-class="{'table_clicked': t_json == r._id+key}">{{value}}
 								</td>
 								<td>
-									<button class="btn btn-alt btn-block" ng-click="del_t_row(r)">Delete</button>
+									<button class="btn btn-alt btn-block" ng-click="del_t_row(r, r._id)">Delete</button>
 								</td>
 							</tr>
 							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre>{{show_json | json}}</pre></td></tr>
@@ -99,7 +101,7 @@
 				<div class="back" ng-click="back_btn()">Back</div>
 				<h3 class="text-center">新增 Table <span>("*"代表此欄位必填)</span></h3>
 				<form name="table_form" class="form-horizontal" ng-submit="submit()">
-					<div class="form-group">
+					<div class="form-group">f
 						<label class="control-label col-md-2 col-xs-12">*Table Name</label>
 						<div class="col-md-8 col-xs-12">
 							<input type="text" class="form-control" ng-model="table_name" required>
