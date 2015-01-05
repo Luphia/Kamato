@@ -139,7 +139,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         colors: ['rgba(255,255,255,0.3)'],
         xaxis: {
             mode: "time",
-            tickSize: [10, "second"],
+            //tickSize: [10, "second"],
             tickFormatter: function (v, axis) {
                 var date = new Date(v);
                 if (date.getSeconds() % 10 == 0) {
@@ -189,7 +189,7 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         },
         xaxis: {
             mode: "time",
-            tickSize: [10, "second"],
+            //tickSize: [10, "second"],
             tickFormatter: function (v, axis) {
                 var date = new Date(v);
                 if (date.getSeconds() % 10 == 0) {
