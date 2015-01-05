@@ -27,8 +27,8 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     var dataset_networks;
 
     var updateInterval = 1000;
+    var start = false;
 
-    //when leave this page than clear timer
     $scope.$on("$destroy", function () {
         socket.disconnect();
         socket.removeAllListeners();
@@ -36,39 +36,35 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     var socket = io('https://simple.tanpopo.cc/' + $routeParams.APP, { autoConnect: false, secure: true });
     socket.on('connect', function () {
-        console.log('123')
-        //update();
     });
     socket.on('disconnect', function (data) {
-        //socket.connect();
     });
 
     // 初始化資料
     socket.on('summary', function (data) {
-        console.log(data)
-        if ($('.main-chart').length > 0) {
-            var netin = data.history.in;
-            var netout = data.history.out;
-            var session = data.history.session;
-            var myDate = new Date().getTime();
+        if ($('.main-chart').length > 0 && start == false) {
+            var netin = data.history.in.reverse();
+            var netout = data.history.out.reverse();
+            var session = data.history.session.reverse();
 
-            var wanttime = myDate - (5 * 60 * 1000);
-            wanttime = new Date(wanttime).getTime();
             var total = 0;
             for (var i = 0; i < 300; i++) {
-                var x = netin[i];
-                var y = netout[i];
-                var z = session[i];
-                total += z;
-                wanttime += 1000;
+                var x = netin[i][0];
+                var xx = netin[i][1];
+                var y = netout[i][0];
+                var yy = netout[i][1];
+                var z = session[i][0];
+                var zz = session[i][1];
 
-                var netintemp = [wanttime, x];
+                total += z;
+
+                var netintemp = [xx, x];
                 networks_datain.push(netintemp);
 
-                var netouttemp = [wanttime, y];
+                var netouttemp = [yy, y];
                 networks_dataout.push(netouttemp);
 
-                var sessiontemp = [wanttime, z];
+                var sessiontemp = [zz, z];
                 users_data.push(sessiontemp);
             };
 
@@ -77,25 +73,26 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             $scope.app_info[0].network.out = data.current.out;
             $scope.app_info[0].total = total;
             $scope.$apply();
+            start = true;
+
         };
     });
 
     socket.on('data', function (data) {
-        var din = data.in;
-        var dout = data.out;
-        var dsession = data.session;
+        if ($('.main-chart').length > 0 && start == true) {
+            var din = data.in;
+            var dout = data.out;
+            var dsession = data.session;
 
-        if ($('.main-chart').length > 0) {
             Get_Data(dsession, din, dout);
             $.plot($("#Users"), dataset_users, options1);
             $.plot($("#Networks"), dataset_networks, options2)
+
+            $scope.app_info[0].online = dsession;
+            $scope.app_info[0].network.in = din;
+            $scope.app_info[0].network.out = dout;
+            $scope.$apply();
         };
-
-        $scope.app_info[0].online = dsession;
-        $scope.app_info[0].network.in = din;
-        $scope.app_info[0].network.out = dout;
-        $scope.$apply();
-
     });
 
     $scope.init = function () {
@@ -107,19 +104,20 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
     };
 
     function Get_Data(num, nin, nout) {
+        var x = nin[0];
+        var xx = nin[1];
+        var y = nout[0];
+        var yy = nout[1];
+        var z = num[0];
+        var zz = num[1];
+
+        var tempx = [xx, x];
+        var tempy = [yy, y];
+        var tempz = [zz, z];
+
         users_data.shift();
         networks_datain.shift();
         networks_dataout.shift();
-
-        var x = nin;
-        var y = nout;
-        var z = num;
-
-        var now = new Date();
-
-        var tempx = [now, x];
-        var tempy = [now, y];
-        var tempz = [now, z];
 
         networks_datain.push(tempx);
         networks_dataout.push(tempy);
