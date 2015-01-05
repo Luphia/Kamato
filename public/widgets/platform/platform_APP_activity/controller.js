@@ -1,27 +1,4 @@
 Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, ngDialog, $rootScope, $timeout, $routeParams) {
-    //隨機產生
-    function getRandom(minNum, maxNum) {	//取得 minNum(最小值) ~ maxNum(最大值) 之間的亂數
-        return Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
-    };
-    function getRandomArray(minNum, maxNum, n) {	//隨機產生不重覆的n個數字
-        var rdmArray = [n];		//儲存產生的陣列
-
-        for (var i = 0; i < n; i++) {
-            var rdm = 0;		//暫存的亂數
-
-            do {
-                var exist = false;			//此亂數是否已存在
-                rdm = getRandom(minNum, maxNum);	//取得亂數
-
-                //檢查亂數是否存在於陣列中，若存在則繼續回圈
-                if (rdmArray.indexOf(rdm) != -1) exist = true;
-
-            } while (exist);	//產生沒出現過的亂數時離開迴圈
-
-            rdmArray[i] = rdm;
-        };
-        return rdmArray;
-    };
 
     // ====================== APP管理 top======================
     $scope.app_oper = [
@@ -68,15 +45,11 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     // 初始化資料
     socket.on('summary', function (data) {
+        console.log(data)
         if ($('.main-chart').length > 0) {
-            $scope.app_info[0].online = data.current.session;
-            $scope.app_info[0].network.in = data.current.in;
-            $scope.app_info[0].network.out = data.current.out;            
-
-            var netin = data.history.in;    //300
-            var netout = data.history.out;  //300
-            var session = data.history.session; //300
-
+            var netin = data.history.in;
+            var netout = data.history.out;
+            var session = data.history.session;
             var myDate = new Date().getTime();
 
             var wanttime = myDate - (5 * 60 * 1000);
@@ -97,9 +70,12 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
                 var sessiontemp = [wanttime, z];
                 users_data.push(sessiontemp);
-
-                $scope.app_info[0].total = total;
             };
+
+            $scope.app_info[0].online = data.current.session;
+            $scope.app_info[0].network.in = data.current.in;
+            $scope.app_info[0].network.out = data.current.out;
+            $scope.app_info[0].total = total;
             $scope.$apply();
         };
     });
@@ -109,16 +85,17 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         var dout = data.out;
         var dsession = data.session;
 
-        $scope.app_info[0].online = dsession;
-        $scope.app_info[0].network.in = din;
-        $scope.app_info[0].network.out = dout;
-        $scope.$apply();
-
         if ($('.main-chart').length > 0) {
             Get_Data(dsession, din, dout);
             $.plot($("#Users"), dataset_users, options1);
             $.plot($("#Networks"), dataset_networks, options2)
         };
+
+        $scope.app_info[0].online = dsession;
+        $scope.app_info[0].network.in = din;
+        $scope.app_info[0].network.out = dout;
+        $scope.$apply();
+
     });
 
     $scope.init = function () {
