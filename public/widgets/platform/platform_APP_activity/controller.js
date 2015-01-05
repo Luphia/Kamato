@@ -69,8 +69,8 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
             };
 
             $scope.app_info[0].online = data.current.session[0];
-            $scope.app_info[0].network.in = data.current.in[0];
-            $scope.app_info[0].network.out = data.current.out[0];
+            $scope.app_info[0].network.in = displayByte(data.current.in[0], 'B');
+            $scope.app_info[0].network.out = displayByte(data.current.out[0], 'B');
             $scope.app_info[0].total = total;
             $scope.$apply();
             start = true;
@@ -100,11 +100,11 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
 
     function Get_Data(num, nin, nout) {
         var x = nin[0];
-        $scope.app_info[0].network.in = x;
+        $scope.app_info[0].network.in = displayByte(x, 'B');
 
         var xx = nin[1];
         var y = nout[0];
-        $scope.app_info[0].network.out = y;
+        $scope.app_info[0].network.out = displayByte(y, 'B');
 
         var yy = nout[1];
         var z = num[0];
@@ -209,7 +209,8 @@ Kamato.register.controller('appActivityCtrl', function ($scope, $http, $modal, n
         },
         yaxis: {
             tickFormatter: function (v, axis) {
-                return v + "";
+                var data = displayByte(v, 'B');
+                return data[0] + data[1];
             },
             font: {
                 lineHeight: 13,
