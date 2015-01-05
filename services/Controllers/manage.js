@@ -57,20 +57,20 @@ var Result = require('../Classes/Result.js')
 	var pass;
 	if(rs) {
 		pass = "Add new table: " + table;
-        res.result.response(next, 1, pass);
-    }
-    else {
-        pass = "Table already exist: " + table;
-        res.result.response(next, 0, pass); 
-    }
-  }
+		res.result.response(next, 1, pass);
+	}
+	else {
+		pass = "Table already exist: " + table;
+		res.result.response(next, 0, pass); 
+	}
+}
 , putTable = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var schema = req.body;
-    var rs = connect(userID).putTable(table, schema);
-    var pass = "Update table scehma: " + table;
-    res.result.response(next, 1, pass); 
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var schema = req.body;
+	var rs = connect(userID).putTable(table, schema);
+	var pass = "Update table scehma: " + table;
+	res.result.response(next, 1, pass); 
 }
 , delTable = function (req, res, next) {
     var userID = req.session.simple._id;
@@ -136,19 +136,19 @@ var Result = require('../Classes/Result.js')
     }
 }
 , connect = function (userID) {
-    userID = 'easyDB'; //-- for demo
+	userID = 'easyDB'; //-- for demo
 
-    if (!userID) { return false; }
-    else if (DB[userID]) { return DB[userID]; }
-    else {
-        var db = new EasyDB(config, logger)
-        , path = config.uri + userID
-        ;
+	if (!userID) { return false; }
+	else if (DB[userID]) { return DB[userID]; }
+	else {
+		var db = new EasyDB(config, logger)
+		, path = config.uri + userID
+		;
 
-        db.connect({ "url": path });
-        DB[userID] = db;
-        return DB[userID];
-    }
+		db.connect({ "url": path });
+		DB[userID] = db;
+		return DB[userID];
+	}
 }
 , dbRoute = function (req, res, next) {
     res.result = new Result();
