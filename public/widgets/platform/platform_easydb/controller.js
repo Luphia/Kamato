@@ -99,7 +99,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 	$scope.table_click =function(name, default_table_rows, page_num){
         pre_id_attr="";    //清除上一次在其他table點擊json的事件
         $scope.warn_hint = false;   //清除在其他table點擊的刪除警告標語
-        
+        $scope.sch_name = '';
         $scope.custom_rows = default_table_rows;
 		viewing_table = name;
 		$scope.is_show = false;
@@ -402,5 +402,19 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         else{
             $scope.columns = true;
         }
+    }
+});
+
+Kamato.register.directive('dbdata', function ($compile) {
+    return {
+        restrict: 'E',
+        // replace: true,
+        link: function(scope, element, attrs){
+            scope.scheTypeUrl = function(){
+                return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
+            }
+        },
+        template: '<div ng-include="scheTypeUrl()"></div>'
+            // console.log(aaa,bbb,ccc,ddd);
     }
 });

@@ -25,7 +25,7 @@
 					<div class="sql_manipulate clearfix">
 						<div class="sql_command col-md-12">
 							<span class="text-center">SQL Command: </span>
-							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list(command_sample)" ng-enter="findData()">
+							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list()" ng-enter="findData()">
 						</div>
 						<div class="sql_keyword col-md-7 col-md-offset-2" ng-show="show_sample" ng-mouseenter="cant_close = true" ng-mouseleave="cant_close = false">
 							<div ng-repeat="w in keyword | filter:command_sample">
@@ -73,7 +73,7 @@
 							</tr>
 							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}"  ng-class="{'new_row': r._id == ''}">
 								<td ng-repeat="(key, value) in r" >
-									<input class="input_td" ng-disabled="key == '_id'" ng-click="edit_td(key, r._id, value)" ng-hide="value =='json file'" type="text" ng-model="r[key]" ng-enter="edit_finish(r._id, key, r)">
+									<dbdata schetype="{{t_head[key]}}"></dbdata>
 									<a href="" ng-show= " value =='json file'" ng-click="show_json_file(r._id, key, default_valueiew_table)" ng-class="{'table_clicked': t_json == r._id+key}">{{value}}
 								</td>
 								<td>
