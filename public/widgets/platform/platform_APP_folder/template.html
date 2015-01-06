@@ -44,6 +44,15 @@
 							<span class="fileupload-new">Upload file</span >
 							<input type="file" onchange="angular.element(this).scope().fileNameChange(this)">
 						</span>
+                        <input type="file" id="files" name="file" /> Read bytes:
+                        <span class="readBytesButtons">
+                            <button data-startbyte="0" data-endbyte="4">1-5</button>
+                            <button data-startbyte="5" data-endbyte="14">6-15</button>
+                            <button data-startbyte="6" data-endbyte="7">7-8</button>
+                            <button>entire file</button>
+                        </span>
+                        <div id="byte_range"></div>
+                        <div id="byte_content"></div>
 						<span ng-repeat="file in files">{{file.name}}</span>					
 					</div>
 				</div>				

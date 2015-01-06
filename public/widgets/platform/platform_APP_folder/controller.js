@@ -9,8 +9,57 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
 		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
     ];
 
+    function readBlob(files, opt_startByte, opt_stopByte) {
+
+        //var files = document.getElementById('files').files;
+        if (!files.length) {
+            alert('Please select a file!');
+            return;
+        }
+
+        var file = files[0];
+        var start = parseInt(opt_startByte) || 0;
+        var stop = parseInt(opt_stopByte) || file.size - 1;
+
+        var reader = new FileReader();
+
+        // If we use onloadend, we need to check the readyState.
+        reader.onloadend = function (evt) {
+
+            if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+                document.getElementById('byte_content').textContent = evt.target.result;
+                console.log(evt.target.result)
+
+                document.getElementById('byte_range').textContent =
+                    ['Read bytes: ', start + 1, ' - ', stop + 1,
+                     ' of ', file.size, ' byte file'].join('');
+            }
+        };
+
+        var blob = file.slice(start, stop + 1);
+        reader.readAsText(blob);
+    };
 
     $scope.fileNameChange = function (elem) {
+        console.log(elem.files);
+        //readBlob(elem.files);
+
+        var aa = new EasyFile();
+
+        var files = elem.files;
+        if (!files.length) {
+            alert('Please select a file!');
+            return;
+        };
+        var file = files[0];
+        var reader = new FileReader();
+        reader.onloadend = function (e) {
+            if (e.target.readyState == FileReader.DONE) {
+                aa.loadFile(e.target.result);
+            };
+        };
+        reader.readAsDataURL(file);
+
         $scope.files = elem.files;
         $scope.$apply();
     }
