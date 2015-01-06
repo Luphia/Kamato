@@ -1,20 +1,26 @@
 var Result = require('../Classes/Result.js')
 , EasyDB = require('../Classes/EasyDB.js')
+, util = require('util')
+, events = require('events')
 , url = require('url')
 , config
 , logger
 , DB
 , MDB
 
-, listTable = function (req, res, next) {
+var manage = function() {};
+
+util.inherits(manage, events.EventEmitter);
+
+manage.prototype.listTable = function (req, res, next) {
 	var userID = req.session.simple._id;
-	var data = connect(userID).listTable();
+	var data = this.connect(userID).listTable();
 	res.result.response(next, 1, 'list all table', data);
-}
-, getSchema = function (req, res, next) {
+};
+manage.prototype.getSchema = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
-	var data = connect(userID).getTable(table);
+	var data = this.connect(userID).getTable(table);
 
 	if (data) {
 		res.result.response(next, 1, 'table schema: ' + table, data);
@@ -22,12 +28,12 @@ var Result = require('../Classes/Result.js')
 	else {
 		res.result.response(next, 1, 'table not found: ' + table);
 	}
-}
-, flowData = function (req, res, next) {
+};
+manage.prototype.flowData = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var query = req.query.q;
-	var data = connect(userID).flowData(table, query);
+	var data = this.connect(userID).flowData(table, query);
 
 	if (data) {
 		res.result.response(next, 1, 'Data in table : ' + table, data);
@@ -35,12 +41,12 @@ var Result = require('../Classes/Result.js')
 	else {
 		res.result.response(next, 1, 'table not found: ' + table);
 	}
-}
-, pageData = function (req, res, next) {
+};
+manage.prototype.pageData = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var query = req.query.q;
-	var data = connect(userID).pageData(table, query);
+	var data = this.connect(userID).pageData(table, query);
 
 	if (data) {
 		res.result.response(next, 1, 'Data in table : ' + table, data);
@@ -48,12 +54,12 @@ var Result = require('../Classes/Result.js')
 	else {
 		res.result.response(next, 1, 'table not found: ' + table);
 	}
-}
-, postTable = function (req, res, next) {
+};
+manage.prototype.postTable = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var schema = req.body;
-	var rs = connect(userID).postTable(table, schema);
+	var rs = this.connect(userID).postTable(table, schema);
 	var pass;
 	if(rs) {
 		pass = "Add new table: " + table;
@@ -63,87 +69,87 @@ var Result = require('../Classes/Result.js')
 		pass = "Table already exist: " + table;
 		res.result.response(next, 0, pass); 
 	}
-}
-, putTable = function (req, res, next) {
+};
+manage.prototype.putTable = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var schema = req.body;
-	var rs = connect(userID).putTable(table, schema);
+	var rs = this.connect(userID).putTable(table, schema);
 	var pass = "Update table scehma: " + table;
 	res.result.response(next, 1, pass); 
-}
-, delTable = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var schema = req.body;
-    var rs = connect(userID).deleteTable(table, schema);
-    var pass = "Delete table: " + table;
-    res.result.response(next, 1, pass); 
-}
-, getData = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var table = req.params.table;
-    var id = req.params.id;
-    var data = connect(userID).getData(table, id);
+};
+manage.prototype.delTable = function (req, res, next) {
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var schema = req.body;
+	var rs = this.connect(userID).deleteTable(table, schema);
+	var pass = "Delete table: " + table;
+	res.result.response(next, 1, pass); 
+};
+manage.prototype.getData = function (req, res, next) {
+	var userID = req.session.simple._id;
+	var table = req.params.table;
+	var id = req.params.id;
+	var data = this.connect(userID).getData(table, id);
 
-    if (data) {
-        res.result.response(next, 1, 'Data in table : ' + table, data);
-    }
-    else {
-        res.result.response(next, 1, 'table not found: ' + table);
-    }
-}
-, findData = function (req, res, next) {
+	if (data) {
+		res.result.response(next, 1, 'Data in table : ' + table, data);
+	}
+	else {
+		res.result.response(next, 1, 'table not found: ' + table);
+	}
+};
+manage.prototype.findData = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var query = req.body;
-	var data = connect(userID).find(table, query);
+	var data = this.connect(userID).find(table, query);
 
 	if (data) { res.result.response(next, 1, 'Find in table : ' + table, { "list": data }); }
 	else { res.result.response(next, 1, 'table not found: ' + table); }
-}
-, postData = function (req, res, next) {
+};
+manage.prototype.postData = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var query = req.body;
-	var data = connect(userID).postData(table, query);
+	var data = this.connect(userID).postData(table, query);
 
 	if (data) { res.result.response(next, 1, 'Insert into table : ' + table, data); }
 	else { res.result.response(next, 1, 'table not found: ' + table); }
-}
-, updateData = function (req, res, next) { res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method }); }
-, putData = function (req, res, next) {
+};
+manage.prototype.updateData = function (req, res, next) { res.result.response(next, 1, '', { url: req.originalUrl, method: req.method }); }
+manage.prototype.putData = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var id = req.params.id;
 	var data = req.body;
-	var result = connect(userID).putData(table, id, data);
+	var result = this.connect(userID).putData(table, id, data);
 
 	if (data) { res.result.response(next, 1, 'Update table row: ' + table + ' - ' + id); }
 	else { res.result.response(next, 1, 'table not found: ' + table); }
-}
-, delData = function (req, res, next) {
+};
+manage.prototype.delData = function (req, res, next) {
 	var userID = req.session.simple._id;
 	var table = req.params.table;
 	var id = req.params.id;
-	var result = connect(userID).deleteData(table, id);
+	var result = this.connect(userID).deleteData(table, id);
 
 	if (result) { res.result.response(next, 1, 'Delete table row: ' + table + ' - ' + id); }
 	else { res.result.response(next, 1, 'table not found: ' + table); }
-}
-, sql = function (req, res, next) {
-    var userID = req.session.simple._id;
-    var sql = req.body.sql || req.query.sql;
-    var data = connect(userID).sql(sql);
+};
+manage.prototype.sql = function (req, res, next) {
+	var userID = req.session.simple._id;
+	var sql = req.body.sql || req.query.sql;
+	var data = this.connect(userID).sql(sql);
 
-    if (data) {
-        res.result.response(next, 1, sql, data);
-    }
-    else {
-        res.result.response(next, 1, 'sql error', sql);
-    }
-}
-, connect = function (userID) {
+	if (data) {
+		res.result.response(next, 1, sql, data);
+	}
+	else {
+		res.result.response(next, 1, 'sql error', sql);
+	}
+};
+manage.prototype.connect = function (userID) {
 	userID = 'easyDB'; //-- for demo
 
 	if (!userID) { return false; }
@@ -157,359 +163,348 @@ var Result = require('../Classes/Result.js')
 		DB[userID] = db;
 		return DB[userID];
 	}
-}
-, dbRoute = function (req, res, next) {
-    res.result = new Result();
-    var routeURL = url.parse(req.originalUrl).pathname;
+};
+manage.prototype.dbRoute = function (req, res, next) {
+	res.result = new Result();
+	var routeURL = url.parse(req.originalUrl).pathname;
 
-    var pass = (req.method == 'GET' && (routeURL.lastIndexOf('/') == routeURL.length - 1) ? 'LIST' : req.method) + routeURL.split('/').length.toString();
-    var uri = routeURL.split('/');
-    if (req.body.query) {
-        pass = "FIND";
-    }
+	var pass = (req.method == 'GET' && (routeURL.lastIndexOf('/') == routeURL.length - 1) ? 'LIST' : req.method) + routeURL.split('/').length.toString();
+	var uri = routeURL.split('/');
+	if (req.body.query) {
+		pass = "FIND";
+	}
 
-    switch (pass) {
-        case 'FIND':
-            findData(req, res, next);
-            break;
-        case 'LIST4':
-            if (req.query.sql) {
-                sql(req, res, next);
-            }
-            else {
-                listTable(req, res, next);
-            }
-            break;
-        case 'GET4':
-            getSchema(req, res, next);
-            break;
-        case 'POST4':
-            postTable(req, res, next);
-            break;
-        case 'PUT4':
-            putTable(req, res, next);
-            break;
-        case 'DELETE4':
-            delTable(req, res, next);
-            break;
-        case 'LIST5':
-            pageData(req, res, next);
-            break;
-        case 'GET5':
-            getData(req, res, next);
-            break;
-        case 'POST5':
-            postData(req, res, next);
-            break;
-        case 'PUT5':
-            if (req.query.q) {
-                update(req, res, next);
-            }
-            else {
-                putData(req, res, next);
-            }
-            break;
-        case 'DELETE5':
-            delData(req, res, next);
-            break;
+	switch (pass) {
+		case 'FIND':
+			this.findData(req, res, next);
+			break;
+		case 'LIST4':
+			if (req.query.sql) {
+				this.sql(req, res, next);
+			}
+			else {
+				this.listTable(req, res, next);
+			}
+			break;
+		case 'GET4':
+			this.getSchema(req, res, next);
+			break;
+		case 'POST4':
+			this.postTable(req, res, next);
+			break;
+		case 'PUT4':
+			this.putTable(req, res, next);
+			break;
+		case 'DELETE4':
+			this.delTable(req, res, next);
+			break;
+		case 'LIST5':
+			this.pageData(req, res, next);
+			break;
+		case 'GET5':
+			this.getData(req, res, next);
+			break;
+		case 'POST5':
+			this.postData(req, res, next);
+			break;
+		case 'PUT5':
+			if (req.query.q) {
+				this.update(req, res, next);
+			}
+			else {
+				this.putData(req, res, next);
+			}
+			break;
+		case 'DELETE5':
+			this.delData(req, res, next);
+			break;
 
-        default:
-            res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method });
-            break;
-    }
-}
+		default:
+			res.result.response(next, 1, pass, { url: req.originalUrl, method: req.method });
+			break;
+	}
+};
 
 //manage api
-, MDBconnect = function () {
-    if (MDB) {
-        return MDB;
-    } else {
-        var path = config.uri;
-        var db = new EasyDB(config, logger);
-        db.connect({ "url": path });
-        MDB = db;
-        return MDB;
-    };
-}
+manage.prototype.MDBconnect = function () {
+	if (MDB) {
+		return MDB;
+	} else {
+		var path = config.uri;
+		var db = new EasyDB(config, logger);
+		db.connect({ "url": path });
+		MDB = db;
+		return MDB;
+	};
+};
+manage.prototype.getallapp = function (req, res, next) {
+	res.result = new Result();
+	var table = 'app';
+	var query = req.query.q || '';
+	var data = this.MDBconnect().pageData(table, query);
 
-, getallapp = function (req, res, next) {
-    res.result = new Result();
-    var table = 'app';
-    var query = req.query.q || '';
-    var data = MDBconnect().pageData(table, query);
+	if (data) {
+		res.result.response(next, 1, 'APIRoute showallapp GET Success', data);
+	};
+};
+manage.prototype.getappapi = function (req, res, next) {
+	res.result = new Result();
+	var table = 'api';
+	var query = req.query.q || '';
+	var data = this.MDBconnect().pageData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute showallapp GET Success', data);
-    };
-}
-, getappapi = function (req, res, next) {
-    res.result = new Result();
-    var table = 'api';
-    var query = req.query.q || '';
-    var data = MDBconnect().pageData(table, query);
+	if (data) {
+		res.result.response(next, 1, 'APIRoute showappapi GET Success', data);
+	};
+};
+manage.prototype.getappapiinfo = function (req, res, next) {
+	res.result = new Result();
+	var table = 'api';
+	var query = req.query.q || '';
+	var data = this.MDBconnect().pageData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute showappapi GET Success', data);
-    };
-}
-, getappapiinfo = function (req, res, next) {
-    res.result = new Result();
-    var table = 'api';
-    var query = req.query.q || '';
-    var data = MDBconnect().pageData(table, query);
+	if (data) {
+		res.result.response(next, 1, 'APIRoute showappapiinfo GET Success', data);
+	};
+};
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute showappapiinfo GET Success', data);
-    };
-}
+manage.prototype.postapp = function (req, res, next) {
+	res.result = new Result();
+	var table = 'app';
+	var info = req.body || '';
+	var name = info.name;
+	var dbt = this.MDBconnect().listData(table, "name='" + name + "'").list[0];
 
-, postapp = function (req, res, next) {
-    res.result = new Result();
-    var table = 'app';
-    var info = req.body || '';
-    var name = info.name;
-    var dbt = MDBconnect().listData(table, "name='" + name + "'").list[0];
+	if (dbt) {
+		res.result.response(next, 0, 'APIRoute postapp POST Fail');
+	}
+	else {
+		var data = this.MDBconnect().postData(table, info);
 
-    if (dbt) {
-        res.result.response(next, 0, 'APIRoute postapp POST Fail');
-    } else {
-        var data = MDBconnect().postData(table, info);
+		if (data) {
+			res.result.response(next, 1, 'APIRoute postapp POST Success', { _id: data });
+		};
+	};
+};
+manage.prototype.postapi = function (req, res, next) {
+	res.result = new Result();
+	var table = 'api';
+	var info = req.body || '';
+	var name = info.name;
+	var dbt = this.MDBconnect().listData(table, "name='" + name + "'").list[0];
 
-        if (data) {
-            console.log(MDBconnect().listData(table));
-            res.result.response(next, 1, 'APIRoute postapp POST Success', { _id: data });
-        };
-    };
+	if (dbt) {
+		res.result.response(next, 0, 'APIRoute postapi POST Fail');
+	} else {
+		var data = this.MDBconnect().postData(table, info);
 
-}
-, postapi = function (req, res, next) {
-    res.result = new Result();
-    var table = 'api';
-    var info = req.body || '';
-    var name = info.name;
-    var dbt = MDBconnect().listData(table, "name='" + name + "'").list[0];
+		if (data) {
+			res.result.response(next, 1, 'APIRoute postapi POST Success', { _id: data });
+		};
+	};
+};
 
-    if (dbt) {
-        res.result.response(next, 0, 'APIRoute postapi POST Fail');
-    } else {
-        var data = MDBconnect().postData(table, info);
+manage.prototype.putapp = function (req, res, next) {
+	res.result = new Result();
+	var table = 'app';
+	var query = req.body || '';
 
-        if (data) {
-            console.log(MDBconnect().listData(table));
-            res.result.response(next, 1, 'APIRoute postapi POST Success', { _id: data });
-        };
-    };
+	var data = this.MDBconnect().putData(table, query);
 
-}
+	if (data) {
+		res.result.response(next, 1, 'APIRoute putapp POST Success', { _id: data });
+	};
+};
+manage.prototype.putapi = function (req, res, next) {
+	res.result = new Result();
+	var table = 'api';
+	var query = req.body || '';
 
-, putapp = function (req, res, next) {
-    res.result = new Result();
-    var table = 'app';
-    var query = req.body || '';
+	var data = this.MDBconnect().putData(table, query);
+	if (data) {
+		res.result.response(next, 1, 'APIRoute putapi POST Success', { _id: data });
+	};
+};
+manage.prototype.delapp = function (req, res, next) {
+	res.result = new Result();
+	var table = 'app';
+	var app = req.params.app;
 
-    var data = MDBconnect().putData(table, query);
+	var query = "_id='" + app + "'";
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute putapp POST Success', { _id: data });
-    };
-}
-, putapi = function (req, res, next) {
-    res.result = new Result();
-    var table = 'api';
-    var query = req.body || '';
+	var data = this.MDBconnect().deleteData(table, query);
 
-    var data = MDBconnect().putData(table, query);
-    if (data) {
-        console.log(MDBconnect().listData(table));
-        console.log(data);
+	if (data) {
+		res.result.response(next, 1, 'APIRoute delapp POST Success', { _id: data });
+	};
+};
+manage.prototype.delapi = function (req, res, next) {
+	res.result = new Result();
+	var table = 'api';
+	var api = req.params.api;
 
-        res.result.response(next, 1, 'APIRoute putapi POST Success', { _id: data });
-    };
-}
+	var query = "_id='" + api + "'";
+	var data = this.MDBconnect().deleteData(table, query);
 
-, delapp = function (req, res, next) {
-    res.result = new Result();
-    var table = 'app';
-    var app = req.params.app;
-
-    var query = "_id='" + app + "'";
-
-    var data = MDBconnect().deleteData(table, query);
-
-    if (data) {
-        res.result.response(next, 1, 'APIRoute delapp POST Success', { _id: data });
-    };
-}
-, delapi = function (req, res, next) {
-    res.result = new Result();
-    var table = 'api';
-    var api = req.params.api;
-
-    var query = "_id='" + api + "'";
-    var data = MDBconnect().deleteData(table, query);
-
-    if (data) {
-        res.result.response(next, 1, 'APIRoute delapi POST Success', { _id: data });
-    };
-}
+	if (data) {
+		res.result.response(next, 1, 'APIRoute delapi POST Success', { _id: data });
+	};
+};
 
 //tag api
-, getalltag = function (req, res, next) {
-    res.result = new Result();
-    var table = 'tag';
-    var query = req.query.q || '';
-    var data = MDBconnect().pageData(table, query);
+manage.prototype.getalltag = function (req, res, next) {
+	res.result = new Result();
+	var table = 'tag';
+	var query = req.query.q || '';
+	var data = this.MDBconnect().pageData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute getalltag GET Success', data);
-    };
-}
-, gettag = function (req, res, next) {
-    res.result = new Result();
-    var table = 'tag';
-    var query = req.query.q || '';
-    var data = MDBconnect().pageData(table, query);
+	if (data) {
+		res.result.response(next, 1, 'APIRoute getalltag GET Success', data);
+	};
+};
+manage.prototype.gettag = function (req, res, next) {
+	res.result = new Result();
+	var table = 'tag';
+	var query = req.query.q || '';
+	var data = this.MDBconnect().pageData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute gettag GET Success', data);
-    };
-}
-, posttag = function (req, res, next) {
-    res.result = new Result();
-    var table = 'tag';
-    var info = req.body || '';
+	if (data) {
+		res.result.response(next, 1, 'APIRoute gettag GET Success', data);
+	};
+};
+manage.prototype.posttag = function (req, res, next) {
+	res.result = new Result();
+	var table = 'tag';
+	var info = req.body || '';
 
-    var data = MDBconnect().postData(table, info);
+	var data = this.MDBconnect().postData(table, info);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute posttag POST Success', { _id: data });
-    };
-}
-, puttag = function (req, res, next) {
-    res.result = new Result();
-    var table = 'tag';
-    var query = req.query.q || '';
+	if (data) {
+		res.result.response(next, 1, 'APIRoute posttag POST Success', { _id: data });
+	};
+};
+manage.prototype.puttag = function (req, res, next) {
+	res.result = new Result();
+	var table = 'tag';
+	var query = req.query.q || '';
 
-    var data = MDBconnect().putData(table, query);
+	var data = this.MDBconnect().putData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute puttag POST Success', { _id: data });
-    };
-}
-, deltag = function (req, res, next) {
-    res.result = new Result();
-    var table = 'tag';
-    var query = req.query.q || '';
+	if (data) {
+		res.result.response(next, 1, 'APIRoute puttag POST Success', { _id: data });
+	};
+};
+manage.prototype.deltag = function (req, res, next) {
+	res.result = new Result();
+	var table = 'tag';
+	var query = req.query.q || '';
 
-    var data = MDBconnect().deleteData(table, query);
+	var data = this.MDBconnect().deleteData(table, query);
 
-    if (data) {
-        res.result.response(next, 1, 'APIRoute deltag POST Success', { _id: data });
-    };
-}
+	if (data) {
+		res.result.response(next, 1, 'APIRoute deltag POST Success', { _id: data });
+	};
+};
+manage.prototype.apiRoute = function (req, res, next) {
+	res.result = new Result();
 
+	var routeURL = url.parse(req.originalUrl).pathname;
+	var method = req.method;
+	var app = req.params.app;
+	var api = req.params.api;
 
-, apiRoute = function (req, res, next) {
-    res.result = new Result();
+	switch (method) {
+		case 'GET':
+			if (!api && !app) {
+				this.getallapp(req, res, next);
+			};
+			if (!api && app) {
+				this.getappapi(req, res, next);
+			};
+			if (api && app) {
+				this.getappapiinfo(req, res, next);
+			};
+			break;
+		case 'POST':
+			if (!api && !app) {
+				this.postapp(req, res, next);
+			};
+			if (api && app) {
+				this.postapi(req, res, next);
+			};
+			break;
+		case 'PUT':
+			if (!api && app) {
+				this.putapp(req, res, next);
+			};
+			if (api && app) {
+				this.putapi(req, res, next);
+			};
+			break;
+		case 'DELETE':
+			if (!api && app) {
+				this.delapp(req, res, next);
+			};
+			if (api && app) {
+				this.delapi(req, res, next);
+			};
+			break;
+	};
+};
+manage.prototype.tagRoute = function (req, res, next) {
+	res.result = new Result();
 
-    var routeURL = url.parse(req.originalUrl).pathname;
-    var method = req.method;
-    var app = req.params.app;
-    var api = req.params.api;
+	var routeURL = url.parse(req.originalUrl).pathname;
+	var method = req.method;
+	var tag = req.params.tag;
 
-    switch (method) {
-        case 'GET':
-            if (!api && !app) {
-                getallapp(req, res, next);
-            };
-            if (!api && app) {
-                getappapi(req, res, next);
-            };
-            if (api && app) {
-                getappapiinfo(req, res, next);
-            };
-            break;
-        case 'POST':
-            if (!api && !app) {
-                postapp(req, res, next);
-            };
-            if (api && app) {
-                postapi(req, res, next);
-            };
-            break;
-        case 'PUT':
-            if (!api && app) {
-                putapp(req, res, next);
-            };
-            if (api && app) {
-                putapi(req, res, next);
-            };
-            break;
-        case 'DELETE':
-            if (!api && app) {
-                delapp(req, res, next);
-            };
-            if (api && app) {
-                delapi(req, res, next);
-            };
-            break;
-    };
-}
-, tagRoute = function (req, res, next) {
-    res.result = new Result();
+	switch (method) {
+		case 'GET':
+			if (!tag) {
+				this.getalltag(req, res, next);
+			} else {
+				this.gettag(req, res, next);
+			};
+			break;
+		case 'POST':
+			if (tag) {
+				this.posttag(req, res, next);
+			};
+			break;
+		case 'PUT':
+			if (tag) {
+				this.puttag(req, res, next);
+			};
+			break;
+		case 'DELETE':
+			if (tag) {
+				this.deltag(req, res, next);
+			};
+			break;
+	};
+};
 
-    var routeURL = url.parse(req.originalUrl).pathname;
-    var method = req.method;
-    var tag = req.params.tag;
+manage.prototype.init = function (_config, _logger, route) {
+	config = _config;
+	logger = _logger;
+	DB = {};
 
-    switch (method) {
-        case 'GET':
-            if (!tag) {
-                getalltag(req, res, next);
-            } else {
-                gettag(req, res, next);
-            };
-            break;
-        case 'POST':
-            if (tag) {
-                posttag(req, res, next);
-            };
-            break;
-        case 'PUT':
-            if (tag) {
-                puttag(req, res, next);
-            };
-            break;
-        case 'DELETE':
-            if (tag) {
-                deltag(req, res, next);
-            };
-            break;
-    };
-}
+	var self = this;
 
-, init = function (_config, _logger, route) {
-    config = _config;
-    logger = _logger;
-    DB = {};
+	// EasyDB
+	route.all('/manage/db/', function(res, req, next) {self.dbRoute(res, req, next);});
+	route.all('/manage/db/:table', function(res, req, next) {self.dbRoute(res, req, next);});
+	route.all('/manage/db/:table/:id', function(res, req, next) {self.dbRoute(res, req, next);});
 
-    // EasyDB
-    route.all('/manage/db/', dbRoute);
-    route.all('/manage/db/:table', dbRoute);
-    route.all('/manage/db/:table/:id', dbRoute);
+	//managerAPI
+	route.all('/manage/api/', function(res, req, next) {self.apiRoute(res, req, next);}); //show all app
+	route.all('/manage/api/:app', function(res, req, next) {self.apiRoute(res, req, next);}); //show app's api
+	route.all('/manage/api/:app/:api', function(res, req, next) {self.apiRoute(res, req, next);}); //show the api info
 
-    //managerAPI
-    route.all('/manage/api/', apiRoute); //show all app
-    route.all('/manage/api/:app', apiRoute); //show app's api
-    route.all('/manage/api/:app/:api', apiRoute); //show the api info
+	route.all('/manage/tag/', function(res, req, next) {self.tagRoute(res, req, next);}); //show all tag
+	route.all('/manage/tag/:tag', function(res, req, next) {self.tagRoute(res, req, next);}); //show tag's info
+};
 
-    route.all('/manage/tag/', tagRoute); //show all tag
-    route.all('/manage/tag/:tag', tagRoute); //show tag's info
+var myManage = new manage();
 
-}
-;
-
-module.exports = {
-    init: init
-}
-;
+module.exports = myManage;

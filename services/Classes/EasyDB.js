@@ -72,7 +72,7 @@ var Schema = function(table) {
 	if(typeof type == "object") { return 'JSON'; }
 	else if(typeof type != 'string') { return rtType; }
 
-	var typeList = ['String', 'Number', 'Date', 'Boolean', 'JSON', 'Buffer'];
+	var typeList = ['String', 'Number', 'Date', 'Boolean', 'JSON', 'Binary'];
 	var searchList = [];
 	for(var key in typeList) { searchList[key] = typeList[key].toLowerCase(); }
 	si = searchList.indexOf(type.toLowerCase());
@@ -155,7 +155,7 @@ var Schema = function(table) {
 			rs = typeof value == 'object'? value: {};
 			break;
 
-		case "Buffer":
+		case "Binary":
 			break;
 	}
 
@@ -271,7 +271,8 @@ module.exports = function(conf, logger) {
 	}
 	,	setDriver = function(driver) {
 		!!driver && (this.params.driver = driver);
-		this.DB = new require(this.params.driverPath + this.params.driver)();
+		var Driver = require(this.params.driverPath + this.params.driver);
+		this.DB = new Driver();
 	}
 	,	setDriverPath = function(path) {
 		!!path && (this.driverPath = path);
