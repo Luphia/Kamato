@@ -70,25 +70,26 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     $scope.commit_new_row = function(){
-        console.log(viewing_table)
-        var new_row_array = [] 
+
+        var new_row_array = []; 
+        console.log($scope.new_row_count);
         for (var i = 0; i < $scope.new_row_count; i++){
             var is_edit = false;
             for(var t in $scope.t_d[i]){
-                if($scope.t_d[i][t] != ''){
+                console.log($scope.t_d)
+                if( (t != '$$hashKey') && ($scope.t_d[i][t] != '')){
                     is_edit = true;
                 }
             }
-            if(is_edit == false){
-                $scope.t_d.splice($scope.t_d.indexOf($scope.t_d[i]),1);
-            }
-            else{
-                new_row_array.push($scope.t_d[i]);
+            if(is_edit == true){
+                
+                // $scope.t_d.splice($scope.t_d.indexOf(temp_t_d[i]),1);
+                 new_row_array.push($scope.t_d[i]);
             }
         }
 
-        // var new_row_json = JSON.stringify(new_row_array);
-        // console.log(new_row_json);
+        var new_row_array_reverse = new_row_array.reverse();
+
         $http.post(db_link+viewing_table+'/', new_row_array).success(function(create_row){
             $scope.table_click(viewing_table, $scope.custom_rows, 1);
         })       
@@ -252,10 +253,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
 	$scope.del_t_row = function(row, id){
-        console.log(row, id);
-        if($scope.new_row_count >= 0){
-             $scope.new_row_count -= 1;
-        }
 		$scope.t_d.splice($scope.t_d.indexOf(row),1);
 
         if( id != ''){
