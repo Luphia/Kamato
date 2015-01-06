@@ -1,5 +1,6 @@
 var driverPath = '../DBDriver/'
 ,	defaultDriver = 'EasyMongo'
+,	util = require('util')
 ,	Collection = require('./Collection.js')
 ,	Parser = require('./Parser.js')
 ,	defaultLimit = 30;
@@ -15,6 +16,7 @@ var driverPath = '../DBDriver/'
  */
 
  /*
+
 var edb=require('./services/Classes/EasyDB.js');
 var db = new edb();
 db.connect({url: 'mongodb://10.10.23.31:27010/easyDB'})
@@ -25,8 +27,9 @@ db.postData('user', {name: 'A', birth: '1982-04-01'})
 db.postData('user', {name: 'B', birth: '1988-09-18'})
 db.postData('user', {name: 'B', birth: '1995-08-23'})
 db.listData('user', "birth < '1990-01-01' and birth > '1984-01-01'");
-
+db.postData('user', [{name: 'D', birth: '1982-05-01'}]);
 db.postData('user', [{name: 'D', birth: '1982-05-01'}, {name: 'E', birth: '1982-06-01'}, {name: 'F', birth: '1982-07-01'}])
+
  */
 
 var Schema = function(table) {
@@ -91,7 +94,7 @@ var Schema = function(table) {
 ,	getValueSchema = function(data) {
 	var schema = {};
 	if(!data || typeof data != 'object') { data = {}; }
-	else if(data.length > 1) { return getValueSchema(data[0]); }
+	else if(util.isArray(data)) { return getValueSchema(data[0]); }
 
 	for(var key in data) {
 		schema[key] = valueType(data[key]);
@@ -693,7 +696,7 @@ module.exports = function(conf, logger) {
 			where ++;
 		}
 
-		if(data.length > 1) {
+		if(util.isArray(data)) {
 			for(var k in data) {
 
 				jobs++;
@@ -737,7 +740,7 @@ module.exports = function(conf, logger) {
 			this.setSchema(table, getValueSchema(data));
 		}
 
-		if(data.length > 1) {
+		if(util.isArray(data)) {
 			for(var key in data) {
 				data[key] = compareSchema(data[key], schema);
 				data[key]._id = this.getID(table);
