@@ -72,7 +72,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     $scope.commit_new_row = function(){
 
         var new_row_array = []; 
-        console.log($scope.new_row_count);
         for (var i = 0; i < $scope.new_row_count; i++){
             var is_edit = false;
             for(var t in $scope.t_d[i]){
@@ -95,7 +94,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         })       
         $scope.new_row_uncommitted = false;
         $scope.new_row_count = 0 ;
-   }
+    }
 
 	$scope.table_click =function(name, default_table_rows, page_num){
         pre_id_attr="";    //清除上一次在其他table點擊json的事件
@@ -254,7 +253,13 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 
 	$scope.del_t_row = function(row, id){
 		$scope.t_d.splice($scope.t_d.indexOf(row),1);
-
+        $scope.new_row_count = 0;
+        for( var t in $scope.t_d){
+            if ($scope.t_d[t]['_id'] == ''){
+                $scope.new_row_count += 1;
+            }
+        }
+        console.log($scope.new_row_count);
         if( id != ''){
             //非新增資料狀態
             $http.delete(db_link+viewing_table+'/'+id).success(function(del_row){
@@ -334,7 +339,8 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         {'type': 'Number'},
         {'type': 'Boolean'},
         {'type': 'Date'},
-        {'type': 'JSON'}
+        {'type': 'JSON'},
+        {'type': 'Binary'}
     ]
 
     $scope.submit_col_sche = {"name":"", "columns":{}};
