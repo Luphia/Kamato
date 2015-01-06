@@ -70,6 +70,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     $scope.commit_new_row = function(){
+        console.log(viewing_table)
         var new_row_array = [] 
         for (var i = 0; i < $scope.new_row_count; i++){
             var is_edit = false;
@@ -83,15 +84,12 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             }
             else{
                 new_row_array.push($scope.t_d[i]);
-                console.log($scope.t_d[i]);
-                 console.log(new_row_array);
             }
         }
 
-        console.log(viewing_table); 
-        // var new_row_json = JSON.stringify(new_row_array)
-        $http.post(db_link+viewing_table+'/', new_row_json).success(function(create_row){
-            console.log(create_row);
+        // var new_row_json = JSON.stringify(new_row_array);
+        // console.log(new_row_json);
+        $http.post(db_link+viewing_table+'/', new_row_array).success(function(create_row){
             $scope.table_click(viewing_table, $scope.custom_rows, 1);
         })       
         $scope.new_row_uncommitted = false;
@@ -254,13 +252,15 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
 	$scope.del_t_row = function(row, id){
+        console.log(row, id);
         if($scope.new_row_count >= 0){
              $scope.new_row_count -= 1;
         }
-
 		$scope.t_d.splice($scope.t_d.indexOf(row),1);
+
         if( id != ''){
-            $http.delete(db_link+viewing_table+'/'+id, row).success(function(del_row){
+            //非新增資料狀態
+            $http.delete(db_link+viewing_table+'/'+id).success(function(del_row){
                 console.log(del_row);
             })
         }

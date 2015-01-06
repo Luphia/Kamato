@@ -141,7 +141,7 @@
   opacity: 1;
 }
 
-.ng-scope.platform .easydb_container .row_uncommitted{
+.ng-scope.platform .easydb_container .row_uncommitted_btn{
   width: 22px;   
   height:22px;   
   background: url(../img/simple/easydb/uncommited.png) 50% 50%;
@@ -152,13 +152,14 @@
   opacity: 0.5;
 }
 
-.ng-scope.platform .easydb_container .row_uncommitted:hover{
+.ng-scope.platform .easydb_container .row_uncommitted_btn:hover{
   opacity: 1;
 }
 
 .ng-scope.platform .easydb_container .new_row{
  opacity: 1;
- background-color: rgba(89,0,0,0.7);
+ background-color: rgba(66,62,70,0.5);
+ border-left: 5px solid rgba(255,255,255,0.5);
 }
 
 .ng-scope.platform .easydb_container .page_wrapper{
