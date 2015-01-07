@@ -214,10 +214,18 @@ EasyFile.prototype.getID = function () {
 };
 EasyFile.prototype.reset = function () {
     this.splitByte = 0;
-    this.progress = [];
+    this.progress = new Array();
 };
 EasyFile.prototype.getProgress = function () {
-    this.progress
+    var progress = this.progress;
+    var count = progress.length;
+    var ok = 0;
+    for (var i = 0; i < count; i++) {
+        if (progress[i] == true) {
+            ok += 1;
+        };
+    };
+    return ok / count;
 };
 EasyFile.prototype.done = function () { };
 EasyFile.prototype.setCallback = function () { };
@@ -236,7 +244,7 @@ EasyFile.prototype.getSlice = function (num) {
     var str = this.getID() + '_' + num + '_' + countSlice + '_';
     var strcrc32 = crc32(str);
     if (blob.length < splitByte) {
-        var slblob = blob.substring(0, blob.length - 1);
+        var slblob = blob.substring(0, blob.length);
         var data = {
             id: str + strcrc32,
             type: 'EasyFile',
