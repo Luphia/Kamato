@@ -75,7 +75,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         for (var i = 0; i < $scope.new_row_count; i++){
             var is_edit = false;
             for(var t in $scope.t_d[i]){
-                console.log($scope.t_d)
                 if( (t != '$$hashKey') && ($scope.t_d[i][t] != '')){
                     is_edit = true;
                 }
@@ -166,6 +165,11 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     var edit_temp_array =[];
     $scope.edit_finish = function(id, edited_key, row){ 
         var temp_json = {};
+        if( row[edited_key] == undefined){
+            console.log(1)
+            row[edited_key] = "error type";
+        }
+        console.log(row);
         temp_json[edited_key] = row[edited_key];
         edit_temp_array.push(temp_json);
         if( id != ''){
@@ -176,8 +180,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         }
         var e = event.target;
         var next_e = e.offsetParent.nextElementSibling.childNodes[1].childNodes[1].childNodes[0];
-        console.log(event);
-        console.log(next_e);
         e.blur();
         next_e.focus();
     }

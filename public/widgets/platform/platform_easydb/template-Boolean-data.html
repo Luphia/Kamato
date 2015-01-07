@@ -1,1 +1,1 @@
-<input class="input_td" ng-disabled="key == '_id'" ng-click="edit_td(key, r._id, value)" ng-hide="value =='json file'" type="text" ng-model="r[key]" ng-enter="edit_finish(r._id, key, r)">
+<input class="input_td" ng-disabled="key == '_id'" ng-click="edit_td(key, r._id, value)" ng-hide="value =='json file'" type="text" ng-model="r[key]" ng-enter="edit_finish(r._id, key, r)"  ng-blur="edit_finish(r._id, key, r)">
