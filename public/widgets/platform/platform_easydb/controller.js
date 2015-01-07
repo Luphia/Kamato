@@ -184,6 +184,23 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         next_e.focus();
     }
 
+    $scope.edit_finish_blur = function(id, edited_key, row){ 
+        var temp_json = {};
+        if( row[edited_key] == undefined){
+            console.log(1)
+            row[edited_key] = "error type";
+        }
+        console.log(row);
+        temp_json[edited_key] = row[edited_key];
+        edit_temp_array.push(temp_json);
+        if( id != ''){
+            //不是新增的data
+            $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
+                // console.log(edited_data_msg);
+            })
+        }
+    }
+
     $scope.show_table = function(table_name, custom_table_rows, page_num){
         //要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
         j_text = document.getElementsByClassName("json_text");
