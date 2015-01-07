@@ -52,10 +52,15 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
             return;
         };
         var file = files[0];
+
         var reader = new FileReader();
         reader.onloadend = function (e) {
             if (e.target.readyState == FileReader.DONE) {
-                aa.loadFile(e.target.result);
+                aa.loadFile(e.target.result, file.name, file.type, file.size);
+                aa.split(50);
+                console.log(aa.getSlice(1))
+                console.log(aa.getSlice(2))
+                console.log(aa.getSlice(3))
             };
         };
         reader.readAsDataURL(file);
