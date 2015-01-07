@@ -355,6 +355,10 @@
   cursor: default;
 }
 
+.ng-scope.platform .easydb_container .input_td:hover{
+  border: 1px rgba(255,255,255,0.7) solid;
+}
+
 .ng-scope.platform .easydb_container .db_table input:focus{
   background-color: rgba(0,0,0,0);
   border: 1px rgba(255,255,255,0.7) solid;

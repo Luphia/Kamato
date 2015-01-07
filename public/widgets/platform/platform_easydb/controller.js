@@ -171,11 +171,13 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         if( id != ''){
             //不是新增的data
             $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
-                console.log(edited_data_msg);
+                // console.log(edited_data_msg);
             })
         }
         var e = event.target;
-        var next_e = e.parentNode.nextElementSibling.firstElementChild;
+        var next_e = e.offsetParent.nextElementSibling.childNodes[1].childNodes[1].childNodes[0];
+        console.log(event);
+        console.log(next_e);
         e.blur();
         next_e.focus();
     }
@@ -258,6 +260,10 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             if ($scope.t_d[t]['_id'] == ''){
                 $scope.new_row_count += 1;
             }
+        }
+
+        if($scope.new_row_count == 0){
+            $scope.new_row_uncommitted=false;
         }
         console.log($scope.new_row_count);
         if( id != ''){
@@ -411,10 +417,11 @@ Kamato.register.directive('dbdata', function ($compile) {
         // replace: true,
         link: function(scope, element, attrs){
             scope.scheTypeUrl = function(){
-                return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
+                if( attrs.schetype != ''){
+                    return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
+                }
             }
         },
         template: '<div ng-include="scheTypeUrl()"></div>'
-            // console.log(aaa,bbb,ccc,ddd);
     }
 });
