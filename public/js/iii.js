@@ -230,9 +230,7 @@ EasyFile.prototype.getProgress = function () {
     var count = progress.length;
     var ok = 0;
     for (var i = 0; i < count; i++) {
-        console.log('i   ' + i)
         if (progress[i] == true) {
-            console.log('pppp' + i + '    ' + progress[i])
             ok += 1;
         };
     };
