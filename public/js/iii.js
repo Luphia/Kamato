@@ -272,9 +272,8 @@ EasyFile.prototype.addSlice = function (data) {
     this.Slice[sid] = data.blob;
 
     var final = this.getProgress();
-
+    console.log(final)
     if (final == 1) {
-        this.Slice.shift();
         this.data.blob = this.Slice.join('');
     };
 
