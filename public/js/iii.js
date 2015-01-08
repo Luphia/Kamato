@@ -1,4 +1,5 @@
-﻿/*
+﻿'use strict';
+/*
 
 - html5 file api
 http://www.html5rocks.com/en/tutorials/file/dndfiles/
@@ -227,9 +228,11 @@ EasyFile.prototype.reset = function () {
 EasyFile.prototype.getProgress = function () {
     var progress = this.progress;
     var count = progress.length;
-    var ok = 1;
-    for (var i = 1; i < count; i++) {
+    var ok = 0;
+    for (var i = 0; i < count; i++) {
+        console.log('i   ' + i)
         if (progress[i] == true) {
+            console.log('pppp' + i + '    ' + progress[i])
             ok += 1;
         };
     };
@@ -237,6 +240,7 @@ EasyFile.prototype.getProgress = function () {
     return ans;
 };
 EasyFile.prototype.done = function (num) {
+    num -= 1;
     this.progress[num] = true;
     var final = this.getProgress();
     if (final == 1) {
@@ -251,21 +255,31 @@ EasyFile.prototype.setCallback = function (callback) {
     this.callback = callback;
 };
 EasyFile.prototype.addSlice = function (data) {
+
     var id = data.id.split('_')[0];
-    var sid = data.id.split('_')[1];
-    var tid = data.id.split('_')[2];
+    var sid = parseInt(data.id.split('_')[1], 10) - 1;
+    var tid = parseInt(data.id.split('_')[2], 10);
 
     if (typeof this.Slice == 'undefined') {
         this.Slice = new Array(tid);
         this.progress = new Array(tid);
     };
+
     this.data.id = id;
     this.data.name = data.name;
     this.data.type = data.type;
     this.data.size = data.size;
     this.data.sha1 = id;
-    this.Slice[sid] = data.blob;
     this.progress[sid] = true;
+    this.Slice[sid] = data.blob;
+
+    var final = this.getProgress();
+
+    if (final == 1) {
+        this.Slice.shift();
+        this.data.blob = this.Slice.join('');
+    };
+
 };
 EasyFile.prototype.split = function (Byte) {
     this.splitByte = Byte;
