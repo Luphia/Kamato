@@ -159,6 +159,17 @@ toBlob
 if (!window.btoa) window.btoa = $.base64.btoa;
 if (!window.atob) window.atob = $.base64.atob;
 
+function test() {
+    var start = 0;
+    var end = 0;
+    start = new Date().getTime();
+    for (i = 0; i < 10000000; i++) {
+        // do something.
+    };
+    end = new Date().getTime();
+    document.write((end - start) / 1000 + "sec");
+};
+
 var makeCRCTable = function () {
     var c;
     var crcTable = [];
@@ -186,18 +197,15 @@ var crc32 = function (str) {
 var EasySlice = function () { };
 
 var EasyFile = function () {
-    this.reset();
     this.data = {};
 };
 
 EasyFile.prototype.loadFile = function (blob, name, type, size) {
-    this.reset();
-    var base64 = String(blob).split(';base64,')[1];
-    this.data.blob = base64;
+    this.data.blob = blob;
     this.data.name = name;
     this.data.type = type;
     this.data.id = this.setID();
-    this.data.sha1 = new jsSHA(this.data.blob, "TEXT").getHash("SHA-1", "HEX");
+    this.data.sha1 = new jsSHA(blob, "TEXT").getHash("SHA-1", "HEX");
     this.data.size = size;
 };
 EasyFile.prototype.setID = function (id) {
@@ -213,57 +221,92 @@ EasyFile.prototype.getID = function () {
     return this.data.id;
 };
 EasyFile.prototype.reset = function () {
-    this.splitByte = 0;
-    this.progress = new Array();
+    var num = this.countSlice();
+    this.progress = new Array(num);
 };
 EasyFile.prototype.getProgress = function () {
     var progress = this.progress;
     var count = progress.length;
-    var ok = 0;
-    for (var i = 0; i < count; i++) {
+    var ok = 1;
+    for (var i = 1; i < count; i++) {
         if (progress[i] == true) {
             ok += 1;
         };
     };
-    return ok / count;
+    var ans = ok / count;
+    return ans;
 };
-EasyFile.prototype.done = function () { };
-EasyFile.prototype.setCallback = function () { };
-EasyFile.prototype.addSlice = function () { };
+EasyFile.prototype.done = function (num) {
+    this.progress[num] = true;
+    var final = this.getProgress();
+    if (final == 1) {
+        this.callback(false, true);
+    };
+};
+EasyFile.prototype.setCallback = function (callback) {
+    if (typeof (callback) != "function") {
+        alert('your setCallback is not function');
+        return false;
+    };
+    this.callback = callback;
+};
+EasyFile.prototype.addSlice = function (data) {
+    var sid = data.id.split('_')[1];
+    var tid = data.id.split('_')[2];
+
+    if (typeof this.Slice == 'undefined') {
+        this.Slice = new Array(tid);
+        this.progress = new Array(tid);
+    };
+
+    this.Slice[sid] = data.blob;
+    this.progress[sid] = true;
+};
 EasyFile.prototype.split = function (Byte) {
-    this.reset();
     this.splitByte = Byte;
+    this.reset();
 };
-EasyFile.prototype.getSliceID = function () { };
+EasyFile.prototype.getSliceID = function (num) {
+    if (num <= 0) {
+        this.callback('your getSliceID is error');
+        return;
+    };
+    var countSlice = this.countSlice();
+    var str = this.getID() + '_' + num + '_' + countSlice + '_';
+    var strcrc32 = crc32(str);
+    return str + strcrc32;
+};
 EasyFile.prototype.getSlice = function (num) {
     var blob = this.data.blob;
     var splitByte = this.splitByte;
     var countSlice = this.countSlice();
     var temp = Math.floor((splitByte) / 0.75);
+    var id = this.getSliceID(num);
 
-    var str = this.getID() + '_' + num + '_' + countSlice + '_';
-    var strcrc32 = crc32(str);
-    if (blob.length < splitByte) {
+    if (countSlice == num && blob.length < splitByte) {
         var slblob = blob.substring(0, blob.length);
         var data = {
-            id: str + strcrc32,
+            id: id,
+            type: 'EasyFile',
+            sha1: new jsSHA(slblob, "TEXT").getHash("SHA-1", "HEX"),
+            blob: slblob
+        };
+        return data;
+    } else if (countSlice >= num && blob.length > splitByte) {
+        var start = temp * num - temp;
+        var end = temp * num;
+
+        var slblob = blob.substring(start, end);
+        var data = {
+            id: id,
             type: 'EasyFile',
             sha1: new jsSHA(slblob, "TEXT").getHash("SHA-1", "HEX"),
             blob: slblob
         };
         return data;
     } else {
-        var start = temp * num - temp;
-        var end = temp * num;
-
-        var slblob = blob.substring(start, end);
-        var data = {
-            id: str + strcrc32,
-            type: 'EasyFile',
-            sha1: new jsSHA(slblob, "TEXT").getHash("SHA-1", "HEX"),
-            blob: slblob
-        };
-        return data;
+        this.callback('your getSlice is error');
+        return;
     };
 
     //var a = countSlice[0];
