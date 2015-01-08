@@ -160,17 +160,6 @@ toBlob
 if (!window.btoa) window.btoa = $.base64.btoa;
 if (!window.atob) window.atob = $.base64.atob;
 
-function test() {
-    var start = 0;
-    var end = 0;
-    start = new Date().getTime();
-    for (i = 0; i < 10000000; i++) {
-        // do something.
-    };
-    end = new Date().getTime();
-    document.write((end - start) / 1000 + "sec");
-};
-
 var makeCRCTable = function () {
     var c;
     var crcTable = [];
@@ -201,18 +190,18 @@ var EasyFile = function () {
     this.data = {};
 };
 
-EasyFile.prototype.loadFile = function (blob, name, type, size) {
+EasyFile.prototype.loadFile = function (blob) {
     this.data.blob = blob;
-    this.data.name = name;
-    this.data.type = type;
+    this.data.name = blob.name;
+    this.data.type = blob.type;
     this.data.id = this.setID();
     this.data.sha1 = new jsSHA(blob, "TEXT").getHash("SHA-1", "HEX");
-    this.data.size = size;
+    this.data.size = blob.size;
 };
 EasyFile.prototype.setID = function (id) {
     var shaObj;
     if (typeof id != 'undefined') {
-        shaObj = new jsSHA(id, "TEXT").getHash("SHA-1", "HEX");
+        shaObj = id;
     } else {
         shaObj = new jsSHA(this.data.blob, "TEXT").getHash("SHA-1", "HEX");
     };
@@ -272,7 +261,7 @@ EasyFile.prototype.addSlice = function (data) {
     this.Slice[sid] = data.blob;
 
     var final = this.getProgress();
-    console.log(final)
+
     if (final == 1) {
         this.data.blob = this.Slice.join('');
     };
@@ -298,9 +287,10 @@ EasyFile.prototype.getSlice = function (num) {
     var countSlice = this.countSlice();
     var temp = Math.floor((splitByte) / 0.75);
     var id = this.getSliceID(num);
+    var type = this.data.type;
 
-    if (countSlice == num && blob.length < splitByte) {
-        var slblob = blob.substring(0, blob.length);
+    if (countSlice == num && blob.size < splitByte) {
+        var slblob = blob.slice(0, blob.size, type);
         var data = {
             id: id,
             type: 'EasyFile',
@@ -308,11 +298,11 @@ EasyFile.prototype.getSlice = function (num) {
             blob: slblob
         };
         return data;
-    } else if (countSlice >= num && blob.length > splitByte) {
+    } else if (countSlice >= num && blob.size > splitByte) {
         var start = temp * num - temp;
         var end = temp * num;
 
-        var slblob = blob.substring(start, end);
+        var slblob = blob.slice(start, end, type);
         var data = {
             id: id,
             type: 'EasyFile',
@@ -352,7 +342,7 @@ EasyFile.prototype.getSlice = function (num) {
 EasyFile.prototype.countSlice = function () {
     var blob = this.data.blob;
     var splitByte = this.splitByte; //切割長度
-    var a = String(blob).length;    // base64 大小
+    var a = blob.size;    // base64 大小
     var b = Math.floor((splitByte) / 0.75); //切割Byte轉base64長度
     var c = Math.floor(a / b);  //段數
     var d = a % b;  //剩下長度
@@ -372,13 +362,20 @@ EasyFile.prototype.toJSON = function () {
         type: this.data.type,
         size: this.data.size,
         sha1: this.data.sha1,
-        blob: this.toBase64()
+        blob: this.data.blob
     };
     return data;
 };
-EasyFile.prototype.toBase64 = function () {
-    return this.data.blob;
+EasyFile.prototype.toBase64 = function (cb) {
+    var reader = new FileReader();
+    reader.onloadend = function (e) {
+        if (e.target.readyState == FileReader.DONE) {
+            var blob = String(e.target.result).split(';base64,')[1];
+            cb(blob);
+        };
+    };
+    reader.readAsDataURL(this.data.blob);
 };
 EasyFile.prototype.toBlob = function () {
-    return this.data.blob;
+    return new Blob([this.data.blob], { 'type': this.data.type });;
 };
