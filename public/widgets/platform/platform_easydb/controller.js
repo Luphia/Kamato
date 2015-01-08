@@ -70,26 +70,27 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     $scope.commit_new_row = function(){
-
+        console.log($scope.t_d)
         var new_row_array = []; 
         for (var i = 0; i < $scope.new_row_count; i++){
             var is_edit = false;
             for(var t in $scope.t_d[i]){
+                console.log($scope.t_d[i][t])
                 if( (t != '$$hashKey') && ($scope.t_d[i][t] != '')){
                     is_edit = true;
                 }
             }
             if(is_edit == true){
-                
-                // $scope.t_d.splice($scope.t_d.indexOf(temp_t_d[i]),1);
                  new_row_array.push($scope.t_d[i]);
             }
         }
 
-        var new_row_array_reverse = new_row_array.reverse();
+        console.log(new_row_array);
+        new_row_array.reverse();
 
         $http.post(db_link+viewing_table+'/', new_row_array).success(function(create_row){
             $scope.table_click(viewing_table, $scope.custom_rows, 1);
+            console.log(create_row);
         })       
         $scope.new_row_uncommitted = false;
         $scope.new_row_count = 0 ;
@@ -162,41 +163,40 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     // ++ 需要避開delete btn
-    var edit_temp_array =[];
     $scope.edit_finish = function(id, edited_key, row){ 
+        var edit_temp_array =[];
         var temp_json = {};
-        if( row[edited_key] == undefined){
-            console.log(1)
-            row[edited_key] = "error type";
-        }
-        console.log(row);
+        console.log(row[edited_key])
         temp_json[edited_key] = row[edited_key];
         edit_temp_array.push(temp_json);
         if( id != ''){
             //不是新增的data
             $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
-                // console.log(edited_data_msg);
+                console.log(edited_data_msg);
             })
         }
         var e = event.target;
-        var next_e = e.offsetParent.nextElementSibling.childNodes[1].childNodes[1].childNodes[0];
-        e.blur();
-        next_e.focus();
+        console.log(event)
+        // var next_e = e.offsetParent.nextElementSibling.firstElementChild.firstElementChild.firstElementChild;
+        // console.log(next_e)
+        // e.blur();
+        // next_e.focus();
     }
 
     $scope.edit_finish_blur = function(id, edited_key, row){ 
+        var edit_temp_array =[];
         var temp_json = {};
-        if( row[edited_key] == undefined){
-            console.log(1)
-            row[edited_key] = "error type";
-        }
-        console.log(row);
+        // console.log(row[edited_key])
+        // if ( row[edited_key] ==  undefined){
+        //     row[edited_key] = '';
+        // }
         temp_json[edited_key] = row[edited_key];
+        console.log(temp_json);
         edit_temp_array.push(temp_json);
         if( id != ''){
             //不是新增的data
             $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
-                // console.log(edited_data_msg);
+                console.log(edited_data_msg);
             })
         }
     }
@@ -433,10 +433,33 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 Kamato.register.directive('dbdata', function ($compile) {
     return {
         restrict: 'E',
-        // replace: true,
         link: function(scope, element, attrs){
+            scope.is_number = function(d){
+                return /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(d);
+            }
+
             scope.scheTypeUrl = function(){
                 if( attrs.schetype != ''){
+                    // 擋掉建立初始表格會發生的error 
+                    var data_model;
+
+                    switch (attrs.schetype){
+                        case 'Date':
+                            data_model = scope.r_v;
+                            var date = data_model.split(".000Z");
+                            scope.$parent.r.date = date[0];
+                            break;
+                        case 'Number':
+                            data_model = scope.r_v;
+                            if(/^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(data_model)){
+                                // scope.$parent.r.Number = data_model;
+                                // console.log(scope.$parent.r[scope.key]);
+                            }
+                            else{
+                                scope.$parent.r[scope.key] = '';
+                                console.log(scope.$parent.r[scope.key]);
+                            }
+                    }
                     return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
                 }
             }

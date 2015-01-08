@@ -57,7 +57,7 @@
 										<span ng-click="sch_click(key)">...</span> 
 										<div class="th_opt_list" ng-show="key == sch_name">
 											<ul>
-												<li class="sch_type" ng-click="sch_menu_click(key)" ng-class="{'sch_menu_select': key == selected_sch_menu}">Schema type</li>
+												<li class="sch_type" ng-click="sch_menu_click(key)" ng-class="{'sch_menu_select': key == selected_sch_menu}">{{value}}</li>
 													<ul class="sch_type_list" ng-show="key == selected_sch_menu">
 														<li ng-repeat="s in schema_type" ng-click="sch_type_click(key, s.type)" ng-class="{'sch_type_selected': s.type == value}">{{s.type}}</li>
 													</ul>
@@ -70,9 +70,9 @@
 								<th></th>
 							</tr>
 							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}"  ng-class="{'new_row': r._id == ''}">
-								<td ng-repeat="(key, value) in r" >
+								<td ng-repeat="(key, r_v) in r" >
 									<dbdata schetype="{{t_head[key]}}"></dbdata>
-									<a href="" ng-show= " value =='json file'" ng-click="show_json_file(r._id, key, default_valueiew_table)" ng-class="{'table_clicked': t_json == r._id+key}">{{value}}
+									<a href="" ng-show= " r_v =='json file'" ng-click="show_json_file(r._id, key, default_valueiew_table)" ng-class="{'table_clicked': t_json == r._id+key}">{{r_v}}
 								</td>
 								<td>
 									<button class="btn btn-alt btn-block" ng-click="del_t_row(r, r._id)">Delete</button>
