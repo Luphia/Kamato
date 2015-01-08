@@ -251,6 +251,7 @@ EasyFile.prototype.setCallback = function (callback) {
     this.callback = callback;
 };
 EasyFile.prototype.addSlice = function (data) {
+    var id = data.id.split('_')[0];
     var sid = data.id.split('_')[1];
     var tid = data.id.split('_')[2];
 
@@ -258,7 +259,11 @@ EasyFile.prototype.addSlice = function (data) {
         this.Slice = new Array(tid);
         this.progress = new Array(tid);
     };
-
+    this.data.id = id;
+    this.data.name = data.name;
+    this.data.type = data.type;
+    this.data.size = data.size;
+    this.data.sha1 = id;
     this.Slice[sid] = data.blob;
     this.progress[sid] = true;
 };
