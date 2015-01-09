@@ -186,10 +186,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     $scope.edit_finish_blur = function(id, edited_key, row){ 
         var edit_temp_array =[];
         var temp_json = {};
-        // console.log(row[edited_key])
-        // if ( row[edited_key] ==  undefined){
-        //     row[edited_key] = '';
-        // }
         temp_json[edited_key] = row[edited_key];
         console.log(temp_json);
         edit_temp_array.push(temp_json);
@@ -434,10 +430,10 @@ Kamato.register.directive('dbdata', function ($compile) {
     return {
         restrict: 'E',
         link: function(scope, element, attrs){
+
             scope.is_number = function(d){
                 return /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(d);
             }
-
             scope.scheTypeUrl = function(){
                 if( attrs.schetype != ''){
                     // 擋掉建立初始表格會發生的error 
@@ -450,14 +446,32 @@ Kamato.register.directive('dbdata', function ($compile) {
                             scope.$parent.r.date = date[0];
                             break;
                         case 'Number':
+                            var num;
                             data_model = scope.r_v;
-                            if(/^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(data_model)){
-                                // scope.$parent.r.Number = data_model;
-                                // console.log(scope.$parent.r[scope.key]);
+                            console.log(element);
+                            if(!(/^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(data_model))){
+                                if(data_model == ''){
+                                    //建立初始值
+                                   scope.$parent.r[scope.key] = 0; 
+                                }
+                                else{
+                                    if(data_model === null){
+                                        //空值
+                                        console.log("空值");
+                                        scope.$parent.r[scope.key] = 0;
+                                    }
+                                    else if( data_model === undefined ){
+                                        console.log(data_model,"錯誤格式")
+                                    }
+                                }
+                                // scope.r_v
+                                // console.log(data_model.match(/-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?/i))
+                                // if(data_model)
+                                // console.log(num);
+                                
                             }
                             else{
-                                scope.$parent.r[scope.key] = '';
-                                console.log(scope.$parent.r[scope.key]);
+                                num = scope.r_v
                             }
                     }
                     return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
