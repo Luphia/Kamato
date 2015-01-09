@@ -25,11 +25,10 @@
 							</tr>
 							<tr ng-repeat="file in test_file.files">
 								<td>
-									<a href="" class="{{file.icon}}"><span>{{file.name}}</span>
+									<a href="" class="{{file.icon}}"><span>{{file.name}}</span></a>
 								</td>
 								<td>{{file.file_size}}</td>
 								<td>{{file.Last_revise}}</td>
-							</li>
 							</tr>
 						</table>
 <!-- 						<h4 class="tile-title">{{test_file.Path}}</h4>
@@ -43,14 +42,7 @@
 						<span class="btn btn-file btn-alt btn-sm">
 							<span class="fileupload-new">Upload file</span >
 							<input type="file" onchange="angular.element(this).scope().fileNameChange(this)">
-						</span>
-                        <input type="file" id="files" name="file" /> Read bytes:
-                        <span class="readBytesButtons">
-                            <button data-startbyte="0" data-endbyte="4">1-5</button>
-                            <button data-startbyte="5" data-endbyte="14">6-15</button>
-                            <button data-startbyte="6" data-endbyte="7">7-8</button>
-                            <button>entire file</button>
-                        </span>
+						</span>                        
                         <div id="byte_range"></div>
                         <div id="byte_content"></div>
 						<span ng-repeat="file in files">{{file.name}}</span>					

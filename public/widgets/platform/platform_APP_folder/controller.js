@@ -41,10 +41,11 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
     };
 
     $scope.fileNameChange = function (elem) {
-        console.log(elem.files);
         //readBlob(elem.files);
-
         var aa = new EasyFile();
+        aa.setCallback(function (err, data) {
+            console.log('err:' + err + ', data:' + data);
+        });
 
         var files = elem.files;
         if (!files.length) {
@@ -52,18 +53,78 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
             return;
         };
         var file = files[0];
+        //aa.loadFile(file);
+        //console.log(aa.toJSON());
+        //aa.toBase64(function (cb) {
+        //console.log(cb)
+        //});
+        //aa.split(50);
+        //console.log(aa.getSlice(1));
+        //console.log(aa.getSlice(2));
 
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-            if (e.target.readyState == FileReader.DONE) {
-                aa.loadFile(e.target.result, file.name, file.type, file.size);
-                aa.split(50);
-                console.log(aa.getSlice(1))
-                console.log(aa.getSlice(2))
-                console.log(aa.getSlice(3))
+        //var reader = new FileReader();
+        //reader.onloadend = function (e) {
+        //    if (e.target.readyState == FileReader.DONE) {
+        //        var blob = String(e.target.result).split(';base64,')[1];
+
+        function test() {
+            var a = 0;
+            for (var i = 0; i < 10000; i++) {
+                var start = 0;
+                var end = 0;
+
+                start = new Date().getTime();
+                aa.loadFile(file);
+                aa.split(10 * 1024 * 1000);
+                end = new Date().getTime();
+                a += (end - start) / 1000;
+                console.log((end - start) / 1000 + "sec");
             };
+            console.log('總和' + a)
         };
-        reader.readAsDataURL(file);
+
+        test();
+        //aa.split(10240);
+        console.log(aa.getSlice(1));
+        //console.log(aa.done(1));
+
+        //        aa.loadFile(blob, file.name, file.type, file.size);
+        //        console.log(aa.toBlob())
+        //        //aa.split(500);
+        //        //console.log(aa.countSlice())
+        //        //console.log(aa.getSlice(1))
+
+        //        //console.log(aa.getSlice(2))
+        //        //console.log(aa.getSlice(3))
+
+        //        //aa.done(1);
+
+        //        //console.log(aa.getSliceID(1));
+        //        //console.log(aa.getSliceID(0));
+
+        //        //var bb = new EasyFile();
+        //        //bb.setCallback(function (err, data) {
+        //        //    console.log('err:' + err + ', data:' + data);
+        //        //});
+        //        //var data1 = {
+        //        //    blob: "123+456",
+        //        //    id: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb_1_2_4215448069",
+        //        //    sha1: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb",
+        //        //    type: "EasyFile"
+        //        //}
+        //        //var data2 = {
+        //        //    blob: "+789+101112",
+        //        //    id: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb_2_2_4215448069",
+        //        //    sha1: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb",
+        //        //    type: "EasyFile"
+        //        //}
+        //        //bb.addSlice(data1);
+        //        //bb.addSlice(data2);
+        //        //console.log(bb.toJSON());
+
+        //    };
+        //};
+        //reader.readAsDataURL(file);
 
         $scope.files = elem.files;
         $scope.$apply();
