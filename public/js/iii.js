@@ -285,7 +285,7 @@ EasyFile.prototype.getSlice = function (num) {
     var blob = this.data.blob;
     var splitByte = this.splitByte;
     var countSlice = this.countSlice();
-    var temp = Math.floor((splitByte) / 0.75);
+    var temp = splitByte;// Math.floor((splitByte) / 0.75);
     var id = this.getSliceID(num);
     var type = this.data.type;
 
@@ -343,7 +343,7 @@ EasyFile.prototype.countSlice = function () {
     var blob = this.data.blob;
     var splitByte = this.splitByte; //切割長度
     var a = blob.size;    // base64 大小
-    var b = Math.floor((splitByte) / 0.75); //切割Byte轉base64長度
+    var b = splitByte;// Math.floor((splitByte) / 0.75); //切割Byte轉base64長度
     var c = Math.floor(a / b);  //段數
     var d = a % b;  //剩下長度
     //return [b, c, d];
