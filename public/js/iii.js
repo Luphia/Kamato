@@ -236,7 +236,6 @@ EasyFile.prototype.countSlice = function () {
     } else {
         return c;
     };
-
 };
 EasyFile.prototype.toJSON = function () {
     var data = {
@@ -261,5 +260,5 @@ EasyFile.prototype.toBase64 = function (blob, cb) {
     reader.readAsDataURL(blob);
 };
 EasyFile.prototype.toBlob = function () {
-    return new Blob([this.data.blob], { 'type': this.data.type });;
+    return new Blob([this.data.blob], { 'type': this.data.type });
 };
