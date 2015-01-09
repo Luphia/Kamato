@@ -249,15 +249,16 @@ EasyFile.prototype.toJSON = function () {
     };
     return data;
 };
-EasyFile.prototype.toBase64 = function (cb) {
+EasyFile.prototype.toBase64 = function (blob, cb) {
+    var blob = blob.blob;
     var reader = new FileReader();
     reader.onloadend = function (e) {
         if (e.target.readyState == FileReader.DONE) {
-            var blob = String(e.target.result).split(';base64,')[1];
-            cb(blob);
+            var temp = String(e.target.result).split(';base64,')[1];
+            cb(temp);
         };
     };
-    reader.readAsDataURL(this.data.blob);
+    reader.readAsDataURL(blob);
 };
 EasyFile.prototype.toBlob = function () {
     return new Blob([this.data.blob], { 'type': this.data.type });;
