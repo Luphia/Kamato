@@ -98,10 +98,10 @@ module.exports = function () {
         this.data = {};
         return this;
     };
-    var loadFile = function (blob) {
+    var loadFile = function (blob, opt) {
         this.data.blob = blob;
-        this.data.name = blob.name || 'default';
-        this.data.type = blob.type || '';
+        this.data.name = opt.name || 'default';
+        this.data.type = opt.type || '';
         this.data.id = this.setID();
         this.data.sha1 = crypto.createHash('sha1').update(blob).digest('hex');
         this.data.size = blob.length;
@@ -203,8 +203,8 @@ module.exports = function () {
         var id = this.getSliceID(num);
         var type = this.data.type;
 
-        if (countSlice == num && blob.size < splitByte) {
-            var slblob = blob.slice(0, blob.size, type);
+        if (countSlice == num && this.data.size < splitByte) {
+            var slblob = blob.slice(0, this.data.size, type);
             var data = {
                 id: id,
                 type: 'EasyFile',
@@ -212,7 +212,7 @@ module.exports = function () {
                 blob: slblob
             };
             return data;
-        } else if (countSlice >= num && blob.size > splitByte) {
+        } else if (countSlice >= num && this.data.size > splitByte) {
             var start = temp * num - temp;
             var end = temp * num;
 
@@ -256,7 +256,7 @@ module.exports = function () {
     var countSlice = function () {
         var blob = this.data.blob;
         var splitByte = this.splitByte; //切割長度
-        var a = blob.size;    // base64 大小
+        var a = this.data.size;    // base64 大小
         var b = splitByte;// Math.floor((splitByte) / 0.75); //切割Byte轉base64長度
         var c = Math.floor(a / b);  //段數
         var d = a % b;  //剩下長度
