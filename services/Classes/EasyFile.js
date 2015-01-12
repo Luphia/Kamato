@@ -199,7 +199,7 @@ module.exports = function () {
         var blob = this.data.blob;
         var splitByte = this.splitByte;
         var countSlice = this.countSlice();
-        var temp = splitByte;// Math.floor((splitByte) / 0.75);
+        var temp = splitByte;
         var id = this.getSliceID(num);
         var type = this.data.type;
 
@@ -228,30 +228,6 @@ module.exports = function () {
             this.callback('your getSlice is error');
             return;
         };
-
-        //var a = countSlice[0];
-        //var b = countSlice[1];
-        //var c = countSlice[2];
-
-        //var temp = 0;
-
-        //for (var i = 0; i < b; i++) {
-        //    var aa = a + temp;
-        //    this.progress[i] = blob.substring(temp, aa);
-        //    temp += a;
-        //};
-
-        //if (c > 0) {
-        //    this.progress[b] = blob.substring(temp);
-        //};
-
-        //console.log(countSlice)
-        //console.log(b, c)
-        //console.log(a)
-        //console.log(this.progress[num])
-
-        //return this.progress[num];
-
     };
     var countSlice = function () {
         var blob = this.data.blob;
