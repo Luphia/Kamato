@@ -72,6 +72,28 @@ module.exports = function () {
 
     var EasySlice = function () { };
 
+    //NodeJS Buffer 轉換 Javascript Array
+    function toArrayBuffer(buffer) {
+        var a = buffer.length;
+        var b = new ArrayBuffer(a);
+        var view = new Uint8Array(b);
+        for (var i = 0; i < a; ++i) {
+            view[i] = buffer[i];
+        };
+        return b;
+    };
+    //Javascript 轉換 Node Buffer
+    function toBuffer(ab) {
+        var a = ab.byteLength;
+        var buffer = new Buffer(a);
+        var b = buffer.length;
+        var view = new Uint8Array(ab);
+        for (var i = 0; i < b; ++i) {
+            buffer[i] = view[i];
+        };
+        return buffer;
+    };
+
     var init = function () {
         this.data = {};
         return this;
@@ -79,7 +101,7 @@ module.exports = function () {
     var loadFile = function (blob) {
         this.data.blob = blob;
         this.data.name = blob.name || 'default';
-        this.data.type = blob.type || null;
+        this.data.type = blob.type || '';
         this.data.id = this.setID();
         this.data.sha1 = crypto.createHash('sha1').update(blob).digest('hex');
         this.data.size = blob.length;
@@ -95,6 +117,12 @@ module.exports = function () {
     };
     var getID = function () {
         return this.data.id;
+    };
+    var setName = function (data) {
+        this.data.name = data;
+    };
+    var setType = function (data) {
+        this.data.type = data
     };
     var reset = function () {
         var num = this.countSlice();
@@ -253,10 +281,10 @@ module.exports = function () {
     };
     var toBase64 = function (blob, cb) {
         var bufferBase64 = new Buffer(blob, 'binary').toString('base64');
-        cd(bufferBase64);
+        cb(bufferBase64);
     };
     var toBlob = function () {
-        return new Blob([this.data.blob], { 'type': this.data.type });;
+        return toArrayBuffer(this.data.blob);
     };
 
     var EasyFile = {
