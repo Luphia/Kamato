@@ -52,7 +52,7 @@
 							<div ng-show="new_row_uncommitted" class="row_uncommitted_btn" ng-click="commit_new_row()"></div>
 							<tr>
 								<th ng-repeat="(key,value) in t_head">
-									{{key}}
+									<div class="t_head">{{key}}</div>
 									<div class="th_option">
 										<span ng-click="sch_click(key)">...</span> 
 										<div class="th_opt_list" ng-show="key == sch_name">

@@ -31,8 +31,13 @@
   color: #FFD600;
 }
 
-.ng-scope.platform .easydb_container th{
+.ng-scope.platform .easydb_container table th{
   position: relative;
+  min-width: 200px;   
+}
+
+.ng-scope.platform .easydb_container table .t_head{
+  float: left;
 }
 
 .ng-scope.platform .easydb_container .th_option{
@@ -116,16 +121,63 @@
 
 .ng-scope.platform .easydb_container .th_option .th_opt_list .sch_type_list li:hover{
   background: url(../img/simple/easydb/selected.png) no-repeat 3% 50%;
-  background-color:  rgba(255,255,255,0.7);
+  background-color:  rgba(255,255,255,0.8);
 }
 
 .ng-scope.platform .easydb_container .th_option .th_opt_list .sch_type_list .sch_type_selected{
   background: url(../img/simple/easydb/selected.png) no-repeat 3% 50%;
-  background-color:  rgba(255,255,255,0.7);
+  background-color:  rgba(255,255,255,0.8);
 }
 
 .ng-scope.platform .easydb_container table dbdata .error_num_syntax {
   background-color: red;
+  border: 1px solid white;
+}
+
+.ng-scope.platform .easydb_container table dbdata .boolean_btn {
+  width: 60px;
+  height: 35px;
+  font-size: 14px;
+  cursor: pointer;
+  overflow-y: hidden;
+  line-height: 35px;
+}
+
+.ng-scope.platform .easydb_container table dbdata select.input_td{
+  width: 75px;
+  font-size: 16px;;
+}
+
+.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl {
+    width: 90px;
+    height: 25px;
+    padding: 1px;
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid white;
+    position: relative;
+    cursor: pointer;
+}
+
+.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl .boolean_btn {
+    background: rgba(200, 200, 200, 1);
+    width: 40px;
+    height: 21px;
+}
+
+.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl > .boolean_value{
+  height: 20px;
+  width: 40px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 11px;
+}
+
+.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.true > div.boolean_btn,  .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.false > .boolean_value {
+  float: right;
+}
+
+.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.false > div.boolean_btn, .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.true > .boolean_value {
+  float: left;
 }
 
 .ng-scope.platform .easydb_container .create_td{  
@@ -200,6 +252,10 @@
 .ng-scope.platform .easydb_container .page_wrapper .custom_rows .form-control{
   float: right;
   width: 40%;
+}
+
+.ng-scope.platform .easydb_container tbody tr td {
+  vertical-align: middle;
 }
 
 .ng-scope.platform .easydb_container .table_list .create_table{

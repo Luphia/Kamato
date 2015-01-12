@@ -390,7 +390,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             success(function(db) {
                 console.log(db)
                 $scope.tables = db.data;
-                $scope.table_click(db.data[0], 15, 1);
+                $scope.table_click(db.data[(db.data.length)-1], 15, 1);
             });           
         })
         $scope.reset_create_table_form();
@@ -443,12 +443,10 @@ Kamato.register.directive('dbdata', function ($compile) {
                         case 'Date':
                             data_model = scope.r_v;
                             var date = data_model.split(".000Z");
-                            scope.$parent.r.date = date[0];
+                            scope.$parent.r[scope.key] = date[0];
                             break;
                         case 'Number':
-                            var num;
                             data_model = scope.r_v;
-                            console.log(element);
                             if(!(/^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(data_model))){
                                 if(data_model == ''){
                                     //建立初始值
@@ -457,22 +455,16 @@ Kamato.register.directive('dbdata', function ($compile) {
                                 else{
                                     if(data_model === null){
                                         //空值
-                                        console.log("空值");
                                         scope.$parent.r[scope.key] = 0;
                                     }
-                                    else if( data_model === undefined ){
-                                        console.log(data_model,"錯誤格式")
-                                    }
                                 }
-                                // scope.r_v
-                                // console.log(data_model.match(/-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?/i))
-                                // if(data_model)
-                                // console.log(num);
-                                
                             }
-                            else{
-                                num = scope.r_v
+                            break;
+                        case 'Boolean':
+                            scope.b_btn_click = function(boolean_value){
+                                scope.$parent.r[scope.key] = boolean_value;
                             }
+                            break;
                     }
                     return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
                 }
