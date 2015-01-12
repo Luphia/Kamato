@@ -1,4 +1,4 @@
-'use strict';
+ï»¿'use strict';
 /*
 
 - html5 file api
@@ -227,11 +227,11 @@ module.exports = function () {
     };
     var countSlice = function () {
         var blob = this.data.blob;
-        var splitByte = this.splitByte; //¤Á³Îªø«×
-        var a = blob.size;    // base64 ¤j¤p
-        var b = splitByte;// Math.floor((splitByte) / 0.75); //¤Á³ÎByteÂàbase64ªø«×
-        var c = Math.floor(a / b);  //¬q¼Æ
-        var d = a % b;  //³Ñ¤Uªø«×
+        var splitByte = this.splitByte; //åˆ‡å‰²é•·åº¦
+        var a = blob.size;    // base64 å¤§å°
+        var b = splitByte;// Math.floor((splitByte) / 0.75); //åˆ‡å‰²Byteè½‰base64é•·åº¦
+        var c = Math.floor(a / b);  //æ®µæ•¸
+        var d = a % b;  //å‰©ä¸‹é•·åº¦
         //return [b, c, d];
 
         if (d > 0) {
