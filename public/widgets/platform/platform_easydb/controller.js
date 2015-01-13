@@ -58,11 +58,72 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         $scope.new_row_count += 1;
         var new_td = {};
         for( var h in $scope.t_head){
-            new_td[h] = ''
+            new_td[h] = "";
         }
 
         $scope.t_d.splice(0,0,new_td);
         $scope.new_row_uncommitted = true;
+    }
+
+    $scope.edit_td = function(key, id, td){
+        $scope.id_td = id+td;  
+    }
+
+    // ++ 需要避開delete btn
+    $scope.edit_finish = function(id, edited_key, t_d){ 
+        var edit_temp_array =[];
+        var temp_json = {};
+        temp_json[edited_key] = t_d;
+        edit_temp_array.push(temp_json);
+        if( id != ''){
+            //更新data
+            $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
+                console.log(edited_data_msg);
+            })
+        }
+        var e = event.target;
+        console.log(event)
+        // var next_e = e.offsetParent.nextElementSibling.firstElementChild.firstElementChild.firstElementChild;
+        // console.log(next_e)
+        // e.blur();
+        // next_e.focus();
+    }
+
+    $scope.edit_finish_blur = function(id, edited_key, t_d){ 
+        var edit_temp_array =[];
+
+        //PUT資料限定JSON格式    
+        var temp_json = {};
+        temp_json[edited_key] = t_d;
+        edit_temp_array.push(temp_json);
+
+        if( id != ''){
+            //更新data
+            $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
+                console.log(edited_data_msg);
+            })
+        }
+    }
+
+    $scope.edit_json_finish_blur = function(id, edited_key, t_d){
+        var temp_json = {};
+        var edit_temp_array =[];
+        temp_json[edited_key] = t_d;
+        edit_temp_array.push(temp_json);
+        
+        if( id != ''){
+            //更新data
+            $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
+                console.log(edited_data_msg);
+            })
+        }
+        else{
+            for( var i = 0 ; i < $scope.new_row_count ; i++){
+                if($scope.t_d[i].$$hashKey == $scope.j_hashKey){
+                    $scope.t_d[i][edited_key] = t_d;
+                }
+            }           
+        }
     }
 
     $scope.commit_new_row = function(){
@@ -154,44 +215,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         });
     }
 
-    $scope.edit_td = function(key, id, td){
-        $scope.id_td = id+td;  
-    }
-
-    // ++ 需要避開delete btn
-    $scope.edit_finish = function(id, edited_key, t_d){ 
-        var edit_temp_array =[];
-        var temp_json = {};
-        temp_json[edited_key] = t_d;
-        edit_temp_array.push(temp_json);
-        if( id != ''){
-            //不是新增的data
-            $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
-                console.log(edited_data_msg);
-            })
-        }
-        var e = event.target;
-        console.log(event)
-        // var next_e = e.offsetParent.nextElementSibling.firstElementChild.firstElementChild.firstElementChild;
-        // console.log(next_e)
-        // e.blur();
-        // next_e.focus();
-    }
-
-    $scope.edit_finish_blur = function(id, edited_key, t_d){ 
-
-        var edit_temp_array =[];
-        var temp_json = {};
-        temp_json[edited_key] = t_d;
-        console.log(temp_json);
-        edit_temp_array.push(temp_json);
-        if( id != ''){
-            //不是新增的data
-            $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
-                console.log(edited_data_msg);
-            })
-        }
-    }
 
     $scope.show_table = function(table_name, custom_table_rows, page_num){
         //要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
@@ -285,28 +308,31 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 	var pre_id="";
 	$scope.is_show = false;
 	var pre_id_attr="";
-    
 
-
-	$scope.show_json_file = function(id, attr_name, table_name){
+	$scope.show_json_file = function(id, attr_name, table_name, hash_key){
+        //"id"&"attr_name" for view; hashKey for css& controller
         $scope.j_id = id;
         $scope.j_attr_name = attr_name; 
+        $scope.j_hashKey = hash_key;
+        $scope.id_attr_name = id+attr_name;
+        $scope.hashKey_attr_name = hash_key+attr_name;
 
-        var id_attr_name = id+attr_name;
+        console.log(hash_key); // 找hash_key
 
-		if(pre_id_attr == id_attr_name){
+		if(pre_id_attr == $scope.id_attr_name){
 			$scope.is_show = !$scope.is_show;
 		}
 		else{
-			pre_id_attr = id_attr_name;
+			pre_id_attr = $scope.id_attr_name;
 			$scope.is_show = true;
 			var elem = document.getElementById(id);
 			var j_text = document.getElementsByClassName("json_text");
 			var table = document.getElementsByClassName("db_table");				
-			$scope.show_json= jsonTemp[id_attr_name];
+			$scope.show_json= jsonTemp[$scope.id_attr_name];
 
 			table[0].childNodes[1].insertBefore(j_text[0], elem.nextSibling);	
 		}
+
 	}
 
 
@@ -478,11 +504,9 @@ Kamato.register.directive('jsontext', function ($compile){
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, elem, attrs, ngModel){
-            console.log(scope);
 
             ngModel.$parsers.push(parseModel);
             ngModel.$formatters.push(returnView); //output
-            console.log(ngModel); 
 
             var valid;
             elem.bind('blur', function(){

@@ -386,6 +386,11 @@
   margin-left: 20px;
 }
 
+.ng-scope.platform .easydb_container .json_link{
+  color: #FFD600;
+  font-weight: bold;
+}
+
 .ng-scope.platform .easydb_container .json_text{
   background-color: rgba(0,0,0,0);
 }
