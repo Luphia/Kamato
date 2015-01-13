@@ -92,6 +92,55 @@ function sha1(m, hash) {
     };
     return [H0, H1, H2, H3, H4];
 };
+//編碼檔案 支援2G以上
+function hash_file(file, workers) {
+    //對應nodejs 內建分段區塊
+    var buffer_size = 64 * 16 * 1024;
+    var block = {
+        'file_size': file.size,
+        'start': 0
+    };
+    var threads = 0;
+    var reader = new FileReader();
+    var blob;
+    var handle_hash_block = function (event) {
+        threads -= 1;
+        if (threads === 0) {
+            if (block.end !== file.size) {
+                block.start += buffer_size;
+                block.end += buffer_size;
+
+                if (block.end > file.size) {
+                    block.end = file.size;
+                };
+
+                reader = new FileReader();
+                reader.onload = handle_load_block;
+                blob = file.slice(block.start, block.end);
+                reader.readAsArrayBuffer(blob);
+            };
+        };
+    };
+    var handle_load_block = function (event) {
+        for (i = 0; i < workers.length; i += 1) {
+            threads += 1;
+            workers[i].postMessage({
+                'message': event.target.result,
+                'block': block
+            });
+        };
+    };
+
+    block.end = buffer_size > file.size ? file.size : buffer_size;
+
+    for (var i = 0; i < workers.length; i += 1) {
+        workers[i].addEventListener('message', handle_hash_block);
+    };
+
+    reader.onload = handle_load_block;
+    blob = file.slice(block.start, block.end);
+    reader.readAsArrayBuffer(blob);
+};
 
 self.hash = [1732584193, -271733879, -1732584194, 271733878, -1009589776];
 //監聽works
