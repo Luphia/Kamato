@@ -341,7 +341,7 @@ module.exports = function(conf, logger) {
 				break;
 		}
 	}
-	,	getID = function(table) {
+	,	getID = function(table, n) {
 		var rs, check;
 		table = checkTable(table);
 
@@ -359,9 +359,16 @@ module.exports = function(conf, logger) {
 			this.postTable(table, {});
 		}	
 
-		this.DB.getID(table, function(err, data) {
-			rs = err? false: data;
-		});
+		if(n > 0) {
+			this.DB.getIDs(table, n, function(err, data) {
+				rs = err? false: data;
+			});
+		}
+		else {
+			this.DB.getID(table, function(err, data) {
+				rs = err? false: data;
+			});
+		}
 
 		while(rs === undefined) {
 			require('deasync').runLoopOnce();
@@ -742,9 +749,10 @@ module.exports = function(conf, logger) {
 		}
 
 		if(util.isArray(data)) {
+			var ID = this.getID(table, data.length);
 			for(var key in data) {
 				data[key] = compareSchema(data[key], schema);
-				data[key]._id = this.getID(table);
+				data[key]._id = ID + parseInt(key);
 				id.push(data[key]._id);
 			}
 		}

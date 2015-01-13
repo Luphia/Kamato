@@ -15,7 +15,6 @@ var Collection = require('../Classes/Collection.js')
 ,	Schema = require('../Classes/Schema.js')
 ,	Mongo = require('mongodb')
 ,	url = require('url')
-,	Worker = require('../Classes/Worker.js')
 ,	Client = Mongo.MongoClient
 ,	dbURL
 ,	defaultDB = "mongodb://127.0.0.1:27017/";
@@ -191,6 +190,19 @@ EasyMongo.prototype.getID = function(table, callback) {
 		{'name': table}, 
 		['max_serial_num'],
 		{$inc: {"max_serial_num": 1}},
+		{},
+		function(err, data) {
+			if(err) { callback(err); }
+			else if(!data) { callback(err, 1); }
+			else { callback(err, data.max_serial_num + 1); }
+		}
+	);
+};
+EasyMongo.prototype.getIDs = function(table, n, callback) {
+	this.DB.collection('_tables').findAndModify(
+		{'name': table}, 
+		['max_serial_num'],
+		{$inc: {"max_serial_num": n}},
 		{},
 		function(err, data) {
 			if(err) { callback(err); }
