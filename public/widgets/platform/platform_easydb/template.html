@@ -72,13 +72,12 @@
 							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}"  ng-class="{'new_row': r._id == ''}">
 								<td ng-repeat="(key, r_v) in r" >
 									<dbdata schetype="{{t_head[key]}}"></dbdata>
-									<a href="" ng-show= " r_v =='json file'" ng-click="show_json_file(r._id, key, default_valueiew_table)" ng-class="{'table_clicked': t_json == r._id+key}">{{r_v}}
 								</td>
 								<td>
 									<button class="btn btn-alt btn-block" ng-click="del_t_row(r, r._id)">Delete</button>
 								</td>
 							</tr>
-							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre>{{show_json | json}}</pre></td></tr>
+							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre><textarea jsontext ng-model="show_json" cols="70" rows="20" ng-blur="edit_finish_blur(j_id, j_attr_name, show_json)"></textarea></pre></td></tr>
 						</table>				
 					</div>
 					<div class="page_wrapper clearfix">

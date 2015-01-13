@@ -396,6 +396,10 @@
   border: none;
 }
 
+.ng-scope.platform .easydb_container .json_text textarea{
+  background-color: transparent;
+}
+
 .ng-scope.platform .easydb_container .close_json{
   width: 20px;
   height: 20px;

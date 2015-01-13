@@ -8,7 +8,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             $scope.table_click(db.data[0], 15, 1);
         });
 
-    $scope.t_d_more = [];
     var jsonTemp = {};
     var viewing_table = "";
 
@@ -31,9 +30,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         			if(typeof(value) == "object" && value != null){
         				//存json			
         				jsonTemp[value_id+key] = value;
-        				$scope.t_d_more.push(jsonTemp);
-        				//json換註解
-        				t_d_temp[list_key][key] = "json file"
         			}
         			$scope.t_d = t_d_temp;
 
@@ -163,11 +159,10 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
     // ++ 需要避開delete btn
-    $scope.edit_finish = function(id, edited_key, row){ 
+    $scope.edit_finish = function(id, edited_key, t_d){ 
         var edit_temp_array =[];
         var temp_json = {};
-        console.log(row[edited_key])
-        temp_json[edited_key] = row[edited_key];
+        temp_json[edited_key] = t_d;
         edit_temp_array.push(temp_json);
         if( id != ''){
             //不是新增的data
@@ -183,10 +178,11 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         // next_e.focus();
     }
 
-    $scope.edit_finish_blur = function(id, edited_key, row){ 
+    $scope.edit_finish_blur = function(id, edited_key, t_d){ 
+
         var edit_temp_array =[];
         var temp_json = {};
-        temp_json[edited_key] = row[edited_key];
+        temp_json[edited_key] = t_d;
         console.log(temp_json);
         edit_temp_array.push(temp_json);
         if( id != ''){
@@ -217,25 +213,21 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         $http.get(db_link+table_name+"/?q=limit "+new_page_first_index+','+custom_table_rows).
         success(function(page_schema){
             var t_d_temp = page_schema.data.list;
-
+            
             if( Object.keys(page_schema.data.list[0] || []).length == 0){
                 //空物件
                 $scope.t_d = [];
             }
             else{
                 $scope.colspan = Object.keys(page_schema.data.list[0]).length +1; //+1是del button欄位
+                // $scope.t_d = t_d_temp;
                 angular.forEach(t_d_temp, function(list_value, list_key){
                     angular.forEach(t_d_temp[list_key], function(value, key){
                         var value_id = t_d_temp[list_key]._id;
                         //顯示json檔案格式
-                        if(typeof(value) == "object" && value != null){
-                            //存json         
-                            jsonTemp[value_id+key] = value;
-                            $scope.t_d_more.push(jsonTemp);
-                            //json換註解
-                            t_d_temp[list_key][key] = "json file"
-                        }
-                        $scope.t_d = t_d_temp;                      
+                        //存json         
+                        jsonTemp[value_id+key] = value;
+                        $scope.t_d = t_d_temp;                   
                     })
                 })
             }
@@ -296,7 +288,10 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     
 
 
-	$scope.show_json_file = function(id, attr_name, table_name){ 
+	$scope.show_json_file = function(id, attr_name, table_name){
+        $scope.j_id = id;
+        $scope.j_attr_name = attr_name; 
+
         var id_attr_name = id+attr_name;
 
 		if(pre_id_attr == id_attr_name){
@@ -309,7 +304,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 			var j_text = document.getElementsByClassName("json_text");
 			var table = document.getElementsByClassName("db_table");				
 			$scope.show_json= jsonTemp[id_attr_name];
-			$scope.t_json = id_attr_name;
 
 			table[0].childNodes[1].insertBefore(j_text[0], elem.nextSibling);	
 		}
@@ -465,11 +459,67 @@ Kamato.register.directive('dbdata', function ($compile) {
                                 scope.$parent.r[scope.key] = boolean_value;
                             }
                             break;
+                        case 'JSON':
+                            data_model = scope.r_v;
+                            // var res = JSON.parse(data_model);
+                            // console.log(data_model);
+                            break;
                     }
                     return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
                 }
             }
         },
         template: '<div ng-include="scheTypeUrl()"></div>'
+    }
+});
+
+Kamato.register.directive('jsontext', function ($compile){
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function(scope, elem, attrs, ngModel){
+            console.log(scope);
+
+            ngModel.$parsers.push(parseModel);
+            ngModel.$formatters.push(returnView); //output
+            console.log(ngModel); 
+
+            var valid;
+            elem.bind('blur', function(){
+                elem.val(returnView(scope.$eval(attrs.ngModel)));
+            })
+
+            //內容改變時觸發。當格式錯誤,回復初始內容
+            scope.$watch(attrs.ngModel, function(newValue, oldValue) {
+                valid = valid || newValue;
+
+                if (newValue != oldValue) {
+                    ngModel.$setViewValue(returnView(newValue));
+
+                    ngModel.$render();
+                }
+            }, true);
+
+            function parseModel(text){
+                if(!text || text.trim() === ''){
+                    return {};
+                }
+                else{
+                    try{
+                        //檢查json格式
+                        valid = angular.fromJson(text);
+                        ngModel.$setValidity('validJson', true);
+                    }
+                    catch(e){
+                        ngModel.$setValidity('invalidJson', false);
+                    }
+                    return valid;
+                }
+            }
+
+            function returnView(object){
+                return angular.toJson(object, true);
+            }
+        },
     }
 });

@@ -1,1 +1,1 @@
-<input class="input_td" ng-click="edit_td(key, r._id, value)" ng-hide="value =='json file'" type="text" ng-model="r[key]" ng-enter="edit_finish(r._id, key, r)"  ng-blur="edit_finish_blur(r._id, key, r)">
+<a href="" ng-click="show_json_file(r._id, key, default_valueiew_table)" ng-class="{'table_clicked': t_json == r._id+key}">json context</a>
