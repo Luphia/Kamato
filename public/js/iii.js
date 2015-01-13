@@ -43,6 +43,92 @@ toBlob
 
 */
 
+//byte轉文字
+var btw = function (a) {
+    for (var b = [], c = 0, d = 0; c < a.length; c++, d += 8) {
+        b[d >>> 5] |= a[c] << 24 - d % 32;
+    };
+    return b;
+};
+//byte轉hex
+var bth = function (a) {
+    for (var b = [], c = 0; c < a.length; c++) {
+        b.push((a[c] >>> 4).toString(16)), b.push((a[c] & 15).toString(16));
+    };
+    return b.join("");
+};
+//文字轉byte
+var wtb = function (a) {
+    for (var b = [], c = 0; c < a.length * 32; c += 8) {
+        b.push(a[c >>> 5] >>> 24 - c % 32 & 255);
+    };
+    return b;
+};
+//背景編碼
+function sha1(m, hash) {
+    var w = [];
+    var H0 = hash[0], H1 = hash[1], H2 = hash[2], H3 = hash[3], H4 = hash[4];
+    for (var i = 0; i < m.length; i += 16) {
+        var a = H0, b = H1, c = H2, d = H3, e = H4;
+        for (var j = 0; j < 80; j++) {
+            if (j < 16) {
+                w[j] = m[i + j] | 0;
+            } else {
+                var n = w[j - 3] ^ w[j - 8] ^ w[j - 14] ^ w[j - 16];
+                w[j] = (n << 1) | (n >>> 31);
+            };
+            var t = ((H0 << 5) | (H0 >>> 27)) + H4 + (w[j] >>> 0) + (j < 20 ? (H1 & H2 | ~H1 & H3) + 1518500249 : j < 40 ? (H1 ^ H2 ^ H3) + 1859775393 : j < 60 ? (H1 & H2 | H1 & H3 | H2 & H3) - 1894007588 : (H1 ^ H2 ^ H3) - 899497514);
+            H4 = H3;
+            H3 = H2;
+            H2 = (H1 << 30) | (H1 >>> 2);
+            H1 = H0;
+            H0 = t;
+        };
+        H0 = (H0 + a) | 0;
+        H1 = (H1 + b) | 0;
+        H2 = (H2 + c) | 0;
+        H3 = (H3 + d) | 0;
+        H4 = (H4 + e) | 0;
+    };
+    return [H0, H1, H2, H3, H4];
+};
+
+self.hash = [1732584193, -271733879, -1732584194, 271733878, -1009589776];
+//監聽works
+self.addEventListener('message', function (event) {
+
+    var uint8_array, message, block, nBitsTotal, output, nBitsLeft, nBitsTotalH, nBitsTotalL;
+
+    uint8_array = new Uint8Array(event.data.message);
+    message = btw(uint8_array);
+    block = event.data.block;
+    event = null;
+    uint8_array = null;
+    output = {
+        'block': block
+    };
+
+    if (block.end === block.file_size) {
+        nBitsTotal = block.file_size * 8;
+        nBitsLeft = (block.end - block.start) * 8;
+        nBitsTotalH = Math.floor(nBitsTotal / 0x100000000);
+        nBitsTotalL = nBitsTotal & 0xFFFFFFFF;
+
+        //填補區塊
+        message[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+        message[((nBitsLeft + 64 >>> 9) << 4) + 14] = nBitsTotalH;
+        message[((nBitsLeft + 64 >>> 9) << 4) + 15] = nBitsTotalL;
+
+        self.hash = sha1(message, self.hash);
+        //byte轉hex
+        output.result = bth(wtb(self.hash));
+    } else {
+        self.hash = sha1(message, self.hash);
+    };
+    message = null;
+    self.postMessage(output);
+}, false);
+
 var makeCRCTable = function () {
     var c;
     var crcTable = [];
@@ -79,13 +165,14 @@ EasyFile.prototype.loadFile = function (blob) {
     this.data.type = blob.type;
     this.data.id = this.setID();
     this.data.sha1 = new jsSHA(blob, "TEXT").getHash("SHA-1", "HEX");
-    this.data.size = blob.size;
+    this.data.size = blob.length;
 };
 EasyFile.prototype.setID = function (id) {
     var shaObj;
     if (typeof id != 'undefined') {
         shaObj = id;
     } else {
+        console.log(this.data.blob)
         shaObj = new jsSHA(this.data.blob, "TEXT").getHash("SHA-1", "HEX");
     };
     return shaObj;
@@ -172,8 +259,8 @@ EasyFile.prototype.getSlice = function (num) {
     var id = this.getSliceID(num);
     var type = this.data.type;
 
-    if (countSlice == num && blob.size < splitByte) {
-        var slblob = blob.slice(0, blob.size, type);
+    if (countSlice == num && blob.length < splitByte) {
+        var slblob = blob.slice(0, blob.length, type);
         var data = {
             id: id,
             type: 'EasyFile',
@@ -181,7 +268,7 @@ EasyFile.prototype.getSlice = function (num) {
             blob: slblob
         };
         return data;
-    } else if (countSlice >= num && blob.size > splitByte) {
+    } else if (countSlice >= num && blob.length > splitByte) {
         var start = temp * num - temp;
         var end = temp * num;
 
@@ -225,7 +312,7 @@ EasyFile.prototype.getSlice = function (num) {
 EasyFile.prototype.countSlice = function () {
     var blob = this.data.blob;
     var splitByte = this.splitByte; //切割長度
-    var a = blob.size;    // base64 大小
+    var a = blob.length;    // base64 大小
     var b = splitByte;// Math.floor((splitByte) / 0.75); //切割Byte轉base64長度
     var c = Math.floor(a / b);  //段數
     var d = a % b;  //剩下長度
