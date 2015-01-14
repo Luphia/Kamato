@@ -148,7 +148,7 @@
   font-size: 16px;;
 }
 
-.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl {
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl {
     width: 90px;
     height: 25px;
     padding: 1px;
@@ -158,13 +158,13 @@
     cursor: pointer;
 }
 
-.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl .boolean_btn {
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl .boolean_btn {
     background: rgba(200, 200, 200, 1);
     width: 40px;
     height: 21px;
 }
 
-.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl > .boolean_value{
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl > .boolean_value{
   height: 20px;
   width: 40px;
   line-height: 20px;
@@ -172,12 +172,33 @@
   font-size: 11px;
 }
 
-.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.true > div.boolean_btn,  .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.false > .boolean_value {
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl.true > div.boolean_btn,  .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.false > .boolean_value {
   float: right;
 }
 
-.ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.false > div.boolean_btn, .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.true > .boolean_value {
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl.false > div.boolean_btn, .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.true > .boolean_value {
   float: left;
+}
+
+.ng-scope.platform .easydb_container table dbdata .drop_area {
+  width: 350px;
+  height: 120px;
+  border: 3px dashed rgba(255,255,255, 0.7);
+  background-color: transparent;
+  position: relative;
+}
+
+.ng-scope.platform .easydb_container table dbdata .upload_tip{
+  height: 40px;
+  width: 100%;
+  background-color: transparent;
+  margin: -20px auto 0px auto;
+  color: rgba(255,255,255, 0.7);
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  font-size: 22px;
+  line-height: 40px;
 }
 
 .ng-scope.platform .easydb_container .create_td{  
@@ -386,12 +407,12 @@
   margin-left: 20px;
 }
 
-.ng-scope.platform .easydb_container .json_link{
+.ng-scope.platform .easydb_container table dbdata .json_link, .ng-scope.platform .easydb_container .binary_link{
   color: #FFD600;
   font-weight: bold;
 }
 
-.ng-scope.platform .easydb_container .json_text{
+.ng-scope.platform .easydb_container table dbdata .json_text{
   background-color: rgba(0,0,0,0);
 }
 

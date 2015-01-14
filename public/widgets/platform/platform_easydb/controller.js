@@ -110,7 +110,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         var edit_temp_array =[];
         temp_json[edited_key] = t_d;
         edit_temp_array.push(temp_json);
-        
+
         if( id != ''){
             //更新data
             $http.put(db_link+viewing_table+'/'+id, edit_temp_array[0]).success(function(edited_data_msg){
@@ -124,6 +124,11 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
                 }
             }           
         }
+    }
+
+    $scope.show_binary_upload = function(attr_name, hashkey){
+        $scope.hashKey_attrName = hashkey + attr_name;
+        
     }
 
     $scope.commit_new_row = function(){
@@ -208,7 +213,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             $scope.t_head[schema_name] = type;    
         }
         $scope.sch_name = '';
-        console.log($scope.t_head); 
         $http.put(db_link+viewing_table, $scope.t_head).
         success(function(page_schema){  
             console.log(page_schema);
@@ -309,13 +313,13 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 	$scope.is_show = false;
 	var pre_id_attr="";
 
-	$scope.show_json_file = function(id, attr_name, table_name, hash_key){
+	$scope.show_json_file = function(id, attr_name, hash_key){
         //"id"&"attr_name" for view; hashKey for css& controller
         $scope.j_id = id;
         $scope.j_attr_name = attr_name; 
         $scope.j_hashKey = hash_key;
         $scope.id_attr_name = id+attr_name;
-        $scope.hashKey_attr_name = hash_key+attr_name;
+        $scope.hashKey_attrName = hash_key+attr_name;
 
         console.log(hash_key); // 找hash_key
 
@@ -485,11 +489,8 @@ Kamato.register.directive('dbdata', function ($compile) {
                                 scope.$parent.r[scope.key] = boolean_value;
                             }
                             break;
-                        case 'JSON':
-                            data_model = scope.r_v;
-                            // var res = JSON.parse(data_model);
-                            // console.log(data_model);
-                            break;
+                        case 'Binary':
+
                     }
                     return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';
                 }

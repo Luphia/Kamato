@@ -77,7 +77,7 @@
 									<button class="btn btn-alt btn-block" ng-click="del_t_row(r, r._id)">Delete</button>
 								</td>
 							</tr>
-							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre><textarea jsontext ng-model="show_json" cols="70" rows="20" ng-blur="edit_json_finish_blur(j_id, j_attr_name, show_json)"></textarea></pre></td></tr>
+							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre><textarea jsontext ng-model="show_json" cols="70" rows="15" ng-blur="edit_json_finish_blur(j_id, j_attr_name, show_json)"></textarea></pre></td></tr>
 						</table>				
 					</div>
 					<div class="page_wrapper clearfix">
@@ -112,7 +112,6 @@
 						<label class="control-label col-md-2">*Schema Type</label>
 						<div class="col-md-3">
 							<select class="form-control" ng-model="c_s.schema_type" ng-options="s.type as s.type for s in schema_type" required>
-								<option value="">==請選擇==</option>
 							</select>{{selected_schema_type}}
 						</div>
 						<div class="del_col_sche" ng-click="del_col_sche(key)" ng-show="columns"></div>
