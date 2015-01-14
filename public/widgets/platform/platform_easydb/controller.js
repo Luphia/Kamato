@@ -126,9 +126,25 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         }
     }
 
-    $scope.show_binary_upload = function(attr_name, hashkey){
-        $scope.hashKey_attrName = hashkey + attr_name;
-        
+    // $scope.show_binary_upload = function(attr_name, hashkey){
+    //     $scope.hashKey_attrName = hashkey + attr_name;
+
+
+    // }
+
+    $scope.show_binary_upload = function(attr_name, hash_key){
+        // $scope.attr_name = attr_name; 
+        // $scope.hashKey = hash_key;
+        $scope.hashKey_attrName = hash_key+attr_name;
+        console.log(attr_name, hash_key);
+
+        if(pre_hashKey_attr == $scope.hashKey_attrName){
+           $scope.hashKey_attrName = "";
+           pre_hashKey_attr = "";
+        }
+        else{
+            pre_hashKey_attr = $scope.hashKey_attrName;
+        }
     }
 
     $scope.commit_new_row = function(){
@@ -159,7 +175,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
 	$scope.table_click =function(name, default_table_rows, page_num){
-        pre_id_attr="";    //清除上一次在其他table點擊json的事件
+        pre_hashKey_attr="";    //清除上一次在其他table點擊json的事件
         $scope.warn_hint = false;   //清除在其他table點擊的刪除警告標語
         $scope.sch_name = '';
         $scope.custom_rows = default_table_rows;
@@ -311,23 +327,24 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 
 	var pre_id="";
 	$scope.is_show = false;
-	var pre_id_attr="";
+	var pre_hashKey_attr="";
+
 
 	$scope.show_json_file = function(id, attr_name, hash_key){
         //"id"&"attr_name" for view; hashKey for css& controller
         $scope.j_id = id;
         $scope.j_attr_name = attr_name; 
-        $scope.j_hashKey = hash_key;
         $scope.id_attr_name = id+attr_name;
+        $scope.j_hashKey = hash_key;
         $scope.hashKey_attrName = hash_key+attr_name;
 
         console.log(hash_key); // 找hash_key
 
-		if(pre_id_attr == $scope.id_attr_name){
+		if(pre_hashKey_attr == $scope.id_attr_name){
 			$scope.is_show = !$scope.is_show;
 		}
 		else{
-			pre_id_attr = $scope.id_attr_name;
+			pre_hashKey_attr = $scope.id_attr_name;
 			$scope.is_show = true;
 			var elem = document.getElementById(id);
 			var j_text = document.getElementsByClassName("json_text");
