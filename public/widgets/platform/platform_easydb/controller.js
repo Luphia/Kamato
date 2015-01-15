@@ -524,9 +524,16 @@ Kamato.register.directive('dbdata', function ($compile) {
 
                              //get files dropped
                             scope.fileDrop = function(event){
+                                console.log(event.dataTransfer.files[0])
                                 scope.DropAreaHover(event);
                                 var files = event.target.files || event.dataTransfer.files; 
 
+                                for( var i=0 ; i < event.dataTransfer.files.length ; i++){
+                                    var e_file = new EasyFile();
+                                    e_file.loadFile(event.dataTransfer.files[i],function(res){
+                                        console.log(res);
+                                    })
+                                }
                             }
 
                     }
