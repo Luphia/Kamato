@@ -507,6 +507,27 @@ Kamato.register.directive('dbdata', function ($compile) {
                             }
                             break;
                         case 'Binary':
+                            var drop_area = document.getElementsByClassName('drop_area');
+                            for (var i = 0 ; i < drop_area.length ; i++){
+                                drop_area[i].addEventListener("dragover", scope.DropAreaHover,false);
+                                drop_area[i].addEventListener("dragleave", scope.DropAreaHover, false);
+                                drop_area[i].addEventListener("drop", scope.fileDrop, false);
+                            }
+
+                            //change drag area css
+                            scope.DropAreaHover = function(event){
+                                event.preventDefault();
+                                event.stopPropagation();
+                                event.target.className = ( event.type == "dragover" ? "drop_area_hover" : "drop_area");
+                                
+                            }
+
+                             //get files dropped
+                            scope.fileDrop = function(event){
+                                scope.DropAreaHover(event);
+                                var files = event.target.files || event.dataTransfer.files; 
+
+                            }
 
                     }
                     return 'widgets/platform/platform_easydb/template-'+attrs.schetype+'-data.html';

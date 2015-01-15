@@ -186,19 +186,22 @@
   border: 3px dashed rgba(255,255,255, 0.7);
   background-color: transparent;
   position: relative;
+  line-height: 120px;
+  font-size: 22px;
+  text-align: center;
+  color: rgba(255,255,255, 0.7);
 }
 
-.ng-scope.platform .easydb_container table dbdata .upload_tip{
-  height: 40px;
-  width: 100%;
+.ng-scope.platform .easydb_container table dbdata .drop_area_hover{
+  width: 350px;
+  height: 120px;
+  border: 3px dashed rgba(255,255,255, 1);
   background-color: transparent;
-  margin: -20px auto 0px auto;
-  color: rgba(255,255,255, 0.7);
-  position: absolute;
-  top: 50%;
-  text-align: center;
+  position: relative;
+  line-height: 120px;
   font-size: 22px;
-  line-height: 40px;
+  text-align: center;
+  color: rgba(255,255,255, 1);
 }
 
 .ng-scope.platform .easydb_container .create_td{  
