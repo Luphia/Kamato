@@ -208,23 +208,46 @@ var EasyFile = function () {
     this.data = {};
 };
 
-EasyFile.prototype.loadFile = function (blob) {
+EasyFile.prototype.loadFile = function (blob, cb) {
     this.data.blob = blob;
-    this.data.name = blob.name;
-    this.data.type = blob.type;
-    this.data.id = this.setID();
-    this.data.sha1 = new jsSHA(blob, "TEXT").getHash("SHA-1", "HEX");
-    this.data.size = blob.length;
+    var that = this;
+    that.getSha1(function (data) {
+        that.data.sha1 = data;
+        that.data.name = blob.name;
+        that.data.type = blob.type;
+        that.data.id = that.setID();
+        that.data.size = blob.size;
+        cb(that);
+    });
 };
 EasyFile.prototype.setID = function (id) {
-    var shaObj;
     if (typeof id != 'undefined') {
-        shaObj = id;
+        return id;
     } else {
-        console.log(this.data.blob)
-        shaObj = new jsSHA(this.data.blob, "TEXT").getHash("SHA-1", "HEX");
+        return this.data.sha1;
     };
-    return shaObj;
+};
+EasyFile.prototype.getSha1 = function (cb) {
+    var file = this.data.blob;
+    var sha1 = CryptoJS.algo.SHA1.create();
+    var read = 0;
+    var unit = 1024 * 1024;
+    var blob;
+    var reader = new FileReader();
+    reader.readAsArrayBuffer(file.slice(read, read + unit));
+    reader.onload = function (event) {
+        var bytes = CryptoJS.lib.WordArray.create(event.target.result);
+        sha1.update(bytes);
+        read += unit;
+        if (read < file.size) {
+            $('#progress-bar').text((read / file.size * 100) + '%');
+            blob = file.slice(read, read + unit);
+            reader.readAsArrayBuffer(blob);
+        } else {
+            var hash = sha1.finalize();
+            cb(hash.toString(CryptoJS.enc.Hex));
+        };
+    };
 };
 EasyFile.prototype.getID = function () {
     return this.data.id;
@@ -308,8 +331,8 @@ EasyFile.prototype.getSlice = function (num) {
     var id = this.getSliceID(num);
     var type = this.data.type;
 
-    if (countSlice == num && blob.length < splitByte) {
-        var slblob = blob.slice(0, blob.length, type);
+    if (countSlice == num && blob.size < splitByte) {
+        var slblob = blob.slice(0, blob.size, type);
         var data = {
             id: id,
             type: 'EasyFile',
@@ -317,7 +340,7 @@ EasyFile.prototype.getSlice = function (num) {
             blob: slblob
         };
         return data;
-    } else if (countSlice >= num && blob.length > splitByte) {
+    } else if (countSlice >= num && blob.size > splitByte) {
         var start = temp * num - temp;
         var end = temp * num;
 
@@ -361,7 +384,7 @@ EasyFile.prototype.getSlice = function (num) {
 EasyFile.prototype.countSlice = function () {
     var blob = this.data.blob;
     var splitByte = this.splitByte; //切割長度
-    var a = blob.length;    // base64 大小
+    var a = blob.size;    // base64 大小
     var b = splitByte;// Math.floor((splitByte) / 0.75); //切割Byte轉base64長度
     var c = Math.floor(a / b);  //段數
     var d = a % b;  //剩下長度
@@ -374,15 +397,7 @@ EasyFile.prototype.countSlice = function () {
     };
 };
 EasyFile.prototype.toJSON = function () {
-    var data = {
-        id: this.data.id,
-        name: this.data.name,
-        type: this.data.type,
-        size: this.data.size,
-        sha1: this.data.sha1,
-        blob: this.data.blob
-    };
-    return data;
+    return this;
 };
 EasyFile.prototype.toBase64 = function (blob, cb) {
     var blob = blob.blob;
