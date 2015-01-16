@@ -97,6 +97,15 @@
     font-weight: bold;
 }
 
+.ng-scope.platform .api_table .owner_bg {
+    padding: 5px 10px;
+    border-radius: 3px !important;
+    background-color: rgba(77, 32, 132, 0.9);
+    margin: 10px 10px 0px 0px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .ng-scope.platform .create_api {
     position: relative;
     /*min-height: 500px;*/

@@ -22,7 +22,7 @@
                             <a class="bold_col" ng-click="show_apiReq_chart()">{{item.name}}</a>
                         </td>
                         <td>
-                            <span >{{item.owner}}</span>
+                            <span class="owner_bg">{{item.owner}}</span>
                         </td>
                         <td>
                             <span ng-repeat="c in item.tag">{{c}}</span>
@@ -70,13 +70,6 @@
                     <div class="col-md-8">
                         <div ng-click="api_public(true)" class="btn" ng-class="{'public_btn': visible_clicked == true}">Public</div>
                         <div ng-click="api_public(false)" class="btn" ng-class="{'privacy_btn': visible_clicked == false}">Privacy</div>
-                    </div>
-                </div>
-                <!-- API Owner-->
-                <div class="form-group">
-                    <h4 class="col-md-2 control-label">Owner</h4>
-                    <div class="col-md-8">
-                        <input type="text" class="form-control create_api_input" ng-model="api_owner">
                     </div>
                 </div>
                 <!-- API Category Tag -->
@@ -132,13 +125,6 @@
                         <div class="col-md-8">
                             <div ng-click="api_public(true)" class="btn" ng-class="{'public_btn': visible_clicked == true}">Public</div>
                             <div ng-click="api_public(false)" class="btn" ng-class="{'privacy_btn': visible_clicked == false}">Privacy</div>
-                        </div>
-                    </div>
-                    <!-- API Owner-->
-                    <div class="form-group">
-                        <h4 class="col-md-2 control-label">Owner</h4>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control create_api_input" ng-model="api_owner">
                         </div>
                     </div>
                     <!-- API Category Tag -->
