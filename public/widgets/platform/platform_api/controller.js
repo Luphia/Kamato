@@ -284,6 +284,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 data: datas
             }).success(function (data, status, headers, config) {
                 if (data.result == 1) {
+                    datas['_id'] = data.data._id;
                     $scope.apiList.splice(0, 0, datas);
                     $scope.create_api = false;
                     $scope.api_outer = false;

@@ -26,6 +26,7 @@ Kamato.register.controller('appCtrl', function ($scope, $http, $modal, ngDialog,
                 data: datas
             }).success(function (data, status, headers, config) {
                 if (data.result == 1) {
+                    datas['_id'] = data.data._id;
                     $scope.appList.splice(0, 0, datas);
                     $scope.create_app = !$scope.create_app;
                 } else {
