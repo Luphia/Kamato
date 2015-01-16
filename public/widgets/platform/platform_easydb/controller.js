@@ -540,11 +540,13 @@ Kamato.register.directive('dbdata', function ($compile) {
                                         elem = event.target;
                                         file_size = Math.round((file.size)/1000);
                                         // file_array.push(file.name, file_size, file.lastModifiedDate) 
-                                        // elem.innerHTML += '<p class="binary_file_info">'+file.name+'('+file_size+'kb)'+'</p><p class="binary_file_info">Last modified: '+file.lastModifiedDate+'</p>';
                                     })            
                                         file_array.push(e_file)                    
                                 }
-                                    console.log(file_array);
+                                console.log(file_array);
+                                for(var i=0 ; i< file_array.length ; i++){
+                                    elem.innerHTML += '<p class="binary_file_info">'+file_array[i].file.name+'('+file_size+'kb)'+'</p><p class="binary_file_info">Last modified: '+file.lastModifiedDate+'</p>';
+                                }
                             }
 
                     }
