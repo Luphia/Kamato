@@ -293,6 +293,9 @@ manage.prototype.postapi = function (req, res, next) {
 	var name = info.name;
 	var dbt = this.MDBconnect().listData(table, "name='" + name + "'").list[0];
 
+	if(req.session.simple && req.session.simple.name) { info.owner = req.session.simple.name; }
+	else { info.owner ='SIMPLE'; }
+
 	if (dbt) {
 		res.result.response(next, 0, 'APIRoute postapi POST Fail');
 	} else {
