@@ -9,122 +9,56 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
 		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
     ];
 
-    function readBlob(files, opt_startByte, opt_stopByte) {
+    var socket = io('https://localhost/_file', { autoConnect: true, secure: true });
+    var currentFile = null;
+    var currentFileReader = null;
 
-        //var files = document.getElementById('files').files;
-        if (!files.length) {
-            alert('Please select a file!');
-            return;
-        }
-
-        var file = files[0];
-        var start = parseInt(opt_startByte) || 0;
-        var stop = parseInt(opt_stopByte) || file.size - 1;
-
-        var reader = new FileReader();
-
-        // If we use onloadend, we need to check the readyState.
-        reader.onloadend = function (evt) {
-
-            if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-                document.getElementById('byte_content').textContent = evt.target.result;
-                console.log(evt.target.result)
-
-                document.getElementById('byte_range').textContent =
-                    ['Read bytes: ', start + 1, ' - ', stop + 1,
-                     ' of ', file.size, ' byte file'].join('');
-            }
+    var FReader;
+    var Name;
+    var MB;
+    function StartUpload() {
+        if (SelectedFile) {
+            FReader = new FileReader();
+            Name = SelectedFile.name;
+            MB = Math.round(SelectedFile.size / 1048576);
+            FReader.onload = function (evnt) {
+                socket.emit('Upload', { 'Name': Name, Data: evnt.target.result });
+            };
+            socket.emit('Start', { 'Name': Name, 'Size': SelectedFile.size });
+        } else {
+            alert("Please Select A File");
         };
+    };
+    var SelectedFile;
 
-        var blob = file.slice(start, stop + 1);
-        reader.readAsText(blob);
+    socket.on('MoreData', function (data) {
+        UpdateBar(data['Percent']);
+        var Place = data['Place'] * 524288; //The Next Blocks Starting Position
+        var NewFile = SelectedFile.slice(Place, Place + Math.min(524288, (SelectedFile.size - Place)));
+        FReader.readAsBinaryString(NewFile);
+    });
+    function UpdateBar(percent) {
+        document.getElementById('progress2').style.width = percent + '%';
+        var MBDone = Math.round(((percent / 100.0) * SelectedFile.size) / 1048576);
+        $('#progress2').text(Math.round(percent * 100) / 100 + '%   -' + MBDone + 'MB');
+    };
+
+    socket.on('Done', function (data) {
+        $('#progress2').text('100%   -' + MB + 'MB');
+        console.log('Files Successfully Uploaded !!');
+    });
+    function Refresh() {
+        location.reload(true);
     };
 
     $scope.fileNameChange = function (elem) {
-        //readBlob(elem.files);
         var aa = new EasyFile();
         aa.setCallback(function (err, data) {
             console.log('err:' + err + ', data:' + data);
         });
 
-        var files = elem.files;
-        if (!files.length) {
-            alert('Please select a file!');
-            return;
-        };
-        var file = files[0];
-        //aa.loadFile(file);
-        //console.log(aa.toJSON());
-        //aa.toBase64(function (cb) {
-        //console.log(cb)
-        //});
-        //aa.split(50);
-        //console.log(aa.getSlice(1));
-        //console.log(aa.getSlice(2));
-
-        //var reader = new FileReader();
-        //reader.onloadend = function (e) {
-        //    if (e.target.readyState == FileReader.DONE) {
-        //        var blob = String(e.target.result).split(';base64,')[1];
-
-        function test() {
-            var a = 0;
-            for (var i = 0; i < 10000; i++) {
-                var start = 0;
-                var end = 0;
-
-                start = new Date().getTime();
-                aa.loadFile(file);
-                aa.split(10 * 1024 * 1000);
-                end = new Date().getTime();
-                a += (end - start) / 1000;
-                console.log((end - start) / 1000 + "sec");
-            };
-            console.log('總和' + a)
-        };
-
-        test();
-        //aa.split(10240);
-        console.log(aa.getSlice(1));
-        //console.log(aa.done(1));
-
-        //        aa.loadFile(blob, file.name, file.type, file.size);
-        //        console.log(aa.toBlob())
-        //        //aa.split(500);
-        //        //console.log(aa.countSlice())
-        //        //console.log(aa.getSlice(1))
-
-        //        //console.log(aa.getSlice(2))
-        //        //console.log(aa.getSlice(3))
-
-        //        //aa.done(1);
-
-        //        //console.log(aa.getSliceID(1));
-        //        //console.log(aa.getSliceID(0));
-
-        //        //var bb = new EasyFile();
-        //        //bb.setCallback(function (err, data) {
-        //        //    console.log('err:' + err + ', data:' + data);
-        //        //});
-        //        //var data1 = {
-        //        //    blob: "123+456",
-        //        //    id: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb_1_2_4215448069",
-        //        //    sha1: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb",
-        //        //    type: "EasyFile"
-        //        //}
-        //        //var data2 = {
-        //        //    blob: "+789+101112",
-        //        //    id: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb_2_2_4215448069",
-        //        //    sha1: "79b7734af46b30c91db8a9d587f3b1bcf664c7bb",
-        //        //    type: "EasyFile"
-        //        //}
-        //        //bb.addSlice(data1);
-        //        //bb.addSlice(data2);
-        //        //console.log(bb.toJSON());
-
-        //    };
-        //};
-        //reader.readAsDataURL(file);
+        SelectedFile = elem.files[0];
+        StartUpload();
 
         $scope.files = elem.files;
         $scope.$apply();
