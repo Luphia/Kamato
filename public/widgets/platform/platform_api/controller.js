@@ -289,7 +289,6 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                     $scope.create_api = false;
                     $scope.api_outer = false;
                     $scope.api_list = true;
-                    $scope.init();
                 } else {
                     alert('Please change your api name');
                 };
