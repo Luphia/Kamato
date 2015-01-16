@@ -172,8 +172,9 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.api_table_head = [
 		{ 'name': 'API Name' },
-		{ 'name': 'Category' },
-		{ 'name': 'Visible' },
+        {'name': 'Owner'},
+        { 'name': 'Category' },
+        { 'name': 'Visible' },
 		{ 'name': '' }//delete btn
     ]
 
@@ -257,6 +258,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             var tag = [];
             var types = $scope.types;
             var sources = [];
+            var tag_array = [];
 
             for (var c in $scope.rest_methods) {
                 if ($scope.rest_methods[c].checked == true) {

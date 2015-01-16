@@ -186,10 +186,9 @@
   border: 3px dashed rgba(255,255,255, 0.7);
   background-color: transparent;
   position: relative;
-  line-height: 120px;
+  color: rgba(255,255,255, 0.7);
   font-size: 22px;
   text-align: center;
-  color: rgba(255,255,255, 0.7);
 }
 
 .ng-scope.platform .easydb_container table dbdata .drop_area_hover{
@@ -198,10 +197,24 @@
   border: 3px dashed rgba(255,255,255, 1);
   background-color: transparent;
   position: relative;
-  line-height: 120px;
+  color: rgba(255,255,255, 1);
   font-size: 22px;
   text-align: center;
-  color: rgba(255,255,255, 1);
+}
+
+/*.ng-scope.platform .easydb_container table dbdata .drag_hint{
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  font-size: 22px;
+  margin-top: -20px;
+  height: 40px;
+  width: 100%;
+}
+*/
+.ng-scope.platform .easydb_container table dbdata .binary_file_info{
+  height: 20px;
+  font-size: 12px;
 }
 
 .ng-scope.platform .easydb_container .create_td{  
@@ -319,9 +332,9 @@
   font-size: 16px;
   padding-left: 40px;
   cursor: pointer;
-  width: 100%;
   position: relative;
   float: left;
+  width: 100%;
 }
 
 .ng-scope.platform .easydb_container .table_list .table_name a{
@@ -537,6 +550,18 @@
 @media screen and (max-width: 1024px){
   .ng-scope.platform .create_table_wrapper .control-label{
     margin: 0px;
+  }
+}
+
+@media screen and (max-width: 990px){
+  .ng-scope.platform .easydb_container .table_list li{
+    width: initial;
+    padding-left: 30px;
+    margin-right: 15px;
+  }
+
+  .ng-scope.platform .easydb_container > .col-md-2{
+    min-height: 100%;
   }
 }
 

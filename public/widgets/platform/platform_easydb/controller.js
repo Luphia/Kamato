@@ -507,8 +507,10 @@ Kamato.register.directive('dbdata', function ($compile) {
                             }
                             break;
                         case 'Binary':
+                            console.log(0);
                             var drop_area = document.getElementsByClassName('drop_area');
                             for (var i = 0 ; i < drop_area.length ; i++){
+                                console.log(1);
                                 drop_area[i].addEventListener("dragover", scope.DropAreaHover,false);
                                 drop_area[i].addEventListener("dragleave", scope.DropAreaHover, false);
                                 drop_area[i].addEventListener("drop", scope.fileDrop, false);
@@ -516,24 +518,33 @@ Kamato.register.directive('dbdata', function ($compile) {
 
                             //change drag area css
                             scope.DropAreaHover = function(event){
+                                // console.log(event);
                                 event.preventDefault();
                                 event.stopPropagation();
                                 event.target.className = ( event.type == "dragover" ? "drop_area_hover" : "drop_area");
-                                
                             }
 
                              //get files dropped
                             scope.fileDrop = function(event){
-                                console.log(event.dataTransfer.files[0])
+                               
+                                //clear css after dropping
                                 scope.DropAreaHover(event);
+                                var file, elem, file_size, file_array = [];
+                                console.log(2);
                                 var files = event.target.files || event.dataTransfer.files; 
-
                                 for( var i=0 ; i < event.dataTransfer.files.length ; i++){
                                     var e_file = new EasyFile();
                                     e_file.loadFile(event.dataTransfer.files[i],function(res){
-                                        console.log(res);
-                                    })
+                                        // console.log(file.name, file.size, file.type, file.lastModifiedDate);
+                                        file = res.data.blob;
+                                        elem = event.target;
+                                        file_size = Math.round((file.size)/1000);
+                                        // file_array.push(file.name, file_size, file.lastModifiedDate) 
+                                        // elem.innerHTML += '<p class="binary_file_info">'+file.name+'('+file_size+'kb)'+'</p><p class="binary_file_info">Last modified: '+file.lastModifiedDate+'</p>';
+                                    })            
+                                        file_array.push(e_file)                    
                                 }
+                                    console.log(file_array);
                             }
 
                     }
