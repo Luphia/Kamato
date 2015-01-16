@@ -154,6 +154,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         var app = $scope.appname;   //傳入所屬app名稱
         var name = api.name;        //傳入api名稱
         var id = api._id;        //傳入api id
+        console.log(api);
 
         $http({
             method: 'DELETE',
@@ -269,11 +270,13 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 };
             };
 
+            tag_array = $scope.new_tag.split(" ")
+
             sources.push($scope.source);
-            tag.push($scope.new_tag);
+            // tag.push($scope.new_tag);
             config.source = sources;
 
-            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': types, 'tag': tag, 'method': method, 'config': config };   //資料格式
+            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': types, 'tag': tag_array, 'method': method, 'config': config };   //資料格式
 
             $http({
                 method: 'POST',
@@ -285,6 +288,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                     $scope.create_api = false;
                     $scope.api_outer = false;
                     $scope.api_list = true;
+                    $scope.init();
                 } else {
                     alert('Please change your api name');
                 };
