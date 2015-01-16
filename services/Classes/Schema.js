@@ -8,7 +8,7 @@ var dataType = function(type) {
 	if(typeof type == "object") { return 'JSON'; }
 	else if(typeof type != 'string') { return rtType; }
 
-	var typeList = ['String', 'Number', 'Date', 'Boolean', 'JSON', 'Buffer'];
+	var typeList = ['String', 'Number', 'Date', 'Boolean', 'JSON', 'Binary'];
 	var searchList = [];
 	for(var key in typeList) { searchList[key] = typeList[key].toLowerCase(); }
 	si = searchList.indexOf(type.toLowerCase());
