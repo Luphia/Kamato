@@ -63,8 +63,6 @@ var configure = function (_config, _server, _secureServer, _session, _logger, _r
 var Channel = require('./Classes/Channel.js');
 var fs = require('fs');//--
 var EasyFile = require('./Classes/EasyFile.js');
-var ss = require('socket.io-stream');
-var util = require('util');
 
 function nsps(socket, chanel) {
 
