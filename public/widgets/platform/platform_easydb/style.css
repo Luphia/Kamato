@@ -185,9 +185,8 @@
   height: 120px;
   border: 3px dashed rgba(255,255,255, 0.7);
   background-color: transparent;
-  position: relative;
   color: rgba(255,255,255, 0.7);
-  font-size: 22px;
+  font-size: 50%;
   text-align: center;
 }
 
@@ -196,27 +195,15 @@
   height: 120px;
   border: 3px dashed rgba(255,255,255, 1);
   background-color: transparent;
-  position: relative;
   color: rgba(255,255,255, 1);
-  font-size: 22px;
+  font-size: 50%;
   text-align: center;
 }
 
-/*.ng-scope.platform .easydb_container table dbdata .drag_hint{
-  position: absolute;
-  top: 50%;
+/*.ng-scope.platform .easydb_container table dbdata .binary_file_info{
   text-align: center;
-  font-size: 22px;
-  margin-top: -20px;
-  height: 40px;
-  width: 100%;
 }
 */
-.ng-scope.platform .easydb_container table dbdata .binary_file_info{
-  height: 20px;
-  font-size: 12px;
-}
-
 .ng-scope.platform .easydb_container .create_td{  
    width: 22px;   
    height:22px;   

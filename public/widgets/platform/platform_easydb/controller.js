@@ -467,6 +467,44 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 });
 
+// ====================== Upload ============================================
+    var socket = io('https://localhost/_file', { autoConnect: true, secure: true });
+    var currentFile = null;
+    var currentFileReader = null;
+
+    var FReader;
+    var Name;
+    var MB;
+    function StartUpload() {
+        if (SelectedFile) {
+            FReader = new FileReader();
+            Name = SelectedFile.name;
+            MB = Math.round(SelectedFile.size / 1048576);
+            FReader.onload = function (evnt) {
+                socket.emit('Upload', { 'Name': Name, Data: evnt.target.result });
+            };
+            socket.emit('Start', { 'Name': Name, 'Size': SelectedFile.size });
+        } else {
+            alert("Please Select A File");
+        };
+    };
+    var SelectedFile;
+
+    // socket.on('MoreData', function (data) {
+    //     UpdateBar(data['Percent']);
+    //     var Place = data['Place'] * 524288; //The Next Blocks Starting Position
+    //     var NewFile = SelectedFile.slice(Place, Place + Math.min(524288, (SelectedFile.size - Place)));
+    //     FReader.readAsBinaryString(NewFile);
+    // });
+    function UpdateBar(percent) {
+        // document.getElementById('progress2').style.width = percent + '%';
+        var MBDone = (Math.round((((percent / 100.0) * SelectedFile.size) / 1048576)*100))/100;
+        return MBDone;
+        // $('#progress2').text(Math.round(percent * 100) / 100 + '%   -' + MBDone + 'MB');
+    };
+
+
+// =======================  Upload(B)  ======================
 Kamato.register.directive('dbdata', function ($compile) {
     return {
         restrict: 'E',
@@ -507,46 +545,52 @@ Kamato.register.directive('dbdata', function ($compile) {
                             }
                             break;
                         case 'Binary':
-                            console.log(0);
-                            var drop_area = document.getElementsByClassName('drop_area');
-                            for (var i = 0 ; i < drop_area.length ; i++){
-                                console.log(1);
-                                drop_area[i].addEventListener("dragover", scope.DropAreaHover,false);
-                                drop_area[i].addEventListener("dragleave", scope.DropAreaHover, false);
-                                drop_area[i].addEventListener("drop", scope.fileDrop, false);
-                            }
-
                             //change drag area css
                             scope.DropAreaHover = function(event){
-                                // console.log(event);
-                                event.preventDefault();
-                                event.stopPropagation();
-                                event.target.className = ( event.type == "dragover" ? "drop_area_hover" : "drop_area");
+                                if(event != undefined){
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    event.target.className = ( event.type == "dragover" ? "drop_area_hover" : "drop_area");
+                                }
                             }
 
-                             //get files dropped
+                            //get files dropped
                             scope.fileDrop = function(event){
-                               
                                 //clear css after dropping
                                 scope.DropAreaHover(event);
-                                var file, elem, file_size, file_array = [];
-                                console.log(2);
-                                var files = event.target.files || event.dataTransfer.files; 
-                                for( var i=0 ; i < event.dataTransfer.files.length ; i++){
-                                    var e_file = new EasyFile();
-                                    e_file.loadFile(event.dataTransfer.files[i],function(res){
-                                        // console.log(file.name, file.size, file.type, file.lastModifiedDate);
-                                        file = res.data.blob;
-                                        elem = event.target;
-                                        file_size = Math.round((file.size)/1000);
-                                        // file_array.push(file.name, file_size, file.lastModifiedDate) 
-                                    })            
-                                        file_array.push(e_file)                    
+                                var file, file_name, file_size, elem ;
+                                var files = event.target.files || event.dataTransfer.files;
+                                var Upload_context = " "; 
+
+                                if( files.length > 1){
+                                    event.target.innerHTML = 'Sorry! You can not upload mutiple files<br> Please Upload again.'                               ;
                                 }
-                                console.log(file_array);
-                                for(var i=0 ; i< file_array.length ; i++){
-                                    elem.innerHTML += '<p class="binary_file_info">'+file_array[i].file.name+'('+file_size+'kb)'+'</p><p class="binary_file_info">Last modified: '+file.lastModifiedDate+'</p>';
+                                else{
+                                    SelectedFile = files[0];
+                                    StartUpload();
                                 }
+
+
+                                var Upload_progress;
+                                socket.on('MoreData', function (data) {
+                                    Upload_progress = UpdateBar(data['Percent']);
+                                    var Place = data['Place'] * 524288; //The Next Blocks Starting Position
+                                    var NewFile = SelectedFile.slice(Place, Place + Math.min(524288, (SelectedFile.size - Place)));
+                                    Upload_context =  '<br>'+SelectedFile.name+'('+Math.round(data['Percent'] * 100) / 100 + '%   -' + Upload_progress + 'MB'+')';
+                                    event.target.innerHTML = 'Uploading files<br>'+Upload_context;
+                                    FReader.readAsBinaryString(NewFile);
+                                });          
+
+                                socket.on('Done', function (data) {
+                                    Upload_context = '<br>'+SelectedFile.name+'('+(Math.round((SelectedFile.size/1048576)*100))/100+'mb)';
+                                    event.target.innerHTML = Upload_context + '<br>Last modified: '+SelectedFile.lastModifiedDate;
+                                    console.log('Files Successfully Uploaded !!');
+                                });                                
+
+                                // console.log(Upload_context);
+                                
+                                // event.target.innerHTML += 'Last modified: '+files[0].lastModifiedDate;
+                                // event.target.innerHTML = '<br>'+SelectedFile.name+'('+(Math.round((SelectedFile.size/1048576)*100))/100+'mb)'+'<br>Last modified: '+SelectedFile.lastModifiedDate;
                             }
 
                     }
@@ -606,3 +650,17 @@ Kamato.register.directive('jsontext', function ($compile){
         },
     }
 });
+Kamato.register.directive('droppable', function ($compile){
+    return {
+        restrict: 'A',
+        link: function(scope, elem, attrs){
+            var drop_area = document.getElementsByClassName('drop_area');
+            // console.log(elem.context, drop_area[0]);
+
+            elem.context.addEventListener("dragover", scope.DropAreaHover);
+            elem.context.addEventListener("dragleave", scope.DropAreaHover);
+            elem.context.addEventListener("drop", scope.fileDrop);        
+        }
+    }
+})
+

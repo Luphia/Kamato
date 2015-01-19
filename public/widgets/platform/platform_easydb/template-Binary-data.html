@@ -1,6 +1,5 @@
 <!-- <input class="input_td"  ng-click="edit_td(key, r._id, value)" type="file" ng-model="r[key]" -->
 <a href="" ng-class="{'binary_link': hashKey_attrName == r.$$hashKey+key}" ng-click="show_binary_upload(key, r.$$hashKey)">Binary</a>
-<div class="drop_area" ng-show="hashKey_attrName == r.$$hashKey+key">
-	Drag files here
+<div droppable  class="drop_area" ng-show="hashKey_attrName == r.$$hashKey+key">
+	Drag a file here(Upload one file at a time);
 </div>
-

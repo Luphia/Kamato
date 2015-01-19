@@ -29,6 +29,3 @@ node_modules
 
 # Media Data
 public/media
-
-# Upload files folder
-UploadFiles
