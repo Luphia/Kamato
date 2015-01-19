@@ -82,7 +82,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             })
         }
         var e = event.target;
-        console.log(event)
         // var next_e = e.offsetParent.nextElementSibling.firstElementChild.firstElementChild.firstElementChild;
         // console.log(next_e)
         // e.blur();
@@ -126,15 +125,8 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         }
     }
 
-    // $scope.show_binary_upload = function(attr_name, hashkey){
-    //     $scope.hashKey_attrName = hashkey + attr_name;
-
-
-    // }
 
     $scope.show_binary_upload = function(attr_name, hash_key){
-        // $scope.attr_name = attr_name; 
-        // $scope.hashKey = hash_key;
         $scope.hashKey_attrName = hash_key+attr_name;
         console.log(attr_name, hash_key);
 
@@ -490,12 +482,6 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     };
     var SelectedFile;
 
-    // socket.on('MoreData', function (data) {
-    //     UpdateBar(data['Percent']);
-    //     var Place = data['Place'] * 524288; //The Next Blocks Starting Position
-    //     var NewFile = SelectedFile.slice(Place, Place + Math.min(524288, (SelectedFile.size - Place)));
-    //     FReader.readAsBinaryString(NewFile);
-    // });
     function UpdateBar(percent) {
         // document.getElementById('progress2').style.width = percent + '%';
         var MBDone = (Math.round((((percent / 100.0) * SelectedFile.size) / 1048576)*100))/100;
@@ -570,6 +556,8 @@ Kamato.register.directive('dbdata', function ($compile) {
                                     StartUpload();
                                 }
 
+                                //移除累加監聽事件
+                                socket.removeAllListeners();
 
                                 var Upload_progress;
                                 socket.on('MoreData', function (data) {
@@ -586,11 +574,6 @@ Kamato.register.directive('dbdata', function ($compile) {
                                     event.target.innerHTML = Upload_context + '<br>Last modified: '+SelectedFile.lastModifiedDate;
                                     console.log('Files Successfully Uploaded !!');
                                 });                                
-
-                                // console.log(Upload_context);
-                                
-                                // event.target.innerHTML += 'Last modified: '+files[0].lastModifiedDate;
-                                // event.target.innerHTML = '<br>'+SelectedFile.name+'('+(Math.round((SelectedFile.size/1048576)*100))/100+'mb)'+'<br>Last modified: '+SelectedFile.lastModifiedDate;
                             }
 
                     }
