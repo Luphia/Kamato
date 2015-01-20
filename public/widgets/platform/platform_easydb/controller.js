@@ -167,6 +167,8 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
     }
 
 	$scope.table_click =function(name, default_table_rows, page_num){
+        
+
         pre_hashKey_attr="";    //清除上一次在其他table點擊json的事件
         $scope.warn_hint = false;   //清除在其他table點擊的刪除警告標語
         $scope.sch_name = '';
@@ -192,7 +194,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
             }
             //顯示table內容(預設15筆資料)
             $scope.show_table(name,default_table_rows, page_num);
-        });
+        }); 
 	}
 
     $scope.sch_click = function(name){  
@@ -229,6 +231,9 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
 
 
     $scope.show_table = function(table_name, custom_table_rows, page_num){
+        //show Loading Mask
+       $scope.loading_mask = true;
+        // console.log(body_elem);
         //要把顯示json內容方框丟回table最下面,否則會被ng-repeat蓋過 
         j_text = document.getElementsByClassName("json_text");
         table = document.getElementsByClassName("db_table");
@@ -246,6 +251,7 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
         });
 
         $http.get(db_link+table_name+"/?q=limit "+new_page_first_index+','+custom_table_rows).
+        //close Loading Mask
         success(function(page_schema){
             var t_d_temp = page_schema.data.list;
             
@@ -266,7 +272,9 @@ Kamato.register.controller('easyDBCtrl', function ($scope, $http, $modal, ngDial
                     })
                 })
             }
-        });           
+            //close Loading Mask     
+            $scope.loading_mask = false; 
+        });   
     }
 
     var delete_table_name="";
