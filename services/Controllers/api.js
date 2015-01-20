@@ -52,9 +52,7 @@ Api.prototype.RouteAPI = function(req, res, next) {
 	});
 };
 Api.prototype.API = function(req, res, next) {
-	res.result = new Result();
-
-
+	res.result = new Result();	
 };
 Api.prototype.SQL = function(req, res, next) {
 
