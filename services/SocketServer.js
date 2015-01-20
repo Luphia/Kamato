@@ -132,6 +132,7 @@ function nsps(socket, chanel) {
                     console.log("end");
                     fs.unlink("./UploadFiles/Temp/" + Name, function () {
                         socket.emit('Done');
+                        fs.close(Files[Name]['Handler']);
                     });
                 });
             });
