@@ -533,10 +533,27 @@ Kamato.register.directive('dbdata', function ($compile) {
                         case 'Binary':
                             //change drag area css
                             scope.DropAreaHover = function(event){
-                                if(event != undefined){
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                    event.target.className = ( event.type == "dragover" ? "drop_area_hover" : "drop_area");
+                            console.log(event)
+                                // if(event != undefined){
+                                //     if(event.target.id == 'drop_area' || event.target.id == 'drop_area_hover'){
+                                //         console.log(123);
+                                //         event.preventDefault();
+                                //         event.stopPropagation();
+                                //         event.target.id = ( event.type == "dragover" ? "drop_area_hover" : "drop_area");
+                                //     }
+                                // }
+                                 event.preventDefault();
+                                 event.stopPropagation();
+                                if(event != undefined && event.target.className != "binary_file_info"){
+                                    if(event.type == "dragover"){
+                                            event.target.className = "drop_area_hover";
+                                            event.target.childNodes[0].className = "binary_file_info_hover";                                          
+                                    }
+                                    else{
+                                        event.target.className = "drop_area";
+                                        event.target.childNodes[0].className = "binary_file_info";
+                                        
+                                    }
                                 }
                             }
 
@@ -547,9 +564,11 @@ Kamato.register.directive('dbdata', function ($compile) {
                                 var file, file_name, file_size, elem ;
                                 var files = event.target.files || event.dataTransfer.files;
                                 var Upload_context = " "; 
+                                var drop_area_elem = document.getElementsByClassName('drop_area') ||  document.getElementsByClassName('drop_area_hover');
+                                console.log(drop_area_elem)
 
                                 if( files.length > 1){
-                                    event.target.innerHTML = 'Sorry! You can not upload mutiple files<br> Please Upload again.'                               ;
+                                    drop_area_elem[0].innerHTML = 'Sorry! You can not upload mutiple files<br> Please Upload again.'                               ;
                                 }
                                 else{
                                     SelectedFile = files[0];
@@ -565,13 +584,13 @@ Kamato.register.directive('dbdata', function ($compile) {
                                     var Place = data['Place'] * 524288; //The Next Blocks Starting Position
                                     var NewFile = SelectedFile.slice(Place, Place + Math.min(524288, (SelectedFile.size - Place)));
                                     Upload_context =  '<br>'+SelectedFile.name+'('+Math.round(data['Percent'] * 100) / 100 + '%   -' + Upload_progress + 'MB'+')';
-                                    event.target.innerHTML = 'Uploading files<br>'+Upload_context;
+                                    drop_area_elem[0].innerHTML = 'Uploading files<br>'+Upload_context;
                                     FReader.readAsBinaryString(NewFile);
                                 });          
 
                                 socket.on('Done', function (data) {
-                                    Upload_context = '<br>'+SelectedFile.name+'('+(Math.round((SelectedFile.size/1048576)*100))/100+'mb)';
-                                    event.target.innerHTML = Upload_context + '<br>Last modified: '+SelectedFile.lastModifiedDate;
+                                    Upload_context = '<div class="binary_file_info">'+SelectedFile.name+'</div>('+(Math.round((SelectedFile.size/1048576)*100))/100+'mb)';
+                                    drop_area_elem[0].innerHTML = Upload_context + '<br>Last modified: '+SelectedFile.lastModifiedDate;
                                     console.log('Files Successfully Uploaded !!');
                                 });                                
                             }
@@ -638,8 +657,6 @@ Kamato.register.directive('droppable', function ($compile){
         restrict: 'A',
         link: function(scope, elem, attrs){
             var drop_area = document.getElementsByClassName('drop_area');
-            // console.log(elem.context, drop_area[0]);
-
             elem.context.addEventListener("dragover", scope.DropAreaHover);
             elem.context.addEventListener("dragleave", scope.DropAreaHover);
             elem.context.addEventListener("drop", scope.fileDrop);        
