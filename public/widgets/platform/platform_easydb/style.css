@@ -7,6 +7,7 @@
   left:40%;
   background-color: rgba(0,0,0,0.7);
   border: 5px solid rgba(0,0,0,0.6);
+  position: relative;
 }
 
 .ng-scope.platform .warnHint button{
@@ -384,21 +385,6 @@
   position: relative;
 }
 
-/*.ng-scope.platform .easydb_container .loading_mask::after{
-  position: absolute;
-  content: "Loading...";
-  text-align: center;
-  font-size: 2em;
-  line-height: 3em;
-  color: #000;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, .5);
-}
-*/
-
 .ng-scope.platform .easydb_container .loading_mask::after{
   position: absolute;
   top: 40%;
@@ -420,11 +406,10 @@
   height: 100%;
   z-index: 99;
   background-color: rgba(0,0,0, 0.7);
-  content: 'Loading ...';
+  content: 'Loading';
   text-align: center;
   font-size: 27px;
   padding-top: 30%;
-  /*line-height: 3em;*/
 }
 
 .ng-scope.platform .easydb_container .tile{
@@ -467,6 +452,8 @@
 
 .ng-scope.platform .easydb_container > .col-md-10{
   overflow: auto;
+  width: 1510px;
+  height: 960px;
 }
 
 .ng-scope.platform .easydb_container table dbdata .json_link, .ng-scope.platform .easydb_container .binary_link{
@@ -585,6 +572,19 @@
   margin: 12px;
   border: 1px solid rgba(255,255,255,0.5);
   background-color: transparent;
+}
+
+@media screen and (max-width: 1780px){
+  .ng-scope.platform .easydb_container > .col-md-10{
+    width: 1220px;
+  }
+  .ng-scope.platform .easydb_container .loading_mask::after{
+    top: 40%;
+    left: 43%;
+  }
+  .ng-scope.platform .easydb_container .loading_mask::before{
+    padding-top: 458px;
+  }
 }
 
 @media screen and (max-width: 1410px){

@@ -91,6 +91,11 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 break;
         };
     };
+
+    $scope.close_warn_hint = function(){
+        $scope.warn_hint = false;
+    }
+
     $scope.api_outer = false;      //outer api page
 
     $scope.api_list = true;		   //API管理頁面
