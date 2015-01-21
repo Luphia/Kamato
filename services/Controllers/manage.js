@@ -260,8 +260,8 @@ manage.prototype.getappapi = function (req, res, next) {
 manage.prototype.getappapiinfo = function (req, res, next) {
 	res.result = new Result();
 	var table = 'api';
-	var query = req.query.q || '';
-	var data = this.MDBconnect().pageData(table, query);
+	var query = req.params.api || '';
+	var data = this.MDBconnect().getData(table, query);
 
 	if (data) {
 		res.result.response(next, 1, 'APIRoute showappapiinfo GET Success', data);
@@ -321,9 +321,10 @@ manage.prototype.putapp = function (req, res, next) {
 manage.prototype.putapi = function (req, res, next) {
 	res.result = new Result();
 	var table = 'api';
+	var api = req.params.api;
 	var query = req.body || '';
 
-	var data = this.MDBconnect().putData(table, query);
+	var data = this.MDBconnect().putData(table, api, query);
 	if (data) {
 		res.result.response(next, 1, 'APIRoute putapi POST Success', { _id: data });
 	};
