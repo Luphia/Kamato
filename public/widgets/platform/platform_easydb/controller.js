@@ -541,15 +541,6 @@ Kamato.register.directive('dbdata', function ($compile) {
                         case 'Binary':
                             //change drag area css
                             scope.DropAreaHover = function(event){
-                            console.log(event)
-                                // if(event != undefined){
-                                //     if(event.target.id == 'drop_area' || event.target.id == 'drop_area_hover'){
-                                //         console.log(123);
-                                //         event.preventDefault();
-                                //         event.stopPropagation();
-                                //         event.target.id = ( event.type == "dragover" ? "drop_area_hover" : "drop_area");
-                                //     }
-                                // }
                                  event.preventDefault();
                                  event.stopPropagation();
                                 if(event != undefined && event.target.className != "binary_file_info"){

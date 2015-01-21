@@ -134,6 +134,15 @@
   margin-right: 0px;
 }
 
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 @media screen and (max-width: 1024px){
   .ng-scope.platform .form-horizontal .control-label{
     text-align: left ;

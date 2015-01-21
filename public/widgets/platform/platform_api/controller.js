@@ -1,4 +1,5 @@
 Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog, $rootScope) {
+
     // ====================== api top======================
     $scope.resources = [
 		{ "name": "Facebook" },
@@ -51,6 +52,8 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.appname = 'iii';        //所屬APP名稱
     $scope.types = 'sql';          //設定該頁type
     $scope.warn_hint = false;      //select type
+    var api_link = './manage/api/' + $scope.appname + '/';
+    var viewing_api;
     $scope.api_types = function (name) {
         $scope.types = name;
         switch (name) {
@@ -125,19 +128,12 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         $scope.warn_hint = true;
     }
 
-    // $scope.init = function(){
-
-    // }
-
-    // $scope.destory = function(){
-
-    // }
-
     $scope.return_api_page = function () {
         $scope.api_list = true;
         $scope.create_api = false;
         $scope.req_chart = false;
         $scope.api_outer = false;
+        $scope.api_desc = "";
 
         //取消require
         $scope.select_rest_mt = false;
@@ -149,9 +145,37 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         }
     }
 
-    $scope.show_apiReq_chart = function () {
+    $scope.show_apiReq_chart = function (api_name) {
+        var api_list_array;
+        viewing_api = api_name;
         $scope.req_chart = true;
         $scope.api_list = false;
+        $http.get(api_link+ api_name).success(function(api_list_obj){
+            api_list_array = api_list_obj.data.list;
+            for ( var i in api_list_array){
+                if(api_list_array[i].name == api_name){
+                    $scope.api_info = api_list_array[i];
+                    console.log($scope.api_info);
+                }
+            }
+        });
+    }
+
+
+    $scope.rewrite_api_info = function(api, attr){
+        var data = {};
+        data[attr] = api[attr];
+        $http.put(api_link+api.name+'/'+api._id, data).success(function(edited_data_msg){
+            console.log(edited_data_msg);
+        }).error(function (data, status, headers, config) {});
+    }
+
+    $scope.rewrite_api_visible = function(api, boolean){
+        var data = {};
+        data['public'] = boolean;
+        $http.put(api_link+api.name+'/'+api._id, data).success(function(edited_data_msg){
+            console.log(edited_data_msg);
+        }).error(function (data, status, headers, config) {});
     }
 
     $scope.del_api = function (api) {
@@ -193,12 +217,6 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
 
     $scope.apiList = [];
-    //$scope.apiList = [
-    //	{ 'name': 'NikePlus', 'tag': ['sport', 'running', 'Nike'], 'public': 'Public' },
-    //	{ 'name': 'Runkeeper', 'tag': ['sport', 'running', 'Runkeeper'], 'public': 'Public' },
-    //	{ 'name': 'GooglePlus', 'tag': ['scocial network', 'google+'], 'public': 'Public' },
-    //	{ 'name': 'Facebook', 'tag': ['sn', 'fb'], 'public': 'Public' },
-    //]
 
     $scope.apiSearch = [];
 
@@ -245,14 +263,6 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.new_tag = "";
 
-    // $scope.ca_tag_keyup = function(e){
-    // 	//press enter
-    // 	if(e.keyCode == 13){
-    // 		var tag = $scope.new_tag;
-
-    // 	}
-    // }
-
     $scope.typing_tag = false;
     $scope.api_submit = function () {
         // 送出表單
@@ -282,7 +292,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
             // tag.push($scope.new_tag);
             config.source = sources;
 
-            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': types, 'tag': tag_array, 'method': method, 'config': config };   //資料格式
+            var datas = { 'name': api, 'public': $scope.visible_clicked, 'type': types, 'tag': tag_array, 'method': method, 'config': config, 'description': $scope.api_desc };   //資料格式
 
             $http({
                 method: 'POST',
@@ -295,6 +305,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                     $scope.apiList.splice(0, 0, datas);
                     $scope.create_api = false;
                     $scope.api_outer = false;
+                    $scope.api_desc = "";
                     $scope.api_list = true;
                 } else {
                     alert('Please change your api name');
@@ -378,5 +389,6 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.updatePath();
     $scope.fetch();
 
-
 });
+
+// ================= show api info========================

@@ -19,7 +19,7 @@
                     </tr>
                     <tr ng-repeat="item in apiList | filter:apiSearch">
                         <td>
-                            <a class="bold_col" ng-click="show_apiReq_chart()">{{item.name}}</a>
+                            <a class="bold_col" ng-click="show_apiReq_chart(item.name)">{{item.name}}</a>
                         </td>
                         <td>
                             <span class="owner_bg">{{item.owner}}</span>
@@ -84,6 +84,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                        <h4 class="col-md-2 control-label">Description</h4>
+                        <div class="col-md-8">
+                            <textarea class="form-control m-b-10" cols="30" rows="10" ng-model="api_desc"></textarea>
+                        </div>
+                </div>
+                <div class="form-group">
                     <div class="col-md-offset-2 col-md-8">
                         <input type="submit" class="btn m-t-10" value="Create">
                         <div class="btn m-t-10" ng-click="return_api_page()">Cancel</div>
@@ -96,6 +102,43 @@
                 <button type="submit" class="btn btn-lg btn-alt m-t-10" ng-click="return_api_page()">Back</button>
                 <h2>每日Request次數(req/day)</h2>
                 <activitychart ng-model="Request" class="main-chart" id="Request"></activitychart>
+            </div>
+            <div class="block-area">
+                <div class="table-responsive">
+                    <table class="table table-bordered tile">
+                        <tr>
+                            <td>Name</td>
+                            <td><input type="text" class="input_td" ng-model="api_info.name" ng-blur="rewrite_api_info(api_info, name)"></td>                   
+                        </tr>
+                        <tr>
+                            <td>Method</td>
+                            <td><span class="sql_tag">{{api_info.method[0]}}</span>{{api_info.config.sql[api_info.method[0]]}}</td>
+                        </tr>
+                        <tr>
+                            <td>Visible</td>
+                            <td>
+                                <div ng-click="rewrite_api_visible(api_info, true)" class="btn" ng-class="{'public_btn': api_info.public}">Public</div>
+                                <div ng-click="rewrite_api_visible(api_info, false)" class="btn" ng-class="{'privacy_btn': !(api_info.public)}">Privacy</div>
+                            </td>                   
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td><span ng-repeat="tag in api_info.tag" class="cate_tag">{{tag}}</span></td>                   
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td>{{api_info.type}}</td>                   
+                        </tr>
+                        <tr>
+                            <td>URL</td>
+                            <td><a href="http://simple.tanpopo.cc/API/{{api_info.owner}}/{{api_info.name}}">http://simple.tanpopo.cc/API/{{api_info.owner}}/{{api_info.name}}</a></td>                   
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td><textarea cols="40" rows="5" ng-model="api_info.description" ng-blur="rewrite_api_info(api_info, description)"></textarea></td>                   
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
         <div ng-show="api_outer" class="dataflow">
@@ -131,11 +174,17 @@
                     <div class="form-group">
                         <h4 class="col-md-2 control-label">Category Tag</h4>
                         <div class="col-md-8">
-                            <input type="text" class="form-control create_api_input" ng-keyup="ca_tag_keyup($event)" ng-model="new_tag" ng-focus="typing_tag= true " ng-blur="typing_tag= false">
+                            <input type="text" class="form-control create_api_input" ng-keyup="ca_tag_keyup($event)" ng-model="new_tag" ng-focus="typing_tag= true " ng-blur="typing_tag= false" >
                             <!--++  ng-enter="addTag(new_tag)" -->
                             <!-- 						<div>
                                                 <div class="tag" ng-repeat="(key, value) in tags">{{value.name}}</div>
                                             </div> -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h4 class="col-md-2 control-label">Description</h4>
+                        <div class="col-md-8">
+                            <textarea class="form-control m-b-10" cols="30" rows="10" ng-model="api_desc"></textarea>
                         </div>
                     </div>
                 </form>
@@ -170,9 +219,10 @@
     </div>
     <div ng-show="warn_hint" class="warnHint">
         <h3 class="text-center">Please Select Type</h3>
+        <div class="close_warn_hint" ng-click="close_warn_hint()"></div>
         <button class="btn btn-alt btn-lg sql_btn" ng-click="api_types('sql')">SQL API</button>
         <button class="btn btn-alt btn-lg outer_btn" ng-click="api_types('outer')">Outer API</button>
-        <button class="btn btn-alt btn-lg exit_btn" ng-click="close_warn_hint()">EXIT</button>
+        <!-- <button class="btn btn-alt btn-lg exit_btn" ng-click="close_warn_hint()">EXIT</button> -->
     </div>
 </div>
 

@@ -143,14 +143,14 @@
         background-color: transparent;
     }
 
-.ng-scope.platform .create_api .privacy_btn {
+.ng-scope.platform .privacy_btn {
     background: rgba(174, 44, 44, 0.9);
     border: 1px solid rgba(0,0,0,0.3);
     font-size: 16px;
     padding: 5px 10px;
 }
 
-.ng-scope.platform .create_api .public_btn {
+.ng-scope.platform .public_btn {
     background: rgba(38, 182, 44, 0.7);
     border: 1px solid rgba(256,256,256,0.4);
     font-size: 16px;
@@ -222,16 +222,49 @@
         background-color: rgba(0,0,0,0.4);
     }
 
+.ng-scope.platform .input_td, .ng-scope.platform textarea{
+    background-color: transparent;
+    border: none;
+    cursor: default;
+}
+
+.ng-scope.platform .input_td:hover, .ng-scope.platform textarea:hover{
+  border: 1px rgba(255,255,255,0.7) solid;
+}
+
+.ng-scope.platform input:focus, .ng-scope.platform textarea:focus{
+  background-color: rgba(0,0,0,0);
+  border: 1px rgba(255,255,255,0.7) solid;
+  padding: 5px;
+}
+
+.ng-scope.platform .sql_tag{
+    padding: 5px 10px;
+    border-radius: 3px !important;
+    background-color: rgba(63, 132, 119, 0.9);
+    margin: 10px 10px 0px 0px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.ng-scope.platform .cate_tag{
+    padding: 5px 10px;
+    border-radius: 3px !important;
+    background-color: rgba(42, 91, 132, 0.9);
+    margin: 10px 10px 0px 0px;
+    font-size: 12px;
+    font-weight: bold;    
+}
 /*=================================api bottom=================================*/
 /*=================================api alert=================================*/
 .ng-scope.platform .warnHint {
-    width: 600px;
+    width: 400px;
     height: 200px;
     position: fixed;
     top: 30%;
     left: 40%;
     background-color: rgba(0,0,0,0.7);
-    border: 5px solid rgba(0,0,0,0.6);
+    box-shadow: 0px 0px 5px black;
 }
 
     .ng-scope.platform .warnHint button {
@@ -262,9 +295,9 @@
   right: 0px;
   width: 25px;
   height: 25px;
-  border: 5px solid black;
   background: url(../img/simple/easydb/delete.png) no-repeat 50% 50%;
-  background-color: rgba(211, 24, 44, 0.9);
+  background-color: rgba(255,255,255,0.3);
+  cursor: pointer;
 }
 
 .ng-scope.platform .sql_btn {
@@ -275,10 +308,6 @@
     height: 100px;
 }
 
-.ng-scope.platform .exit_btn {
-    height: 100px;
-    width: 100px;
-}
 /*=================================data flow=================================*/
 .dataflow {
     font-size: 1.2em;
