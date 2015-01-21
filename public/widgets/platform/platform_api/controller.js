@@ -145,19 +145,13 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         }
     }
 
-    $scope.show_apiReq_chart = function (api_name) {
-        var api_list_array;
-        viewing_api = api_name;
+    $scope.show_apiReq_chart = function (api_id) {
         $scope.req_chart = true;
         $scope.api_list = false;
-        $http.get(api_link+ api_name).success(function(api_list_obj){
-            api_list_array = api_list_obj.data.list;
-            for ( var i in api_list_array){
-                if(api_list_array[i].name == api_name){
-                    $scope.api_info = api_list_array[i];
-                    console.log($scope.api_info);
-                }
-            }
+        console.log(api_link + api_id);
+        $http.get(api_link + api_id).success(function(api_list_obj){
+            $scope.api_info = api_list_obj.data;
+            viewing_api = api_list_obj.data.name;
         });
     }
 

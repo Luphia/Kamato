@@ -19,7 +19,7 @@
                     </tr>
                     <tr ng-repeat="item in apiList | filter:apiSearch">
                         <td>
-                            <a class="bold_col" ng-click="show_apiReq_chart(item.name)">{{item.name}}</a>
+                            <a class="bold_col" ng-click="show_apiReq_chart(item._id)">{{item.name}}</a>
                         </td>
                         <td>
                             <span class="owner_bg">{{item.owner}}</span>
