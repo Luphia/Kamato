@@ -95,7 +95,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         };
     };
 
-    $scope.close_warn_hint = function(){
+    $scope.close_warn_hint = function () {
         $scope.warn_hint = false;
     }
 
@@ -149,27 +149,29 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         $scope.req_chart = true;
         $scope.api_list = false;
         console.log(api_link + api_id);
-        $http.get(api_link + api_id).success(function(api_list_obj){
+        $http.get(api_link + api_id).success(function (api_list_obj) {
             $scope.api_info = api_list_obj.data;
             viewing_api = api_list_obj.data.name;
         });
     }
 
 
-    $scope.rewrite_api_info = function(api, attr){
+    $scope.rewrite_api_info = function (api, attr) {
         var data = {};
         data[attr] = api[attr];
-        $http.put(api_link+api.name+'/'+api._id, data).success(function(edited_data_msg){
+        console.log(api, attr)
+        $http.put(api_link + api._id, data).success(function (edited_data_msg) {
             console.log(edited_data_msg);
-        }).error(function (data, status, headers, config) {});
+        }).error(function (data, status, headers, config) { });
     }
 
-    $scope.rewrite_api_visible = function(api, boolean){
+    $scope.rewrite_api_visible = function (api, boolean) {
         var data = {};
         data['public'] = boolean;
-        $http.put(api_link+api.name+'/'+api._id, data).success(function(edited_data_msg){
+        console.log(data)
+        $http.put(api_link + api._id, data).success(function (edited_data_msg) {
             console.log(edited_data_msg);
-        }).error(function (data, status, headers, config) {});
+        }).error(function (data, status, headers, config) { });
     }
 
     $scope.del_api = function (api) {
@@ -196,7 +198,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
 
     $scope.api_table_head = [
 		{ 'name': 'API Name' },
-        {'name': 'Owner'},
+        { 'name': 'Owner' },
         { 'name': 'Category' },
         { 'name': 'Visible' },
 		{ 'name': '' }//delete btn
