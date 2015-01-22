@@ -9,7 +9,7 @@ Kamato.register.controller('appFolderCtrl', function ($scope, $http, $modal, ngD
 		// {'tip': 'Upload', 'icon': 'sa-list-upload', 'link': '#/platform/APP/upload'}
     ];
 
-    var socket = io('https://simple.tanpopo.cc/_file', { autoConnect: true, secure: true });
+    var socket = io('https://' + location.hostname + '/_file', { autoConnect: true, secure: true });
     var currentFile = null;
     var currentFileReader = null;
 
