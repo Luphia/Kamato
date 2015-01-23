@@ -27,21 +27,12 @@ var initialize = function (configPath) {
 var get = function (key) {
     return config[key];
 };
-var set = function(key, data) {
-	if(!config[key]) {
-		return config[key] = data;
-	}
-	else {
-		return false;
-	}
-};
 
 module.exports = function(_program) {
 	program = _program;
 	var self = {
 		initialize: initialize,
-		get: get,
-		set: set
+		get: get
 	}
 
 	return self;

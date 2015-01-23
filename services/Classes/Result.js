@@ -35,11 +35,6 @@ module.exports = function() {
 		return true;
 	}
 
-	, setCost = function(_cost) {
-		this.cost = _cost;
-		return true;
-	}
-
 	, setCommand = function(_path) {
 		this.command = _path;
 		return true
@@ -50,7 +45,6 @@ module.exports = function() {
 			command: this.command,
 			result: this.result || 0,
 			message: this.message || "",
-			cost: this.cost,
 			data: this.data || {}
 		};
 	}
@@ -62,7 +56,6 @@ module.exports = function() {
 		setResult: setResult,
 		setMessage: setMessage,
 		setData: setData,
-		setCost: setCost,
 		toJSON: toJSON
 	};
 
