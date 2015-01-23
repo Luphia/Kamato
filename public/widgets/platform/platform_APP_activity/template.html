@@ -1,0 +1,31 @@
+<div class="platform" ng-controller="appActivityCtrl" data-ng-init="init()">
+    <div class="container-fluid  clearfix">
+        <div class="content">
+            <div class="title">
+                <h1>APP管理</h1>
+            </div>
+            <div class="listview list-container">
+                <header class="listview-header media">
+                    <div>
+                        <ul class="list-inline  list-mass-actions pull-left">
+                            <li ng-repeat="item in app_oper">
+                                <a ng-class="{'clicked': item.tip == 'Activity'}" href="{{item.link}}" class="{{item.icon}}">{{item.tip}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+                <div>
+                    <div class="p-10">
+                        <div class="fai">
+                            <i class="fa fa-user fa-2x"></i>目前線上使用者： {{app_info[0].online}}
+                            <i class="fa fa-users fa-2x"></i> 累計連線數： {{app_info[0].total}}
+                            <i class="fa fa-tachometer fa-2x"></i> 目前頻寬負載：<i class="fa fa-upload"></i>{{app_info[0].network.out}}/s ，<i class="fa fa-download"></i>{{app_info[0].network.in}}/s
+                        </div>
+                        <div class="main-chart" id="Users"></div>
+                        <div class="main-chart" id="Networks"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

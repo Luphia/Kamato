@@ -1756,25 +1756,22 @@ only screen and (                min-resolution: 2dppx) {
 .trophy {
 	display: block;
 	position: relative;
-	padding-top: 5px;
 }
 .fa-trophy_01 {
 	display: block;
 	text-align: center;
 	position: relative;
-	font-size: 4.8em;
-	color: rgba(255, 255, 255, .8);
 }
 .fa-trophy_01::after {
 	content: "\f091";
-	/* text-shadow: 0px 0px 5px #ee8800; */
+	text-shadow: 0px 0px 5px #ee8800;
 }
 .trophy .rank {
 	width: 100%;
 	text-align: center;
 	position: absolute;
-	top: 15px;
-	font-size: 1.5em;
+	top: 10px;
+	font-size: 2em;
 	font-weight: bold;
 	color: #f80;
 	z-index: 1;
@@ -1791,129 +1788,4 @@ only screen and (                min-resolution: 2dppx) {
 	font-size: .8em;
 	text-align: right;
 	padding-right: 10px;
-}
-.progress.progress-small {
-	width: 80%;
-}
-.fail {
-	font-size: 1.5em;
-	color: #aaa;
-	line-height: 43px;
-}
-h3 {
-	font-size: 1.5em;
-}
-h4 {
-	font-size: 1.2em;
-}
-#caloriesRange {
-	font-size: 1.5em;
-}
-.clg > tbody > tr > td {
-	padding: 0px 5px;
-}
-span#progressBarStr {
-	width: 50px;
-
-}
-.challengeDiv {
-	overflow: auto;	
-}
-.countDown {
-	font-size: 1.5em;
-	padding-left: 15px;
-}
-
-/** 定義左右區塊 */
-.sidebar {
-	width: 30%;
-	position: relative;
-	left: 5%;
-	text-align: center;
-	font-size: 15px;
-	float: left;
-}
-.content {
-	width: 70%;
-	padding-left: 10px;
-	text-align: left;
-	font-size: 15px;
-	float: left;
-}
-.content.leftArea {
-	width:70%;
-	position: relative;
-	left: 1%;
-	right: 5%;
-	float: left;
-}
-.content.rightArea {
-	width: 30%;
-	position: relative;
-	left: auto;
-	right: 30%;
-	float: left;
-}
-
-span.trophyLeftArea {
-	width: 30%;
-	position: relative;
-	margin-top: 10px;
-	right: auto;
-	float: left;
-}
-span.trophyCenterArea {
-	width: 40%;
-	position: relative;
-	margin-top: 30px;
-	right: auto;
-	text-align: center;
-	float: left;
-}
-span.trophyRightArea {
-	width: 30%;
-	position: relative;
-	margin-top: 33px;
-	text-align: left;
-	float: left;
-}
-
-span.progressLeftArea {
-	width: 30%;
-	position: relative;
-	margin: 5px 0px;
-	float: left;
-}
-span.progressCenterArea {
-	width: 40%;
-	position: relative;
-	margin: 5px 0px;
-	text-align: center;
-	line-height: 25px;
-	float: left;
-	margin-top: 15px;
-}
-span.progressRightArea {
-	width: 30%;
-	position: relative;
-	margin: 5px 0px;
-	text-align: left;
-	float: left;
-	line-height: 40px;
-}
-
-span.bPicArea {
-	text-align: left;
-	float: left;
-	position: relative;
-	margin: 5px 0px;
-}
-span.sPicArea {
-	text-align: left;
-	float: left;
-	position: relative;
-	margin: 5px 0px;
-}
-.trophyDiv {
-	height: 100px;
 }

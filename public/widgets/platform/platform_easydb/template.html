@@ -1,0 +1,147 @@
+<div class="platform" ng-controller="easyDBCtrl">
+	<div class="container-fluid  clearfix">
+		<div class="content">
+			<div class="title">
+				<h1>Easy DB</h1>
+			</div>
+			<div class="easydb_container" ng-hide="change_page">
+				<div class="col-md-2">
+					<aside class="table_list">
+						<div class="table_list_title">
+							<div class="create_table" ng-click="create_table()"></div>
+							<h3>Table List</h3>
+						</div>
+						<ul class="clearfix">
+							<li ng-repeat="table in tables">
+								<div class="del_table" ng-click="del_warn(table)"></div>
+								<div ng-click="table_click(table, default_rows,1)" class="table_name">
+									<a ng-class="{'table_clicked': default_view_table == table}">{{table}}</a>
+								</div>
+							</li>
+						</ul>
+					</aside>
+				</div>
+				<div class="col-md-10 loading_mask" ng-class="loading_mask? 'loading_mask': ''">
+					<div class="sql_manipulate clearfix">
+						<div class="sql_command col-md-12">
+							<span class="text-center">SQL Command: </span>
+							<input type="text" class="sql_input " ng-model="command_sample" ng-mousedown="sample_list()" ng-blur="close_sample_list()" ng-enter="findData()">
+						</div>
+						<div class="sql_keyword col-md-7 col-md-offset-2" ng-show="show_sample" ng-mouseenter="cant_close = true" ng-mouseleave="cant_close = false">
+							<div ng-repeat="w in keyword | filter:command_sample">
+								<a ng-click="sql_keyword_clicked(w.name)">{{w.name}}</a>
+							</div>
+						</div>
+						<div class="sql_result"></div>
+					</div>	
+					<div class="page_wrapper clearfix">
+						<div class="page_block col-md-9">
+							頁數 :
+							<div class="indiv_page_block" ng-repeat="p in total_pages track by $index">
+								<a ng-click="show_table(default_view_table, custom_rows, $index+1)" ng-class="{'page_clicked': $index+1 == page}"> {{$index+1}}</a>
+							</div>
+						</div>
+						<div class="custom_rows col-md-3">
+							<select class="form-control" ng-model="custom_rows" ng-options="r.num as r.num for r in rows_options" ng-click="table_click(default_view_table, custom_rows, 1)"></select>
+							<div class="custom_rows_title">每頁顯示的資料筆數</div>
+						</div>
+					</div>				
+					<div class="table_content table-responsive">
+						<table class="table db_table tile table-bordered">
+							<div class="create_td" ng-click="create_td_click()" ></div>
+							<div ng-show="new_row_uncommitted" class="row_uncommitted_btn" ng-click="commit_new_row()"></div>
+							<tr>
+								<th ng-repeat="(key,value) in t_head">
+									<div class="t_head">{{key}}</div>
+									<div class="th_option">
+										<span ng-click="sch_click(key)">...</span> 
+										<div class="th_opt_list" ng-show="key == sch_name">
+											<ul>
+												<li class="sch_type" ng-click="sch_menu_click(key)" ng-class="{'sch_menu_select': key == selected_sch_menu}">{{value}}</li>
+													<ul class="sch_type_list" ng-show="key == selected_sch_menu">
+														<li ng-repeat="s in schema_type" ng-click="sch_type_click(key, s.type)" ng-class="{'sch_type_selected': s.type == value}">{{s.type}}</li>
+													</ul>
+												<li class="del_sch">Remove Column</li>
+												<div class="sch_type_icon"></div>
+											</ul>
+										</div>
+									</div>
+								</th>
+								<th></th>
+							</tr>
+							<tr ng-repeat="r in t_d" class="table_row" id="{{r._id}}"  ng-class="{'new_row': r._id == ''}">
+								<td ng-repeat="(key, r_v) in r" >
+									<dbdata schetype="{{t_head[key]}}"></dbdata>
+								</td>
+								<td>
+									<button class="btn btn-alt btn-block" ng-click="del_t_row(r, r._id)">Delete</button>
+								</td>
+							</tr>
+							<tr ng-show="is_show" class="json_text"><td colspan="{{colspan}}"><pre><textarea jsontext ng-model="show_json" cols="70" rows="15" ng-blur="edit_json_finish_blur(j_id, j_attr_name, show_json)"></textarea></pre></td></tr>
+						</table>				
+					</div>
+					<div class="page_wrapper clearfix">
+						<div class="page_block col-md-9">
+							頁數 :
+							<div class="indiv_page_block" ng-repeat="p in total_pages track by $index">
+								<a ng-click="show_table(default_view_table, custom_rows, $index+1)" ng-class="{'page_clicked': $index+1 == page}"> {{$index+1}}</a>
+							</div>
+						</div>
+						<div class="custom_rows col-md-3">
+							<select class="form-control" ng-model="custom_rows" ng-options="r.num as r.num for r in rows_options" ng-click="table_click(default_view_table, custom_rows, 1)"></select>
+							<div class="custom_rows_title">每頁顯示的資料筆數</div>
+						</div>
+					</div>						
+				</div>
+			</div>
+			<div class="create_table_wrapper" ng-show="change_page">
+				<div class="back" ng-click="back_btn()">Back</div>
+				<h3 class="text-center">新增 Table <span>("*"代表此欄位必填)</span></h3>
+				<form name="table_form" class="form-horizontal" ng-submit="submit()">
+					<div class="form-group">
+						<label class="control-label col-md-2 col-xs-12">*Table Name</label>
+						<div class="col-md-8 col-xs-12">
+							<input type="text" class="form-control" ng-model="table_name" required>
+						</div>
+					</div>
+					<div class="form-group col_sche m-t-10" ng-repeat="(key,c_s) in input_col_sche">
+						<label class="control-label col-md-2">*Column Name</label>
+						<div class="col-md-3">
+							<input type="text" class="form-control" ng-model="c_s.col_name" required>
+						</div>
+						<label class="control-label col-md-2">*Schema Type</label>
+						<div class="col-md-3">
+							<select class="form-control" ng-model="c_s.schema_type" ng-options="s.type as s.type for s in schema_type" required>
+							</select>{{selected_schema_type}}
+						</div>
+						<div class="del_col_sche" ng-click="del_col_sche(key)" ng-show="columns"></div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-offset-8 col-xs-offset-8">
+							<div class="checkbox-inline">
+								<label>Strick</label><input type="checkbox" ng-model="strick_clicked" ng-change="col_stricked()">
+							</div>
+							<div class="btn add_col_btn" ng-click="add_col_fn()">
+								Add Column
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-offset-5 col-xs-offset-5">
+							<input class="btn submit_btn" type="submit" value="Submit">
+							<button class="btn" type="reset">Reset</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div ng-show="warn_hint" class="warnHint">
+		<h3 class="text-center">Waring</h3>
+		<h4 class="text-center">
+			You are deleting <strong>{{warning_text}} </strong>table
+		</h4>
+		<button class="btn btn-alt btn-lg btn-del" ng-click="del_table()">Delete</button>
+		<button class="btn btn-alt btn-lg btn-ca" ng-click="close_warn_hint()">Cancel</button>			
+	</div>
+</div>

@@ -1,0 +1,48 @@
+<div class="platform" ng-controller="resourceCtrl">
+	<div class="container-fluid  clearfix">
+		<div class="title">
+			<h1>外部資源託管</h1>
+		</div>
+		<div class="capacity_wrapper">	
+			<div class="col-sm-10 capacity_bar">
+				<progressbar class="progress-striped " max="100" value="(cap/max_cap)*100" type="{{type}}">{{percent}}%({{cap}}GB/{{max_cap}}GB)</progressbar>
+			</div>
+		</div>
+		<button class="btn btn-lg create_account_btn" ng-click="newAccountDialog()">加入新帳號</button>
+		<div class="accountTable">
+			<table class="tile table table-bordered table-striped">
+				<tr>
+					<th>User Name</th>
+					<th>Capacity</th>
+					<th>Account Type</th>
+					<th>Status</th>
+					<th>刪除帳號</th>
+				</tr>
+				<tr ng-repeat="item in account_list">
+					<td class="bold_col">{{item.name}}</td>
+					<td>{{item.capacity}}GB</td>
+					<td>{{item.account_type}}</td>
+					<td>{{item.status}}</td>
+					<td><button class="btn btn-block btn-alt" ng-click="del_account(item)">Delete</button></td>
+				</tr>
+			</table>
+		</div>	
+	</div> 
+	<script type="text/ng-template" id="newAccountInfo">
+		<div class="modal-header">
+			<button type="button" class="close" ng-click="cancel()">x</button>	
+			<h3>選擇帳號類型</h3>
+		</div>
+		<div class="modal-body">
+			<div class="accout_type col-sm-5" ng-repeat="account in accounts" ng-class="account.type" ng-click="create_account(account.type)">
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div ng-repeat="item in GoogleDrive_account_list">
+				{{item}}
+			</div>	
+		</div>
+	</script>
+</div>
+
+

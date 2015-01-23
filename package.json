@@ -25,6 +25,7 @@
     "express-session": ">=1.7.2",
     "compression": ">=1.0.9",
     "body-parser": ">=1.5.2",
+    "cookie-parser": "*",
     "method-override": ">=2.1.2",
     "serve-favicon": ">=2.1.1",
     "jade": ">=1.5.0",
@@ -41,6 +42,7 @@
     "commander": ">=2.3.0",
     "socket.io-emitter": ">=0.2.0",
     "socket.io-redis": ">=0.1.3",
+    "socket.io-handshake": "*",
     "oauth2-server": ">=2.2.2",
     "passport": ">=0.2.0",
     "passport-google": ">=0.3.0",
@@ -48,7 +50,10 @@
     "passport-google-oauth": ">=0.1.5",
     "deasync": ">=0.0.7",
     "node-rest-client": ">=1.4.1",
-    "request": ">=2.47.0"
+    "request": ">=2.47.0",
+    "debug": "*",
+    "nodemailer": "*",
+    "csv-parser": ">=1.5.0"
   },
   "devDependencies": {
     "grunt": ">=0.4.5",

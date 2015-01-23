@@ -1,0 +1,4 @@
+<div class="boolean_ctrl" ng-class="r_v? 'true': 'false'"  ng-click="r_v=!r_v;b_btn_click(r_v);edit_finish_blur(r._id, key, r[key])" ng-enter="edit_finish(r._id, key, r[key])">		
+	<div class="boolean_btn"></div>
+	<div class="boolean_value">{{r_v? 'True': 'False'}}</div>
+</div>

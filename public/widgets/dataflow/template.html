@@ -1,0 +1,27 @@
+<div class="dataflow" ng-controller="DataflowCtrl">
+	<div class="operate">
+		<div class="set">
+			<label>Source:</label><input ng-model="source" ng-change="updatePath()">
+		</div>
+		<div class="set">
+			<label>SQL:</label><textarea ng-model="sql" rows=5 ng-change="updatePath()"></textarea>
+		</div>
+		<div class="button" ng-click="fetch()">查詢</div>
+	</div>
+	<div class="table" ng-class="loading? 'loading': ''">
+		<div class="set">
+			<label>JSON API:</label><input ng-model="outer">
+		</div>
+		<div class="set">
+			Fetch cost <a class="value">{{cost.fetch}}</a> ms and Index cost <a class="value">{{cost.index}}</a> ms
+		</div>
+		<table>
+			<thead><tr><th ng-repeat="key in keys">{{key}}</th></tr></thead>
+			<tbody>
+				<tr ng-repeat="row in collections">
+					<td ng-repeat="value in row">{{value}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

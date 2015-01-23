@@ -1,0 +1,18 @@
+/*=================================resource top=================================*/
+
+.ng-scope.platform .capacity_wrapper{
+  height: 30px;
+}
+
+.ng-scope.platform .capacity_bar{
+  width: 70%;
+  margin: 0px auto;
+  float: none;
+}
+
+.ng-scope.platform .container-fluid .accountTable {
+  margin-top: 20px;
+}  
+
+/*=================================resource bottom=================================*/
+

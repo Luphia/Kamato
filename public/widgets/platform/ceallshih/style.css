@@ -1,0 +1,166 @@
+.ng-scope.platform {
+  margin: auto;
+  height: 100%;
+  /*background: #888; */
+/*  overflow: auto;
+  color: #666666;*/
+  min-width: 800px;
+  /*padding: 50px; */
+  font-family: Microsoft Yahei, sans-serif;
+}
+.ng-scope.platform .clearfix {
+  overflow: auto;
+}
+.ng-scope.platform .header {
+  margin: 0;
+  border-color: transparent;
+}
+.ng-scope.platform .brand {
+  font-size: xx-large;
+  color: white;
+  margin: 5px 10px;
+}
+.ng-scope.platform li {
+  list-style: none;
+  vertical-align: middle;
+  text-decoration: none;
+}
+.ng-scope.platform .currentItem {
+  background: #6dcea4;
+  color: white !important;
+}
+
+.ng-scope.platform .sidebar {
+  float: left;
+  padding: 0;
+}
+.ng-scope.platform .sidebar ul {
+  padding: 0;
+}
+.ng-scope.platform .sidebar ul li {
+  color: 140, 140, 140, 1;
+  font-size: medium;
+  cursor: pointer;
+}
+.ng-scope.platform .sidebar ul li div {
+  padding: 10px 25px;
+}
+.ng-scope.platform .sidebar ul li div:hover {
+  background: #6dcea4;
+  color: white;
+}
+.ng-scope.platform .sidebar ul li li div {
+  padding: 10px 45px;
+}
+.ng-scope.platform .sidebar ul a {
+  color: #8c8c8c;
+  text-decoration: none;
+}
+
+.ng-scope.platform .container-fluid  .title {
+  margin: 30px 0px;
+  border-bottom: 3px solid #eeeeee;
+}
+.ng-scope.platform .resource {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  margin: 20px 0px 20px 100px;
+  float: left;
+  position: relative;
+  cursor: pointer;
+}
+.ng-scope.platform .resource:hover .name {
+  display: none;
+}
+.ng-scope.platform .resource .logo {
+  width: 250px;
+  height: 250px;
+  border: 3px solid #c6c6c6;
+  border-radius: 50% !important;
+  opacity: 0.2;
+  -webkit-transition: background-color 0.5s;
+  -o-transition: background-color 0.5s;
+  transition: background-color 0.5s;
+}
+.ng-scope.platform .resource .name {
+  position: absolute;
+  font-size: 36px;
+  text-align: center;
+  width: 200px;
+  height: 40px;
+  margin: -20px 0px 0px -100px;
+  top: 50%;
+  left: 50%;
+}
+.ng-scope.platform .resource .Facebook {
+  background: url(../img/simple/auth/facebook.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .Facebook:hover {
+  opacity: 1;
+  background-color: #4a6eaa;
+}
+.ng-scope.platform .resource .GooglePlus {
+  background: url(../img/simple/auth/G+.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .GooglePlus:hover {
+  opacity: 1;
+  background-color: #d94e37;
+}
+.ng-scope.platform .resource .NikePlus {
+  background: url(../img/simple/auth/Nike+.png) no-repeat 50% 50%;
+}
+.ng-scope.platform .resource .NikePlus:hover {
+  opacity: 1;
+  background-color: #d02b09;
+}
+.ng-scope.platform .resource .RunKeeper {
+  background: url(../img/simple/auth/runkeeper.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .RunKeeper:hover {
+  opacity: 1;
+  background-color: #26b7fa;
+}
+.ng-scope.platform .resource .Fitbit {
+  background: url(../img/simple/auth/fitbit.png) no-repeat 50% 50%;
+  background-size: 150px 150px;
+}
+.ng-scope.platform .resource .Fitbit:hover {
+  -webkit-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+  opacity: 1;
+}
+.ng-scope.platform .resource .Jawbone {
+  background: url(../img/simple/auth/jawbon.png) no-repeat 50% 50%;
+}
+.ng-scope.platform .resource .Jawbone:hover {
+  opacity: 1;
+  background-color: black;
+}
+
+.ng-scope.platform .capacity_wrapper{
+  height: 30px;
+}
+
+.ng-scope.platform .capacity_bar{
+  width: 70%;
+  margin: 0px auto;
+  float: none;
+}
+
+/*.ng-scope.platform h2{
+  border-bottom: 2px solid #eeeeee;
+  padding-bottom: 5px;
+}*/
+
+.ng-scope.platform .container-fluid{
+  padding-left: 30px;
+}
+
+.ng-scope.platform .container-fluid .accountTable {
+  margin-top: 20px;
+}

@@ -6,6 +6,8 @@
  */
 
 var express = require('express'),
+	Session = require('express-session'),
+	RedisStore = require('connect-redis')(Session),
 	app = express(),
 	https = require('https'),
 	server = require('http').createServer(app),
@@ -21,7 +23,9 @@ var express = require('express'),
 	push = require('../services/PushServer.js'),
 	oauth = require('../services/OAuth2Server.js'),
 	twitter = require('../services/TwitterMonitor.js'),
-	ssl;
+	worker = require('../services/Classes/Worker.js'),
+	ssl,
+	session;
 
 program.version(pack.version)
 	.option("-c --config <configPath>", "Path to config file")
@@ -51,6 +55,13 @@ config.version = pack.name + " ver." + pack.version;
 	}
 })(config);
 
+session = Session({
+	store: new RedisStore(config.get('redis')),
+	secret: config.get('server').secret,
+	resave: true,
+	saveUninitialized: true
+});
+
 log4js.configure(config.get('log4js'));
 var logger = {
 	info: log4js.getLogger('Kamato.INFO'),
@@ -68,8 +79,8 @@ process.on('uncaughtException', function(err) {
 
 ssl && (secureServer = https.createServer(ssl, app));
 
-web.configure(config, app, server, secureServer, oauth, log4js, logger);
-socket.configure(config, server, secureServer, logger, web.route);
+web.configure(config, app, server, secureServer, session, oauth, log4js, logger);
+socket.configure(config, server, secureServer, session, logger, web.route);
 push.configure(config, logger);
 oauth.configure(config, logger);
 twitter.configure(config, logger);
@@ -77,3 +88,15 @@ twitter.configure(config, logger);
 socket.start();
 //twitter.start();
 web.start();
+
+
+// worker
+/*
+var jobOption = {
+	config.get('mongo').uri;
+var Job = require('./services/Jobs/Collector.js');
+var woker = new Worker();
+worker.setCallback(function(data) { console.log(data); });
+worker.setPeriod(3600000);
+w.addJob(Job, jobOption).addJob(Job, {}).start();
+ */

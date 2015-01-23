@@ -1,0 +1,619 @@
+/*=================================easydb top=================================*/
+.ng-scope.platform .warnHint{
+  width: 400px;
+  height: 220px;
+  position: fixed;
+  top: 30%;
+  left:40%;
+  background-color: rgba(0,0,0,0.7);
+  border: 5px solid rgba(0,0,0,0.6);
+  position: relative;
+}
+
+.ng-scope.platform .warnHint button{
+  position: relative;
+  top: 30px;
+  left: 45px;
+  margin: 0px 30px;
+}
+
+.ng-scope.platform .warnHint h3{
+  margin: 0px;
+  padding: 10px 0px;
+  background-color: rgba(211, 24, 44, 0.9);
+}
+
+.ng-scope.platform .warnHint h4{
+  margin-top: 30px;
+}
+
+.ng-scope.platform .warnHint strong{
+  font-size: 24px;
+  color: #FFD600;
+}
+
+.ng-scope.platform .easydb_container table th{
+  position: relative;
+  min-width: 200px;   
+}
+
+.ng-scope.platform .easydb_container table .t_head{
+  float: left;
+}
+
+.ng-scope.platform .easydb_container .th_option{
+  float: right;
+  position: relative;
+  width: 30px;
+  height: 20px;  
+  line-height: 100%;
+}
+
+.ng-scope.platform .easydb_container .th_option span{
+  width: 30px;
+  height: 20px;  
+  position: absolute;
+  text-align: center;
+  border: 1px solid rgba(255,255,255, 0.4);
+  -webkit-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.ng-scope.platform .easydb_container .th_option span:hover{
+  background-color: rgba(255,255,255,0.3);  
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list{
+  position: absolute;
+  top: 25px;
+
+  background-color: rgba(193, 194, 200, 0.9); 
+  color: rgba(0,0,0,0.8);
+  z-index: 99;
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list ul{
+  width: 131px;
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list ul li{
+  font-size: 23px;
+  cursor: pointer;
+  text-align: center;
+  padding: 21px 0px 29px 0px;
+}
+
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list  ul li:hover{
+  background: rgba(255,255,255,0.7);
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list .sch_menu_select{
+  background: rgba(255,255,255,0.7);
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list ul .del_sch{
+  border-top: 1px solid rgba(0,0,0,0.5);
+  font-size: 14px;
+  padding: 11px 5px 15px 10px;
+
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list .sch_type_icon{
+  width: 10px;
+  height: 12px;
+  border-top: 8px solid rgba(0,0,0,0.8);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  position: absolute;
+  top: 48px;
+  right: 62px;
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list .sch_type_list li{
+  padding: 10px 5px 10px 30px;
+  font-size: 15px;
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list .sch_type_list li:hover{
+  background: url(../img/simple/easydb/selected.png) no-repeat 3% 50%;
+  background-color:  rgba(255,255,255,0.8);
+}
+
+.ng-scope.platform .easydb_container .th_option .th_opt_list .sch_type_list .sch_type_selected{
+  background: url(../img/simple/easydb/selected.png) no-repeat 3% 50%;
+  background-color:  rgba(255,255,255,0.8);
+}
+
+.ng-scope.platform .easydb_container table dbdata .error_num_syntax {
+  background-color: red;
+  border: 1px solid white;
+}
+
+.ng-scope.platform .easydb_container table dbdata .boolean_btn {
+  width: 60px;
+  height: 35px;
+  font-size: 14px;
+  cursor: pointer;
+  overflow-y: hidden;
+  line-height: 35px;
+}
+
+.ng-scope.platform .easydb_container table dbdata select.input_td{
+  width: 75px;
+  font-size: 16px;;
+}
+
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl {
+    width: 90px;
+    height: 25px;
+    padding: 1px;
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid white;
+    position: relative;
+    cursor: pointer;
+}
+
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl .boolean_btn {
+    background: rgba(200, 200, 200, 1);
+    width: 40px;
+    height: 21px;
+}
+
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl > .boolean_value{
+  height: 20px;
+  width: 40px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 11px;
+}
+
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl.true > div.boolean_btn,  .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.false > .boolean_value {
+  float: right;
+}
+
+.ng-scope.platform .easydb_container table dbdata .boolean_ctrl.false > div.boolean_btn, .ng-scope.platform .easydb_container table dbdata  .boolean_ctrl.true > .boolean_value {
+  float: left;
+}
+
+.ng-scope.platform .easydb_container table dbdata .drop_area {
+  width: 350px;
+  height: 120px;
+  border: 3px dashed rgba(255,255,255, 0.7);
+  background-color: transparent;
+  color: rgba(255,255,255, 0.7);
+  font-size: 50%;
+  text-align: center;
+}
+
+.ng-scope.platform .easydb_container table dbdata .drop_area_hover{
+  width: 350px;
+  height: 120px;
+  border: 3px dashed rgba(255,255,255, 1);
+  background-color: transparent;
+  color: rgba(255,255,255, 1);
+  font-size: 50%;
+  text-align: center;
+}
+
+.ng-scope.platform .easydb_container table dbdata .binary_file_info{
+  border: none;
+  background-color: transparent;
+  color: rgba(255,255,255, 0.7);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.ng-scope.platform .easydb_container table dbdata .binary_file_info_hover{
+  border: none;
+  background-color: transparent;
+  color: rgba(255,255,255, 1);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.ng-scope.platform .easydb_container .create_td{  
+   width: 22px;   
+   height:22px;   
+   position: absolute;   
+   top: -27px;   
+   left: 0px;   
+   background: url(../img/simple/easydb/create_db.png) no-repeat 50% 50%;   
+   cursor: pointer;
+   opacity: 0.5;   
+   -webkit-transition: all 0.5s;   
+   -o-transition: all 0.5s;
+   transition: all 0.5s;  
+ }
+
+.ng-scope.platform .easydb_container .create_td:hover{
+  opacity: 1;
+}
+
+.ng-scope.platform .easydb_container .row_uncommitted_btn{
+  width: 22px;   
+  height:22px;   
+  background: url(../img/simple/easydb/uncommited.png) 50% 50%;
+  cursor: pointer;
+  top: -27px;
+  left: 32px;
+  background-color: red;
+  opacity: 0.5;
+  border-radius: 22px !important;
+  position: absolute;
+  border: 4px solid red;
+}
+
+.ng-scope.platform .easydb_container .row_uncommitted_btn:hover{
+  opacity: 1;
+}
+
+.ng-scope.platform .easydb_container .new_row{
+ opacity: 1;
+ background-color: rgba(66,62,70,0.5);
+ border-left: 5px solid rgba(255,255,255,0.5);
+}
+
+.ng-scope.platform .easydb_container .page_wrapper{
+  margin: 5px 0px;
+}
+
+.ng-scope.platform .easydb_container .page_wrapper .page_block{
+  font-size: 14px;
+  text-align: center;
+}
+
+.ng-scope.platform .easydb_container .page_wrapper .indiv_page_block{
+  margin: 0px 0px 5px 10px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.ng-scope.platform .easydb_container .page_wrapper .page_clicked{
+  color: #FFD600;
+  text-decoration: underline;
+}
+
+.ng-scope.platform .easydb_container .page_wrapper .custom_rows .custom_rows_title{
+  font-size: 14px;
+  float: right;
+  height: 100%;
+  margin: 5px 10px 0px 0px;
+}
+
+.ng-scope.platform .easydb_container .page_wrapper .custom_rows .form-control{
+  float: right;
+  width: 40%;
+}
+
+.ng-scope.platform .easydb_container tbody tr td {
+  vertical-align: middle;
+}
+
+.ng-scope.platform .easydb_container .table_list .create_table{
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  top: 0px;
+  left: 2px;
+  float: left;
+  background: url(../img/simple/easydb/create_db.png) no-repeat 50% 50%;
+  cursor: pointer;
+  opacity: 0.5;
+  -webkit-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.ng-scope.platform .easydb_container .table_list .create_table:hover{
+  opacity: 1;
+}
+
+.ng-scope.platform .easydb_container .table_list .table_list_title{
+  position: relative;
+}
+
+.ng-scope.platform .easydb_container .table_list h3{
+  font-weight: bold;
+  padding-left: 40px;
+}
+
+.ng-scope.platform .easydb_container .table_list ul{
+  padding: 0;
+}
+
+.ng-scope.platform .easydb_container .table_list li{
+  margin: 10px 0px;
+  font-size: 16px;
+  padding-left: 40px;
+  cursor: pointer;
+  position: relative;
+  float: left;
+  width: 100%;
+}
+
+.ng-scope.platform .easydb_container .table_list .table_name a{
+  opacity: 0.7;
+}
+
+.ng-scope.platform .easydb_container .table_list .table_name:hover a{
+  opacity: 1;
+  font-weight: bold;
+  /*color: #FFD600;*/
+}
+
+.ng-scope.platform .easydb_container .table_list .table_name a:hover{
+  color: inherit; 
+}
+
+
+.ng-scope.platform .easydb_container .del_table{
+  width: 22px;
+  height: 22px;
+  background: url(../img/simple/easydb/delete.png) no-repeat 50% 50%;
+  float: left;
+  position: absolute;
+  top: 0px;
+  left: 2px;
+  opacity: 0.5;
+  -webkit-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.ng-scope.platform .easydb_container .del_table:hover{
+  /*background: url(../img/simple/easydb/delete_hover.png) no-repeat 50% 50%;*/
+  opacity: 1;
+}
+
+.ng-scope.platform .easydb_container .table_name .table_clicked{
+  opacity: 1 !important;
+  font-weight: bold;
+  color: #FFD600;
+}
+
+.ng-scope.platform .easydb_container .table_name .table_clicked:hover{
+  color: #FFD600 !important;  
+}
+
+.ng-scope.platform .easydb_container .loading_mask{
+  position: relative;
+}
+
+.ng-scope.platform .easydb_container .loading_mask::after{
+  position: absolute;
+  top: 39%;
+  left: 44%;
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  -webkit-box-sizing: border-box;
+  border: solid 10px rgba(255, 255, 255, 0.2);
+  border-top-color: #FFF;
+  -webkit-animation: spin 1.5s infinite;
+  z-index: 99;
+  content: '';
+}
+
+.ng-scope.platform .easydb_container .loading_mask::before{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  background-color: rgba(0,0,0, 0.7);
+  content: 'Loading';
+  text-align: center;
+  font-size: 27px;
+  padding-top: 30%;
+}
+
+.ng-scope.platform .easydb_container .tile{
+  margin: 0;
+}
+
+.ng-scope.platform .easydb_container .sql_command span{
+  font-size: 16px;
+}
+
+.ng-scope.platform .easydb_container .sql_input{
+  font-size: 14px;
+  margin: 10px 0px; 
+  padding-left: 5px;
+  width: 80%;
+}
+
+.ng-scope.platform .easydb_container .sql_keyword{
+  top: 40px;
+  left: 110px;
+} 
+
+.ng-scope.platform .easydb_container .sql_manipulate{
+  margin-bottom: 10px;
+}
+
+
+.ng-scope.platform .easydb_container .sql_keyword div{
+  margin: 9px 0px;
+  cursor: default;
+}
+
+.ng-scope.platform .easydb_container .table_content{
+  position: relative;
+}
+
+.ng-scope.platform .easydb_container > .col-md-2{
+  min-height: 590px;
+}
+
+.ng-scope.platform .easydb_container > .col-md-10{
+  overflow: auto;
+  width: 1510px;
+  height: 960px;
+}
+
+.ng-scope.platform .easydb_container table dbdata .json_link, .ng-scope.platform .easydb_container .binary_link{
+  color: #FFD600;
+  font-weight: bold;
+}
+
+.ng-scope.platform .easydb_container table dbdata .json_text{
+  background-color: rgba(0,0,0,0);
+}
+
+.ng-scope.platform .easydb_container .json_text pre{
+  background-color: rgba(0,0,0,0);
+  color: rgba(255,255,255,1);
+  border: none;
+}
+
+.ng-scope.platform .easydb_container .json_text textarea{
+  background-color: transparent;
+}
+
+.ng-scope.platform .easydb_container .close_json{
+  width: 20px;
+  height: 20px;
+  float: right;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid red;
+  text-align: center;
+  line-height: 100%;
+  background-color: rgba(215, 40, 40, 0.9);
+}
+
+.ng-scope.platform .easydb_container .input_td{
+  background-color: rgba(0,0,0,0);
+  border: none; 
+  cursor: default;
+}
+
+.ng-scope.platform .easydb_container .input_td:hover{
+  border: 1px rgba(255,255,255,0.7) solid;
+}
+
+.ng-scope.platform .easydb_container .db_table input::focus{
+  background-color: rgba(0,0,0,0);
+  border: 1px rgba(255,255,255,0.7) solid;
+  padding: 5px;
+}
+
+/* =================== create table ===================*/
+
+.ng-scope.platform .create_table_wrapper .form-group .control-label{
+  font-size: 16px;
+}
+
+.ng-scope.platform .create_table_wrapper h3{
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.ng-scope.platform .create_table_wrapper h3 span{
+  font-size: 12px;
+}
+
+.ng-scope.platform .create_table_wrapper .submit_btn{
+  margin-right: 30px;
+}
+
+.ng-scope.platform .create_table_wrapper .add_col_btn{
+  margin: 20px 0px 0px 7px;
+}
+
+.ng-scope.platform .create_table_wrapper .back{
+  width: 80px;
+  height: 35px;
+  float: left;
+  font-size: 18px;
+  padding: 5px 0px 0px 31px;
+  cursor: pointer;
+  background: url(../img/simple/easydb/back.png) 20% 50% no-repeat;
+}
+
+.ng-scope.platform .create_table_wrapper .back:hover{
+  background-color: rgba(0,0,0,0.4);
+}
+
+.ng-scope.platform .create_table_wrapper .del_col_sche{
+  /*float: right;*/
+  display: inline-block;
+  background: url(../img/simple/easydb/delete.png) no-repeat 50% 50%;
+  opacity: 1;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.ng-scope.platform .create_table_wrapper .checkbox-inline{
+  margin-top: 20px;
+}
+
+.ng-scope.platform .create_table_wrapper .checkbox-inline label{
+  font-size: 16px;
+}
+
+.ng-scope.platform .create_table_wrapper .checkbox-inline input[type=checkbox]{
+  opacity: 1;
+  width: 16px;
+  height: 16px;
+  /*margin-right: 10px;*/
+}
+
+.ng-scope.platform .app_search,.ng-scope.platform .sql_input,.ng-scope.platform .api_search{
+  width: 100%; 
+  margin: 12px;
+  border: 1px solid rgba(255,255,255,0.5);
+  background-color: transparent;
+}
+
+@media screen and (max-width: 1780px){
+  .ng-scope.platform .easydb_container > .col-md-10{
+    width: 1220px;
+  }
+  .ng-scope.platform .easydb_container .loading_mask::after{
+    top: 40%;
+    left: 42%;
+  }
+  .ng-scope.platform .easydb_container .loading_mask::before{
+    padding-top: 458px;
+  }
+}
+
+@media screen and (max-width: 1410px){
+  .ng-scope.platform .easydb_container > .col-md-10{
+     margin-left: 40px;
+  }
+}
+
+@media screen and (max-width: 1024px){
+  .ng-scope.platform .create_table_wrapper .control-label{
+    margin: 0px;
+  }
+}
+
+@media screen and (max-width: 990px){
+  .ng-scope.platform .easydb_container .table_list li{
+    width: initial;
+    padding-left: 30px;
+    margin-right: 15px;
+  }
+
+  .ng-scope.platform .easydb_container > .col-md-2{
+    min-height: 100%;
+  }
+}
+
+@media screen and (min-height: 590px){
+  .ng-scope.platform .easydb_container .col-md-2 ul{
+  overflow-y: hidden;
+  }
+}
+/*=================================easydb bottom=================================

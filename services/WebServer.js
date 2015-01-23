@@ -2,8 +2,6 @@ var express = require('express'),
 	favicon = require('serve-favicon'),
 	fs = require('fs'),
 	path = require('path'),
-	session = require('express-session'),
-	RedisStore = require('connect-redis')(session),
 	bodyParser = require('body-parser'),
 	oauthserver = require('oauth2-server'),
 	methodOverride = require('method-override');
@@ -12,6 +10,7 @@ var config,
 	app,
 	server,
 	secureServer,
+	session,
 	oauth,
 	log4js,
 	logger,
@@ -56,9 +55,10 @@ var route = {
 	delete: function(path, controller, auth) { routing('delete' , path, controller, auth); }
 };
 
-var configure = function(_config, _app, _server, _secureServer, _oauth, _log4js, _logger) {
+var configure = function(_config, _app, _server, _secureServer, _session, _oauth, _log4js, _logger) {
 	config = _config;
 	app = _app;
+	session = _session;
 	server = _server;
 	secureServer = _secureServer;
 	oauth = _oauth;
@@ -69,12 +69,7 @@ var configure = function(_config, _app, _server, _secureServer, _oauth, _log4js,
 };
 
 var start = function() {
-	app.use(session({
-		store: new RedisStore(configure.redis),
-		secret: config.get('server').secret,
-		resave: true,
-		saveUninitialized: true
-	}));
+	app.use(session);
 
 	app.oauth = oauthserver({
 		model: oauth,
@@ -89,7 +84,7 @@ var start = function() {
 	app.set('view engine', 'jade');
 	app.engine('html', require('ejs').renderFile);
 
-	app.use(log4js.connectLogger(logger.info, { level: log4js.levels.INFO }));
+	//app.use(log4js.connectLogger(logger.info, { level: log4js.levels.INFO }));
 	//app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(bodyParser.json());
@@ -104,26 +99,19 @@ var start = function() {
 	app.use(controllers.filters.errResponse);
 	app.use(controllers.filters.response);
 
-	//Routes
+	// Routes
 	router.post('/oauth/token', controllers.oauth2.createToken);
 	router.get('/oauth/token/:token', controllers.oauth2.checkToken);
 	router.delete('/oauth/token/:token', controllers.oauth2.deleteToken);
 	router.get('/oauth/renew/:token', controllers.oauth2.renewToken);
 
-	router.all('/oauth2/*', controllers.oauth2.callback);
+	// CDN
 	router.get('/public/*', controllers.passport.file);
-	router.get('/secret/*', app.oauth.authorise(), function (req, res) {
-		res.send('Secret area');
-	});
 
 	// easyDB
 	router.all('/db/', app.oauth.authorise(), controllers.easyDB.route);
 	router.all('/db/:table', app.oauth.authorise(), controllers.easyDB.route);
 	router.all('/db/:table/:id', app.oauth.authorise(), controllers.easyDB.route);
-
-	// user data
-	router.get('/me', controllers.user.data);
-	router.post('/login', controllers.user.login);
 
 	// http
 	server.listen(app.get('port'), function () {
