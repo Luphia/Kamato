@@ -21,7 +21,7 @@ module.exports = function (opt, Mailconfig) {
     // setup MailBOT SMTP transport
     var transporter = nodemailer.createTransport(Mailconfig);
 
-    var init = function (opt) {
+    var init = function () {
         this.io = opt.io || null;
         this.channel = opt.channel || null;
         this.room = opt.room || 'default';
@@ -30,6 +30,70 @@ module.exports = function (opt, Mailconfig) {
             return auto(this);
         } else {
             return this;
+        };
+    };
+
+    //BroadcastMsg
+    var BM = function (data) {
+        var socket = this.socket;
+        var room = this.room;
+        socket.broadcast.to(room).emit(data);
+    };
+
+    //PrivateMsg
+    var PM = function (id, data) {
+        var io = this.io;
+        var roomName = this.room;
+        var roomClients = this.watchoneroom(roomName);
+        for (var socketId in roomClients) {
+            if (socketId == id) {
+                var socket = io.sockets.connected[socketId];
+                socket.emit(data);
+            };
+        };
+    };
+
+    //從arr中吐出num個，不重複數值
+    var getArrayItems = function (arr, num) {
+        var temp_array = new Array();
+        for (var index in arr) {
+            temp_array.push(arr[index]);
+        };
+        var return_array = new Array();
+        for (var i = 0; i < num; i++) {
+            if (temp_array.length > 0) {
+                var arrIndex = Math.floor(Math.random() * temp_array.length);
+                return_array[i] = temp_array[arrIndex];
+                temp_array.splice(arrIndex, 1);
+            } else {
+                break;
+            };
+        };
+        return return_array;
+    };
+
+    //RandomMsg
+    var RM = function (count, data) {
+        var io = this.io;
+        var roomName = this.room;
+        var roomClients = this.watchoneroom(roomName);
+
+        var counts = 0;
+        var Clients = [];
+        for (var key in roomClients) {
+            if (roomClients.hasOwnProperty(key)) {
+                Clients.push(key);
+                counts++;
+            };
+        };
+        if (count > counts) {
+            return false;
+        } else {
+            var arrClients = this.getArrayItems(Clients, count);
+            for (var i = 0; i < arrClients.length; i++) {
+                var socket = io.sockets.connected[arrClients[i]];
+                socket.emit(data);
+            };
         };
     };
 
@@ -81,8 +145,8 @@ module.exports = function (opt, Mailconfig) {
     var watchoneroom = function (room) {
         var io = this.io;
         var socket = this.socket;
-        var name = io.sockets.name;
-        return io.nsps[name].adapter.rooms[room];
+        var namespace = this.channel;
+        return io.nsps[namespace].adapter.rooms[room];
     };
 
     //watch the sessionID from socket.io
@@ -179,6 +243,9 @@ module.exports = function (opt, Mailconfig) {
 
     var channel = {
         init: init,
+        PM: PM,
+        getArrayItems: getArrayItems,
+        RM: RM,
         joinroom: joinroom,
         leaveroom: leaveroom,
         changeroom: changeroom,
