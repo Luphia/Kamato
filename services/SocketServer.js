@@ -72,6 +72,7 @@ function nsps(socket, chanel) {
     //console.log(session.ip);//--
     //console.log(config.get('Mail'));//--
 
+    console.log(chanel);
     var cl = new Channel({ channel: chanel, room: 'once', socket: socket, io: io, auto: true }, config.get('Mail'));
 
     var b = { Id: 2, body: '77u/YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoNCkFCQ0RFRkdISUpLTE1OT1BSUlNUVVZXWFlaDQrkuK3mlofmuKzoqaYNCjEyMzQ1Njc4OTANCuKCrOKUjOKAu+KXj+KXjsKn', kind: 'text3t.txt' };
@@ -83,6 +84,21 @@ function nsps(socket, chanel) {
     cl.FileBOT(b, function (cb) {
         console.log(cb);
     });
+
+    socket.on('BM', function (data) {
+        console.log('BM start')
+        cl.BM(data);
+    });
+    socket.on('PM', function (id, data) {
+        console.log('PM start')
+        cl.PM(id, data);
+    });
+    socket.on('RM', function (count, data) {
+        console.log('RM start')
+        cl.RM(count, data);
+    });
+
+    //console.log(cl.watchoneroom('once'));
 
     var easyFile = new EasyFile();
     easyFile.setCallback(function (err, data) {
@@ -343,8 +359,9 @@ function registerNamespace(name) {
 var start = function () {
     var self = this;
     var apps = db.listData('app');
-    //registerNamespace('/');
+    registerNamespace('/');
     registerNamespace('/_file');
+    registerNamespace('/_news');
 
     for (var x in apps.list) {
         var name = apps.list[x].name;
