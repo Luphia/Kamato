@@ -356,7 +356,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.cost = { "fetch": 0, "index": 0 };
 
     $scope.source = "http://opendata.epa.gov.tw/ws/Data/AQX/?$orderby=PSI&$skip=0&$top=1000&format=json";
-    $scope.sql = 'select * from table where PM10 > 150';
+    $scope.sql = 'select * from table where PM10 > 100';
 
     $scope.updatePath = function () {
         $scope.url = "/api?source=" + encodeURIComponent($scope.source) + "&sql=" + encodeURIComponent($scope.sql);
