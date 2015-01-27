@@ -43,13 +43,8 @@ module.exports = function (opt, Mailconfig) {
     //PrivateMsg
     var PM = function (id, data) {
         var io = this.io;
-        var roomName = this.room;
-        var roomClients = this.watchoneroom(roomName);
-        for (var socketId in roomClients) {
-            if (socketId == id) {
-                var socket = io.sockets.connected[socketId];
-                socket.emit(data);
-            };
+        if (io.sockets.connected[id]) {
+            io.sockets.connected[id].emit('PM', data);
         };
     };
 
@@ -243,6 +238,7 @@ module.exports = function (opt, Mailconfig) {
 
     var channel = {
         init: init,
+        BM: BM,
         PM: PM,
         getArrayItems: getArrayItems,
         RM: RM,
