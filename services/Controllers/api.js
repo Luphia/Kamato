@@ -25,7 +25,7 @@ Api.prototype.RouteAPI = function(req, res, next) {
 	,	options = {
 			"url": req.query.source || "http://opendata.epa.gov.tw/ws/Data/AQX/?$orderby=PSI&$skip=0&$top=1000&format=json"
 		}
-	,	sql = req.query.sql || '';
+	,	sql = req.query.sql || ''
 	;
 
 	var t1, t2, t3, t4;
@@ -51,28 +51,99 @@ Api.prototype.RouteAPI = function(req, res, next) {
 		}
 	});
 };
-Api.prototype.API = function(req, res, next) {
-	res.result = new Result();	
-};
-Api.prototype.SQL = function(req, res, next) {
+Api.prototype.run = function(req, res, next) {
+	res.result = new Result();
+	var API;
+	var rs;
+	try {
+		API = this.APIs[req.params.app][req.params.api];
 
-};
-Api.prototype.OUTER = function(req, res, next) {
+		switch(API.type) {
+			case 'sql':
+				rs = this.SQL(API);
+				break;
 
+			case 'outer':
+				rs = this.OUTER(API);
+				break;
+
+			default:
+				rs = API;
+				break;
+		}
+
+		res.result.response(next, 1, 'API exec', rs);
+	}
+	catch(e) {
+		res.result.response(next, 0, 'API not found');
+	}
+};
+Api.prototype.SQL = function(api) {
+	return api;
+};
+Api.prototype.OUTER = function(api) {
+	var rs
+	,	method = "get"
+	,	options = {
+			"url": api.config.source[0]
+		}
+	,	sql = api.config.sql.GET
+	;
+
+	var t1, t2, t3, t4;
+	t1 = new Date();
+
+	request[method](options, function(err, response, body) {
+		var data;
+		t2 = new Date();
+		try {
+			var tmpData = JSON.parse(body);
+
+			data = DB.dataFind(tmpData, sql);
+			t3 = new Date();
+			rs = data;
+		}
+		catch(e) {
+			console.log(e);
+			data = [];
+			rs = data;
+		}
+	});
+
+	while(rs === undefined) {
+		require('deasync').runLoopOnce();
+	}
+	return rs;
 };
 Api.prototype.init = function(_config, _logger, route) {
+	this.APIs = {};
 	config = _config;
 	logger = _logger;
 	DB = new EasyDB(config, logger);
 	DB.connect({"url": config.uri});
 	var self = this;
-	var APIs = DB.listData('api');
+	var APIs = DB.listData('api').list;
+
+	for(var k in APIs) {
+		this.addAPI( APIs[k] );
+	}
 
 	route.get('/api', function(req, res, next) {self.RouteAPI(req, res, next);});
-	route.get('/API/:app/:api', function(req, res, next) {self.API(req, res, next);});
+	route.get('/api/:app/:api', function(req, res, next) {self.run(req, res, next);});
+	route.get('/API/:app/:api', function(req, res, next) {self.run(req, res, next);});
+};
+Api.prototype.addAPI = function(API) {
+	var owner = API.owner
+	,	api = API.name
+	;
+
+	if(!this.APIs[owner]) {
+		this.APIs[owner] = {};
+	}
+
+	this.APIs[owner][api] = API;
 };
 
 var api = new Api();
-api.on('yo', function() { console.log('Yo'); });
 
 module.exports = api;

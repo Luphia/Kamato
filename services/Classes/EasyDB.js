@@ -735,7 +735,7 @@ module.exports = function(conf, logger) {
 		this.DB.listData(table, search, function(err, _data) { rs = _data;});
 		while(rs === undefined) { require('deasync').runLoopOnce(); }
 
-		this.DB.deleteTable(table);
+		this.DB.deleteTable(table, function() {});
 		return rs;
 	}
 	,	postData = function(table, data) {

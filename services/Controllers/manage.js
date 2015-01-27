@@ -4,6 +4,7 @@ var Result = require('../Classes/Result.js')
 , events = require('events')
 , url = require('url')
 , config
+, API
 , logger
 , DB
 , MDB
@@ -302,6 +303,7 @@ manage.prototype.postapi = function (req, res, next) {
 		var data = this.MDBconnect().postData(table, info);
 
 		if (data) {
+			API.addAPI(info);
 			res.result.response(next, 1, 'APIRoute postapi POST Success', { _id: data });
 		};
 	};
@@ -488,10 +490,11 @@ manage.prototype.tagRoute = function (req, res, next) {
 	};
 };
 
-manage.prototype.init = function (_config, _logger, route) {
+manage.prototype.init = function (_config, _api, _logger, route) {
 	config = _config;
 	logger = _logger;
 	DB = {};
+	API = _api;
 
 	var self = this;
 
