@@ -35,14 +35,22 @@ var socket = cio('https://10.10.23.55/_news', { autoConnect: true, secure: true 
 //};
 
 var data = {};
-function CacheFile(file, cb) {
+function CacheFile(file) {
     fs.readFile(file, 'utf8', function (err, data) {
         if (err) throw err;
-        var datax = data.split('\n');
-        for (i = 1; i <= datax.length; i += 2) {
+        var data1 = data.toString().split('\n');
+
+        for (i = 1; i < data1.length; i += 2) {
+            var data2 = '';
             try {
-                cb(JSON.parse(datax[i]).content.replace(/<[^<]*>|&nbsp;/igm, ''));
+                var data3 = JSON.parse(data1[i]).content;
+                if (data3 && data3.length > 1) {
+                    var data4 = data3.replace(/<[^<]*>|&nbsp;/igm, '');
+                    data2 = { id: i, data: data4 };
+                };
             } catch (err) {
+            } finally {
+                socket.emit('BM', data2);
             };
         };
     });
@@ -55,10 +63,8 @@ socket.on('connect', function () {
     //    socket.emit('BM', data);
     //});
 
-    for (var i = 1; i < 5; i++) {
-        var file = '../datafiles/bigdata_ng.fulltext.0000000' + i + '.bulk';
-        CacheFile(file, function (data) {
-            socket.emit('BM', data);
-        });
-    };
+    //for (var i = 1; i < 5; i++) {
+    var file = '../datafiles/bigdata_ng.fulltext.0000000' + 1 + '.bulk';
+    CacheFile(file);
+    //};
 });
