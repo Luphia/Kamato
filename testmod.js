@@ -4,7 +4,7 @@ var cheerio = require("cheerio");
 var Channel = require('./services/Classes/Channel.js');
 var fs = require('fs');
 
-var socket = cio('https://10.10.23.57/_news', { autoConnect: true, secure: true });
+var socket = cio('https://10.10.23.55/_news', { autoConnect: true, secure: true });
 
 //var kimo_tvbs = 'https://tw.news.search.yahoo.com/search?p=%E4%BC%8A%E6%96%AF%E8%98%AD+%E6%97%A5%E6%9C%AC&limprovider=GQYDGMJUGQ2OFAEIKRLEEUY';
 //var chinatime = 'https://tw.news.search.yahoo.com/search?p=%E4%BC%8A%E6%96%AF%E8%98%AD+%E6%97%A5%E6%9C%AC&limprovider=GQYDGMJUGQ2OFAEI4S4K3ZUZQLUZXO7FVWIOLIFR'
