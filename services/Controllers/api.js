@@ -13,6 +13,7 @@ var Result = require('../Classes/Result.js')
 ,	config
 ,	logger
 ,	DB
+,	easy
 ;
 
 var Api = function() {};
@@ -55,6 +56,8 @@ Api.prototype.run = function(req, res, next) {
 	res.result = new Result();
 	var API;
 	var rs;
+	var sql = req.query.sql;
+
 	try {
 		API = this.APIs[req.params.app][req.params.api];
 
@@ -65,6 +68,10 @@ Api.prototype.run = function(req, res, next) {
 
 			case 'outer':
 				rs = this.OUTER(API);
+
+				if(sql) {
+					rs = DB.dataFind(rs, sql);
+				}
 				break;
 
 			default:
@@ -79,7 +86,10 @@ Api.prototype.run = function(req, res, next) {
 	}
 };
 Api.prototype.SQL = function(api) {
-	return api;
+	var sql = api.config.sql.GET;
+	var rs = easy.sql(sql);
+
+	return rs;
 };
 Api.prototype.OUTER = function(api) {
 	var rs
@@ -120,6 +130,9 @@ Api.prototype.init = function(_config, _logger, route) {
 	config = _config;
 	logger = _logger;
 	DB = new EasyDB(config, logger);
+	easy = new EasyDB(config, logger);
+	easy.connect({"url": config.uri + "easyDB"});
+
 	DB.connect({"url": config.uri});
 	var self = this;
 	var APIs = DB.listData('api').list;

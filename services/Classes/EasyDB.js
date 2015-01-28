@@ -309,7 +309,7 @@ module.exports = function(conf, logger) {
 
 		switch(operate) {
 			case "SELECT":
-				var table = query.SELECT[0].table;
+				var table = query.FROM[0].table;
 				return this.listData(table, query);
 				break;
 			case "UPDATE":
