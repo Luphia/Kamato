@@ -56,7 +56,7 @@ socket.on('connect', function () {
     //});
 
     for (var i = 1; i < 5; i++) {
-        var file = './newsfile/bigdata_ng.fulltext.0000000' + i + '.bulk';
+        var file = '../datafiles/bigdata_ng.fulltext.0000000' + i + '.bulk';
         CacheFile(file, function (data) {
             socket.emit('BM', data);
         });
