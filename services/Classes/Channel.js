@@ -43,8 +43,14 @@ module.exports = function (opt, Mailconfig) {
     //PrivateMsg
     var PM = function (id, data) {
         var io = this.io;
+        //console.log(io.of('/_news').connected) //--;
+        var channel = this.channel;
         if (io.sockets.connected[id]) {
-            io.sockets.connected[id].emit('PM', data);
+            if (this.channel != null) {
+                io.of(channel).connected[id].emit('PM', data);
+            } else {
+                io.sockets.connected[id].emit('PM', data);
+            };
         };
     };
 
