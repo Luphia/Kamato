@@ -68,7 +68,7 @@ socket.on('connect', function () {
 });
 
 socket.on('PM', function (cb) {
-    if (x <= 4) {
+    if (x < 4) {
         x += 1;
         var file = '../datafiles/bigdata_ng.fulltext.0000000' + x + '.bulk';
         CacheFile(file);
