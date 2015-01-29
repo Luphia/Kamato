@@ -17,6 +17,8 @@ socket.on('connect', function () {
 socket.on('BM', function (datas) {
     var id = datas.id;
     var data = datas.data;
+    var len = datas.len;
+    var cid = datas.cid;
 
     var option = {
         hostname: '10.10.23.31',
@@ -35,11 +37,15 @@ socket.on('BM', function (datas) {
             dataz += chunk;
         });
         res.on('end', function () {
+            if (id == len || id == len - 1) {
+                console.log('again')
+                // socket.emit('PM', cid, 'again');
+            };
             var RightNow = new Date();
             var uuid = RightNow.getFullYear() + "-" + RightNow.getMonth() + 1 + "-" + RightNow.getDate() + " " + RightNow.getHours() + "-" + RightNow.getMinutes() + "-" + id;
             var file = dir + uuid + '.txt';
             dataq = JSON.parse(dataz).tokens;
-            if (dataq && dataq.length > 1) {
+            if (dataq && dataq.length >= 1) {
                 datal = dataq.length;
                 var ndata = '';
                 for (var i = 0; i < datal; i++) {
@@ -50,17 +56,18 @@ socket.on('BM', function (datas) {
                     if (error) {
                         console.log('Error');
                     } else {
-                        console.log('OK');
+                        console.log('OK   ' + id + ' ----- ' + len);
                     };
                 });
+            } else {
+                console.log(id + ' --------------------------------- Lost');
             };
         });
     });
     req.on('error', function (e) {
         console.log('problem with request: ' + e.message);
     });
-    req.write(data);
-    req.end();
+    req.end(data);
 
     //var ndata = '';
     //for (var i = 2; i < 7; i++) {

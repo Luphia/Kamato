@@ -34,37 +34,40 @@ var socket = cio('https://10.10.23.55/_news', { autoConnect: true, secure: true 
 //    });
 //};
 
-var x = 1;
-function CacheFile() {
-    var file = '../datafiles/bigdata_ng.fulltext.0000000' + x + '.bulk';
+var data = {};
+function CacheFile(file) {
     fs.readFile(file, 'utf8', function (err, data) {
         if (err) throw err;
-        var data1 = data.toString().split('\n');
-        for (i = 1; i < data1.length; i += 2) {
-            var data2 = '';
+        var data1 = data.split('\n');
+        var len = data1.length;
+        for (i = 1; i <= len; i += 2) {
             try {
+                var data2 = '';
                 var data3 = JSON.parse(data1[i]).content;
                 if (data3 && data3.length > 1) {
                     var data4 = data3.replace(/<[^<]*>|&nbsp;/igm, '');
-                    data2 = { id: i, data: data4 };
+                    data2 = { id: i, data: data4, len: len, sid: socket.io.engine.id };
+                    socket.emit('BM', data2);
                 };
             } catch (err) {
-            } finally {
-                socket.emit('BM', data2);
-            };
-            if (i == data1.length || i == data1.length - 1) {
-                x++;
-                CacheFile();
             };
         };
     });
 };
 
+var x = 4;
 socket.on('connect', function () {
     console.log('Start');
     //CacheData(kimo_tvbs, function (data) {
     //    socket.emit('BM', data);
     //});
 
-    CacheFile();
+    var file = '../datafiles/bigdata_ng.fulltext.0000000' + x + '.bulk';
+    CacheFile(file);
+});
+
+socket.on('again', function (cb) {
+    x += 1;
+    var file = '../datafiles/bigdata_ng.fulltext.0000000' + x + '.bulk';
+    CacheFile(file);
 });
