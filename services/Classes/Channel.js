@@ -37,7 +37,7 @@ module.exports = function (opt, Mailconfig) {
     var BM = function (data) {
         var socket = this.socket;
         var room = this.room;
-        socket.broadcast.to(room).emit('BM', data);
+        socket.broadcast.in(room).emit('BM', data);
     };
 
     //PrivateMsg

@@ -12,6 +12,8 @@ if (!fs.existsSync(dir)) {
 };
 socket.on('connect', function () {
     console.log('Start');
+    console.log(socket.io.engine.id);
+
 });
 
 socket.on('BM', function (datas) {
@@ -29,7 +31,7 @@ socket.on('BM', function (datas) {
 
     var req = http.request(option, function (res) {
         res.setEncoding('utf8');
-        console.log('BM Receive Start -- ' + id);
+        console.log('BM Receive Start -- ' + id + ' --by ' + cid);
 
         var dataz = '', dataq, datal = 0;
 
@@ -37,9 +39,9 @@ socket.on('BM', function (datas) {
             dataz += chunk;
         });
         res.on('end', function () {
-            if (id == len || id == len - 1) {
-                console.log('again')
-                // socket.emit('PM', cid, 'again');
+            if (id == len || id == (len - 1) || id == (len - 2)) {
+                console.log('--------------------------------again')
+                socket.emit('PM', cid, 'again');
             };
             var RightNow = new Date();
             var uuid = RightNow.getFullYear() + "-" + RightNow.getMonth() + 1 + "-" + RightNow.getDate() + " " + RightNow.getHours() + "-" + RightNow.getMinutes() + "-" + id;
