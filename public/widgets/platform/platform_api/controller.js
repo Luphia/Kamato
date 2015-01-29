@@ -337,7 +337,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     // ====================== outer api ======================
     var parseKeys = function (data) {
         var keys = [];
-        if (data.length > 1) {
+        if (Array.isArray(data)) {
             for (var key in data[0]) {
                 keys.push(key);
             }
@@ -349,6 +349,23 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
         }
         console.log(keys);
         return keys;
+    };
+    var arrangeValue = function(data, keys) {
+        var rs = [];
+        if(Array.isArray(data)) {
+            for(var k in data) {
+                rs.push(arrangeValue(data[k], keys));
+            }
+        }
+        else {
+            var row = {};
+            for(var k in keys) {
+                row[keys[k]] = data[keys[k]];
+            }
+            return row;
+        }
+        
+        return rs;
     };
 
     $scope.collections = [];
@@ -378,8 +395,7 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
     $scope.parseData = function (result) {
         $scope.keys = parseKeys(result.data);
         $scope.cost = result.cost;
-        $scope.collections = result.data;
-
+        $scope.collections = arrangeValue(result.data, $scope.keys);
     };
 
     $scope.updatePath();
