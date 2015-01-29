@@ -68,8 +68,9 @@ socket.on('connect', function () {
 });
 
 socket.on('PM', function (cb) {
-    console.log('8888')
-    x += 1;
-    var file = '../datafiles/bigdata_ng.fulltext.0000000' + x + '.bulk';
-    CacheFile(file);
+    if (x <= 4) {
+        x += 1;
+        var file = '../datafiles/bigdata_ng.fulltext.0000000' + x + '.bulk';
+        CacheFile(file);
+    };
 });
