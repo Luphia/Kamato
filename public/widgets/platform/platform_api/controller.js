@@ -347,7 +347,6 @@ Kamato.register.controller('apiCtrl', function ($scope, $http, $modal, ngDialog,
                 keys.push(key);
             }
         }
-        console.log(keys);
         return keys;
     };
     var arrangeValue = function(data, keys) {
