@@ -2,7 +2,7 @@
 var nGram = require('n-gram');
 var http = require('http');
 
-var socket = cio('https://10.10.23.55/_news', { autoConnect: true, secure: true });
+var socket = cio('http://10.10.23.55/', { autoConnect: true, secure: true });
 
 var fs = require('fs');
 var dir = '../NEWS/';
@@ -13,10 +13,10 @@ if (!fs.existsSync(dir)) {
 socket.on('connect', function () {
     console.log('Start');
     console.log(socket.io.engine.id);
-
+    socket.emit('tag', 'tokenizer');
 });
 
-socket.on('BM', function (datas) {
+socket.on('message', function (datas) {
     var id = datas.id;
     var data = datas.data;
     var len = datas.len;
@@ -51,7 +51,7 @@ socket.on('BM', function (datas) {
                 datal = dataq.length;
                 var ndata = '';
                 for (var i = 0; i < datal; i++) {
-                    ndata += dataq[i].token + '\n';
+                    ndata += dataq[i].token + ' ';
                 };
                 var options = { encoding: "utf8" };
                 fs.writeFile(file, data + "\r\n" + "//" + "\r\n" + ndata, options, function (error) {

@@ -4,7 +4,7 @@ var cheerio = require("cheerio");
 var Channel = require('./services/Classes/Channel.js');
 var fs = require('fs');
 
-var socket = cio('https://10.10.23.55/_news', { autoConnect: true, secure: true });
+var socket = cio('http://10.10.23.55/', { autoConnect: true, secure: true });
 //var kimo_tvbs = 'https://tw.news.search.yahoo.com/search?p=%E4%BC%8A%E6%96%AF%E8%98%AD+%E6%97%A5%E6%9C%AC&limprovider=GQYDGMJUGQ2OFAEIKRLEEUY';
 //var chinatime = 'https://tw.news.search.yahoo.com/search?p=%E4%BC%8A%E6%96%AF%E8%98%AD+%E6%97%A5%E6%9C%AC&limprovider=GQYDGMJUGQ2OFAEI4S4K3ZUZQLUZXO7FVWIOLIFR'
 //function CacheData(url, cb) {
@@ -42,12 +42,17 @@ function CacheFile(file) {
         //console.log(data1[10343]);//--
         for (i = 1; i <= len; i += 2) {
             try {
-                var data2 = '';
+                //var data2 = '';
                 var data3 = JSON.parse(data1[i]).content;
                 if (data3 && data3.length > 1) {
                     var data4 = data3.replace(/<[^<]*>|&nbsp;/igm, '');
-                    data2 = { id: i, data: data4, len: len, cid: socket.io.engine.id };
-                    socket.emit('BM', data2);
+                    //data2 = { id: i, data: data4, len: len, cid: socket.io.engine.id };
+                    socket.emit('message', {
+                        "_option": {
+                            "method": "broadcast"
+                        },
+                        "your_message": data4
+                    });
                 };
             } catch (err) {
             };
@@ -62,6 +67,7 @@ socket.on('connect', function () {
     //    socket.emit('BM', data);
     //});
     console.log(socket.io.engine.id);
+    socket.emit('tag', 'crawler');
 
     var file = '../datafiles/bigdata_ng.fulltext.0000000' + x + '.bulk';
     CacheFile(file);
