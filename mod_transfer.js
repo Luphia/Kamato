@@ -46,12 +46,12 @@ function CacheFile(file) {
                 var data3 = JSON.parse(data1[i]).content;
                 if (data3 && data3.length > 1) {
                     var data4 = data3.replace(/<[^<]*>|&nbsp;/igm, '');
-                    //data2 = { id: i, data: data4, len: len, cid: socket.io.engine.id };
+                    data2 = { id: i, data: data4, len: len, cid: socket.io.engine.id };
                     socket.emit('message', {
                         "_option": {
                             "method": "broadcast"
                         },
-                        "your_message": data4
+                        "your_message": data2
                     });
                 };
             } catch (err) {

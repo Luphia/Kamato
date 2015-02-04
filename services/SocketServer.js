@@ -85,17 +85,31 @@ function nsps(socket, chanel) {
         console.log(cb);
     });
 
-    socket.on('BM', function (data) {
-        console.log('BM start')
-        cl.BM(data);
+    //設定連線角色
+    //crawler emit('tag', 'crawler'})=>爬蟲
+    //tokenizer emit('tag', 'tokenizer'})=>分詞
+    //clusterizer emit('tag', 'clusterizer'})=>分群
+    //recorder emit('tag', 'recorder'})=>紀錄
+
+    socket.on('tag', function (data) {
+        socket.tag = data;
     });
-    socket.on('PM', function (id, data) {
-        console.log('PM start')
-        cl.PM(id, data);
-    });
-    socket.on('RM', function (count, data) {
-        console.log('RM start')
-        cl.RM(count, data);
+    socket.on('message', function (data) {
+        var method = data._option.method;
+        switch (method) {
+            case 'broadcast':
+                console.log('BM start');
+                cl.BM(data);
+                break;
+            case 'peer':
+                console.log('PM start to ' + data._option.peer);
+                cl.PM(data);
+                break;
+            case 'random':
+                console.log('RM start');
+                cl.RM(data);
+                break;
+        };
     });
 
     //console.log(cl.watchoneroom('once'));

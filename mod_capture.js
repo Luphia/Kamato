@@ -16,7 +16,8 @@ socket.on('connect', function () {
     socket.emit('tag', 'tokenizer');
 });
 
-socket.on('message', function (datas) {
+socket.on('message', function (datax) {
+    var datas = datax.your_message;
     var id = datas.id;
     var data = datas.data;
     var len = datas.len;
