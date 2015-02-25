@@ -85,9 +85,23 @@ var addthat = function (value1, value2) {
     });
     return result;
 };
-
+var diffthat = function (value1, value2) {
+    var result = [];
+    value2.forEach(function (element1, index1, array1) {
+        var _result = [];
+        value1.forEach(function (element2, index2, array2) {
+            var __result = [];
+            element1.forEach(function (_element, _index, _array) {
+                __result.push(Math.abs(element1[_index] - element2[_index]));
+            });
+            _result.push(__result);
+        });
+        result.push(_result);
+    });
+    return result;
+};
 function copy() {
-    if (i == 394) {
+    if (i == 9275) {
         var data = wordfreq1.getList();
         for (var a = 0; a < data.length; a++) {
             if (checkEN(data[a][0]) || checkTW(data[a][0])) {
@@ -101,7 +115,7 @@ function copy() {
                 //var optionss = { encoding: "utf8" };
                 var optionss = {};
 
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/總分詞.txt', alldata.join(','), optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/總分詞.txt', alldata.join(','), optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -113,7 +127,7 @@ function copy() {
                 for (var i = 0; i < cb.length; i++) {
                     dataq += '[' + cb[i].join(',') + '],' + '\r\n';
                 };
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/陣列.txt', dataq, optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/陣列.txt', dataq, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -125,7 +139,7 @@ function copy() {
                 for (var i = 0; i < cb.length; i++) {
                     data += cb[i].join(',') + '\r\n';
                 };
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/總統計.txt', data, optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/總統計.txt', data, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -138,17 +152,33 @@ function copy() {
                 //var clusters = clusterfck.kmeans(cb, 3);
                 var centroids = kmeans.centroids;
 
-                var anss = [];
-
+                var arrayans;
                 for (var i = 0; i < centroids.length; i++) {
-                    var arrayans = addthat(clusters[i], [centroids[i]]);
-                    anss.push(arrayans);
+                    arrayans = diffthat(clusters[i], [centroids[i]]);
                 };
+
+                var c = [];
+                var b = Array.apply(null, new Array(arrayans[0][0].length)).map(Number.prototype.valueOf, 0);
+                var e = 0;
+
+                for (var i = 0; i < arrayans.length; i++) {
+                    var aa = arrayans[i];
+                    for (var ii = 0; ii < aa.length; ii++) {
+                        var bb = aa[ii];
+                        for (var j = 0; j < bb.length; j++) {
+                            b[j] += bb[j];
+                        };
+                        e++;
+                    };
+                };
+                for (var i = 0; i < b.length; i++) {
+                    b[i] = b[i] / e;
+                };
+
+
                 var dataq = '';
-                for (var i = 0; i < anss.length; i++) {
-                    dataq += '[' + anss[i].join(',') + '],' + '\r\n';
-                };
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/各群點到中心點距離 K' + k + '.txt', dataq, optionss, function (error) {
+                dataq += '[' + b.join(',') + '],' + '\r\n';
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/各群點到中心點距離總平均差 K' + k + '.txt', dataq, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -160,7 +190,27 @@ function copy() {
                 for (var i = 0; i < clusters.length; i++) {
                     dataq += '[' + clusters[i].join(',') + '],' + '\r\n';
                 };
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/分群結果 K' + k + '.txt', dataq, optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/分群結果 K' + k + '.txt', dataq, optionss, function (error) {
+                    if (error) {
+                        console.log('Error');
+                    } else {
+                        console.log('OK');
+                    };
+                });
+
+                var b = Array.apply(null, new Array(centroids[0].length)).map(Number.prototype.valueOf, 0);
+                for (var i = 0; i < centroids.length; i++) {
+                    var aa = centroids[i];
+                    for (var j = 0; j < aa.length; j++) {
+                        b[j] += parseInt(aa[j]);
+                    };
+                };
+                for (var i = 0; i < b.length; i++) {
+                    b[i] = parseInt(b[i]) / centroids.length;
+                };
+                var dataq = '';
+                dataq += '[' + b.join(',') + '],' + '\r\n';
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/群中心平均 K' + k + '.txt', dataq, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -169,7 +219,6 @@ function copy() {
                 });
 
                 var sumx = [];
-
                 for (var q = 0; q < clusters.length; q++) {
                     var a = clusters[q];
                     var sum = Array.apply(null, new Array(a[0].length)).map(Number.prototype.valueOf, 0);
@@ -177,7 +226,7 @@ function copy() {
                     for (var i = 0; i < a.length; i++) {
                         var aa = a[i];
                         for (var j = 0; j < aa.length; j++) {
-                            sum[j] += aa[j];
+                            sum[j] += parseInt(aa[j]);
                         };
                     };
                     sumx.push(sum);
@@ -195,7 +244,7 @@ function copy() {
                     };
                 };
 
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/各分群分詞(來源-未排) K' + k + '.txt', dataq, optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/各分群分詞(來源-未排) K' + k + '.txt', dataq, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -208,7 +257,7 @@ function copy() {
                     jsonText += JSON.stringify(dataqq[i], "\t") + '\r\n';
                 };
 
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/各分群分詞(字詞-未排) K' + k + '.txt', jsonText, optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/各分群分詞(字詞-未排) K' + k + '.txt', jsonText, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -231,7 +280,7 @@ function copy() {
                     });
                     jsonText += JSON.stringify(a, "\t") + '\r\n';
                 };
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/各分群分詞(字詞-排序) K' + k + '.txt', jsonText, optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/各分群分詞(字詞-排序) K' + k + '.txt', jsonText, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -258,7 +307,7 @@ function copy() {
                 for (var i = 0; i < arryans.length; i++) {
                     dataq += '[' + arryans[i].join(',') + '],' + '\r\n';
                 };
-                fs.writeFileSync('../NEWS/reki/pttonly/新增資料夾/各分群內含文章 K' + k + '.txt', dataq, optionss, function (error) {
+                fs.writeFileSync('../NEWS/reki/all/新增資料夾/各分群內含文章 K' + k + '.txt', dataq, optionss, function (error) {
                     if (error) {
                         console.log('Error');
                     } else {
@@ -270,7 +319,7 @@ function copy() {
         return false;
     };
 
-    var file = '../NEWS/reki/pttonly/新增資料夾/' + i + '.txt';
+    var file = '../NEWS/reki/all/新增資料夾/' + i + '.txt';
     fs.readFile(file, 'utf8', function (err, data) {
         wordfreq1.process(data);
         var wordfreq2 = WordFreq2(options2);
